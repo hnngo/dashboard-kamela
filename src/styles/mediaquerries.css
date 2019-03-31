@@ -1,0 +1,74 @@
+/* Extra small devices (portrait phones, less than 576px)
+No media query for `xs` since this is the default in Bootstrap */
+
+/* Small devices (landscape phones, 576px and up) */
+@media (min-width: 0px) {
+  /* ------- SIDE BAR ------- */
+  .sidebar-container {
+    width: 100vw;
+    height: 70px;
+  }
+
+  .sidebar-container img {
+    width: auto;
+    height: 50px;
+    margin-left: 22px;
+  }
+
+  .outside-sidebar {
+    overflow-x: hidden;
+    position: relative;
+    top: 70px;
+    width: 100vw;
+  }
+}
+
+@media (min-width: 576px) {
+  /* .sidebar-container {
+    width: 100vw;
+    height: 70px;
+  }
+
+  .outside-sidebar {
+    position: relative;
+    top: 70px;
+  } */
+}
+
+/* Medium devices (tablets, 768px and up) */
+@media (min-width: 768px) {
+
+}
+
+/* Large devices (desktops, 992px and up) */
+@media (min-width: 992px) {
+  /* ------- SIDE BAR ------- */
+  .sidebar-container {
+    width: 155px;
+    height: 100vh;
+  }
+
+  .sidebar-container img {
+    margin-left: 0px;
+    margin-top: 12px;
+    width: 100%;
+    height: auto;
+    transform: scale(1.15)
+  }
+
+  .sidebar-icon-container {
+    height: calc(100vh - 220px);
+  }
+
+  .outside-sidebar {
+    position: relative;
+    width: calc(100vw - 155px);
+    top: 0px;
+    left: 155px;
+  }
+}
+
+/* Extra large devices (large desktops, 1200px and up) */
+@media (min-width: 1200px) {
+
+}

@@ -1,33 +1,26 @@
-.App {
-  text-align: center;
+
+/* ------- SIDE BAR ------- */
+.sidebar-container {
+  background-color: white;
+  padding: 12px;
+  position: fixed;
+  box-shadow: 0.5px 0px 2px rgb(194, 194, 194);
 }
 
-.App-logo {
-  animation: App-logo-spin infinite 20s linear;
-  height: 40vmin;
-  pointer-events: none;
+.sidebar-icon-container i {
+  font-size: 24px;
+  color: #09632f;
 }
 
-.App-header {
-  background-color: #282c34;
-  min-height: 100vh;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  font-size: calc(10px + 2vmin);
-  color: white;
+.sidebar-bars {
+  display: inline;
+  position: absolute;
+  top: 25px;
+  right: 50px;
 }
 
-.App-link {
-  color: #61dafb;
-}
-
-@keyframes App-logo-spin {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
-  }
+.sidebar-bars i {
+  color: #09632f;
+  font-size: 22px;
+  cursor: pointer;
 }
