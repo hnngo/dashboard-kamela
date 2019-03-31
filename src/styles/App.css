@@ -1,6 +1,13 @@
+/* ------- REUSE COMPONENT ------- */
+.bg-silver {
+  background-color: #c2c2c2a2;
+  border-radius: 10px;
+}
+
 
 /* ------- SIDE BAR ------- */
 .sidebar-container {
+  z-index: 100;
   background-color: white;
   padding: 12px;
   position: fixed;
@@ -8,8 +15,9 @@
 }
 
 .sidebar-icon-container i {
-  font-size: 24px;
-  color: #09632f;
+  font-size: 36px;
+  color: #0a6d33;
+  cursor: pointer;
 }
 
 .sidebar-bars {

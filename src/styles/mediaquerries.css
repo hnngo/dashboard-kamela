@@ -66,6 +66,35 @@ No media query for `xs` since this is the default in Bootstrap */
     top: 0px;
     left: 155px;
   }
+
+  .sidebar-sub-container {
+    position: absolute;
+    top: 0px;
+    left: 155px;
+    width: calc(100vw - 155px);
+    height: 100vh;
+  }
+
+  .sidebar-sub-mainnav {
+    border-left: 1px solid rgba(172, 165, 165, 0.719);
+    background-color: white;
+    position: relative;
+    width: 480px;
+    height: 100vh;
+    z-index: 1000;
+  }
+
+  .sidebar-sub-mainnav .fa-times {
+    cursor: pointer; 
+  }
+
+  .sidebar-sub-dimpart {
+    background-color: rgba(0, 0, 0, 0.267);
+    position: relative;
+    width: 100%;
+    height: 100vh;
+    z-index: 1000;
+  }
 }
 
 /* Extra large devices (large desktops, 1200px and up) */
