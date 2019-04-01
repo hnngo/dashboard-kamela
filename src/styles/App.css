@@ -1,3 +1,12 @@
+/*
+  Font:
+    font-family: 'Poppins', sans-serif;
+ */
+
+ body {
+  font-family: 'Poppins', sans-serif;
+ }
+
 /* ------- REUSE COMPONENT ------- */
 .bg-silver {
   background-color: #c2c2c2a2;
@@ -15,7 +24,7 @@
 }
 
 .sidebar-icon-container i {
-  font-size: 36px;
+  font-size: 26px;
   color: #0a6d33;
   cursor: pointer;
 }

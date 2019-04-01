@@ -4,7 +4,7 @@ import {
   SIDE_HOME,
   SIDE_CALENDAR,
   SIDE_SETTING,
-  SIDE_QUESTION
+  SIDE_HELP
 } from '../constants';
 
 export default class SideBar extends Component {
@@ -13,8 +13,17 @@ export default class SideBar extends Component {
 
     this.state = {
       reloadImg: false,
-      subSideType: undefined
+      subSideType: undefined,
+      offsetSubSide: 0
     };
+  }
+
+  componentDidUpdate() {
+    const $sideBarOffset = document.querySelector('.sidebar-sub-offset');
+
+    if ($sideBarOffset) {
+      $sideBarOffset.style.height = this.state.offsetSubSide + "px";
+    }
   }
 
   removeAllBgSilver() {
@@ -26,15 +35,26 @@ export default class SideBar extends Component {
   }
 
   toggleSideAndEffectIcon(type, target) {
-
+    // Get the offset of icon
+    const offset = this.getScreenY(target.classList[4]);
     if (this.state.subSideType === type) {
       target.classList.remove("bg-silver");
-      this.setState({ subSideType: undefined });
+      this.setState({
+        subSideType: undefined,
+        offsetSubSide: 0
+      });
     } else {
       this.removeAllBgSilver();
       target.classList.add("bg-silver");
-      this.setState({ subSideType: type });
+      this.setState({
+        subSideType: type,
+        offsetSubSide: offset - 180
+      });
     }
+  }
+
+  getScreenY(nameClass) {
+    return document.querySelector('.' + nameClass).getBoundingClientRect().top;
   }
 
   handleClickIcon(e) {
@@ -52,14 +72,14 @@ export default class SideBar extends Component {
         this.toggleSideAndEffectIcon(SIDE_SETTING, type);
         return;
       case "fa-question-circle":
-        this.toggleSideAndEffectIcon(SIDE_QUESTION, type);
+        this.toggleSideAndEffectIcon(SIDE_HELP, type);
         return;
       default:
         return;
     }
   }
 
-  renderSubSideBar() {
+  renderSubSidebar() {
     if (this.state.subSideType) {
       return (
         <div className="sidebar-sub-container d-flex ">
@@ -73,7 +93,10 @@ export default class SideBar extends Component {
                 }}
               />
             </div>
-            <h1>{this.state.subSideType}</h1>
+            <div className="sidebar-sub-listItems">
+              <div className="sidebar-sub-offset" />
+              {this.renderContentSubSidebar()}
+            </div>
           </div>
           <div
             className="sidebar-sub-dimpart animated fadeIn slow"
@@ -84,6 +107,29 @@ export default class SideBar extends Component {
           />
         </div>
       )
+    }
+  }
+
+  renderContentSubSidebar() {
+    switch (this.state.subSideType) {
+      case SIDE_HOME:
+        return data.sidebar.home.map((item, i) => {
+          return <p key={i}>{item.charAt(0).toUpperCase() + item.slice(1)}</p>;
+        });
+      case SIDE_CALENDAR:
+        return data.sidebar.calendar.map((item, i) => {
+          return <p key={i}>{item.charAt(0).toUpperCase() + item.slice(1)}</p>;
+        });
+      case SIDE_SETTING:
+        return data.sidebar.settings.map((item, i) => {
+          return <p key={i}>{item.charAt(0).toUpperCase() + item.slice(1)}</p>;
+        });
+      case SIDE_HELP:
+        return data.sidebar.help.map((item, i) => {
+          return <p key={i}>{item.charAt(0).toUpperCase() + item.slice(1)}</p>;
+        });
+      default:
+        return <div />;
     }
   }
 
@@ -125,7 +171,7 @@ export default class SideBar extends Component {
             </div>
           </div>
         </div>
-        {this.renderSubSideBar()}
+        {this.renderSubSidebar()}
       </div>
     );
   }

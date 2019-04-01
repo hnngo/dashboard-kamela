@@ -95,6 +95,25 @@ No media query for `xs` since this is the default in Bootstrap */
     height: 100vh;
     z-index: 1000;
   }
+
+  .sidebar-sub-listItems {
+    padding-left: 25px;
+    padding-top: 40px;
+    font-size: 25px;
+    color: rgb(92, 156, 92);
+  }
+
+  .sidebar-sub-listItems p {
+    cursor: pointer;
+    transition: padding-left 0.5s;
+  }
+
+  .sidebar-sub-listItems p:hover {
+    color: rgb(50, 102, 50);
+    font-weight: bold;
+    font-size: 25px;
+    padding-left: 20px;
+  }
 }
 
 /* Extra large devices (large desktops, 1200px and up) */
