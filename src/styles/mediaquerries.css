@@ -77,9 +77,10 @@ No media query for `xs` since this is the default in Bootstrap */
 
   .sidebar-sub-mainnav {
     border-left: 1px solid rgba(172, 165, 165, 0.719);
-    background-color: white;
+    /* background-color: white; */
+    background-image: linear-gradient(to right, rgb(242, 250, 244),  rgba(231, 233, 231, 0.788),  rgba(0, 0, 0, 0.411));
     position: relative;
-    width: 480px;
+    width: 100%;
     height: 100vh;
     z-index: 1000;
   }
@@ -88,24 +89,22 @@ No media query for `xs` since this is the default in Bootstrap */
     cursor: pointer; 
   }
 
-  .sidebar-sub-dimpart {
-    background-color: rgba(0, 0, 0, 0.267);
-    position: relative;
-    width: 100%;
-    height: 100vh;
-    z-index: 1000;
-  }
-
   .sidebar-sub-listItems {
     padding-left: 25px;
     padding-top: 40px;
     font-size: 25px;
-    color: rgb(92, 156, 92);
+    color: rgb(104, 167, 104);
   }
 
   .sidebar-sub-listItems p {
     cursor: pointer;
     transition: padding-left 0.5s;
+  }
+
+  .sidebar-sub-listItems i {
+    width: 20px;
+    height: auto;
+    margin-right: 20px;
   }
 
   .sidebar-sub-listItems p:hover {

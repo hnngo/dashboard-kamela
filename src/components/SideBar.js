@@ -54,7 +54,10 @@ export default class SideBar extends Component {
   }
 
   getScreenY(nameClass) {
-    return document.querySelector('.' + nameClass).getBoundingClientRect().top;
+    // Get the y position of each sub icon
+    let y = document.querySelector('.' + nameClass).getBoundingClientRect().top;
+
+    return nameClass === "fa-question-circle" ? y - 60 : y;
   }
 
   handleClickIcon(e) {
@@ -79,11 +82,21 @@ export default class SideBar extends Component {
     }
   }
 
+  handleClickDim(e) {
+    if (e.clientX > 480) {
+      this.setState({ subSideType: undefined });
+      this.removeAllBgSilver();
+    }
+  }
+
   renderSubSidebar() {
     if (this.state.subSideType) {
       return (
         <div className="sidebar-sub-container d-flex ">
-          <div className="sidebar-sub-mainnav animated fadeInLeft faster">
+          <div
+            className="sidebar-sub-mainnav animated fadeInLeft faster"
+            onMouseDown={(e) => this.handleClickDim(e)}
+          >
             <div className="w-100 mt-3 text-right">
               <i
                 className="fas fa-times mr-3 h4"
@@ -98,39 +111,42 @@ export default class SideBar extends Component {
               {this.renderContentSubSidebar()}
             </div>
           </div>
-          <div
-            className="sidebar-sub-dimpart animated fadeIn slow"
-            onClick={() => {
-              this.setState({ subSideType: undefined });
-              this.removeAllBgSilver();
-            }}
-          />
         </div>
       )
     }
   }
 
   renderContentSubSidebar() {
+    let obj = undefined;
     switch (this.state.subSideType) {
       case SIDE_HOME:
-        return data.sidebar.home.map((item, i) => {
-          return <p key={i}>{item.charAt(0).toUpperCase() + item.slice(1)}</p>;
-        });
+        obj = data.sidebar.home;
+        break;
       case SIDE_CALENDAR:
-        return data.sidebar.calendar.map((item, i) => {
-          return <p key={i}>{item.charAt(0).toUpperCase() + item.slice(1)}</p>;
-        });
+        obj = data.sidebar.calendar;
+        break;
       case SIDE_SETTING:
-        return data.sidebar.settings.map((item, i) => {
-          return <p key={i}>{item.charAt(0).toUpperCase() + item.slice(1)}</p>;
-        });
+        obj = data.sidebar.settings;
+        break;
       case SIDE_HELP:
-        return data.sidebar.help.map((item, i) => {
-          return <p key={i}>{item.charAt(0).toUpperCase() + item.slice(1)}</p>;
-        });
+        obj = data.sidebar.help;
+        break;
       default:
-        return <div />;
+        return;
     }
+
+    // Get the keys from object
+    let keys = Object.keys(obj);
+    return keys.map((item, i) => {
+      return (
+        <div className="mb-2" key={i}>
+          <div className="d-inline">
+            <i className={obj[item]} />
+          </div>
+          <p key={i} className="d-inline">{item.charAt(0).toUpperCase() + item.slice(1)}</p>
+        </div>
+      );
+    });
   }
 
   render() {
