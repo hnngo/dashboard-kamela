@@ -9,12 +9,12 @@ class App extends Component {
       <div>
         <SideBar />
         <div className="outside-sidebar">
-          <h1 className="display-1">Under/Beside Sidebar</h1>
-          <h1 className="display-1">Under/Beside Sidebar</h1>
-          <h1 className="display-1">Under/Beside Sidebar</h1>
-          <h1 className="display-1">Under/Beside Sidebar</h1>
-          <h1 className="display-1">Under/Beside Sidebar</h1>
-          <h1 className="display-1">Under/Beside Sidebar</h1><h1 className="display-1">Under/Beside Sidebar</h1><h1 className="display-1">Under/Beside Sidebar</h1><h1 className="display-1">Under/Beside Sidebar</h1><h1 className="display-1">Under/Beside Sidebar</h1>
+          <h1 className="display-4">Under/ Beside Sidebar</h1>
+          <h1 className="display-4">Under/ Beside Sidebar</h1>
+          <h1 className="display-4">Under/ Beside Sidebar</h1>
+          <h1 className="display-4">Under/ Beside Sidebar</h1>
+          <h1 className="display-4">Under/ Beside Sidebar</h1>
+          <h1 className="display-4">Under/ Beside Sidebar</h1><h1 className="display-4">Under/ Beside Sidebar</h1><h1 className="display-4">Under/ Beside Sidebar</h1><h1 className="display-4">Under/ Beside Sidebar</h1><h1 className="display-4">Under/ Beside Sidebar</h1>
         </div>
       </div>
     );

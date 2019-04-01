@@ -4,7 +4,8 @@ import {
   SIDE_HOME,
   SIDE_CALENDAR,
   SIDE_SETTING,
-  SIDE_HELP
+  SIDE_HELP,
+  SIDE_SMALL
 } from '../constants';
 
 export default class SideBar extends Component {
@@ -26,7 +27,8 @@ export default class SideBar extends Component {
     }
   }
 
-  removeAllBgSilver() {
+  iconRemoveBg() {
+    // Remove all icon background
     const targetList = ["fa-home", "fa-calendar-check", "fa-cog", "fa-question-circle"];
 
     targetList.forEach((item) => {
@@ -34,30 +36,42 @@ export default class SideBar extends Component {
     });
   }
 
-  toggleSideAndEffectIcon(type, target) {
+  iconToggleSideAndEffect(type, target) {
     // Get the offset of icon
-    const offset = this.getScreenY(target.classList[4]);
+    const offset = this.iconGetScreenY(target.classList[4]);
+
+    this.iconRemoveBg();
     if (this.state.subSideType === type) {
-      target.classList.remove("bg-silver");
-      this.setState({
-        subSideType: undefined,
-        offsetSubSide: 0
-      });
+      this.handleCloseSlide("sidebar-sub-mainnav");
     } else {
-      this.removeAllBgSilver();
       target.classList.add("bg-silver");
       this.setState({
         subSideType: type,
-        offsetSubSide: offset - 180
+        offsetSubSide: offset - 100
       });
     }
   }
 
-  getScreenY(nameClass) {
+  iconGetScreenY(nameClass) {
     // Get the y position of each sub icon
     let y = document.querySelector('.' + nameClass).getBoundingClientRect().top;
 
     return nameClass === "fa-question-circle" ? y - 60 : y;
+  }
+
+  handleCloseSlide(slideClass, exitStyle="fadeOutLeft") {
+    const $slide = document.querySelector(`.${slideClass}`);
+
+    if ($slide) {
+      // $slide.classList.remove("fadeInLeft");
+      $slide.classList.add(exitStyle);
+
+      // Time out to make sure the animation fully loaded
+      setTimeout(() => this.setState({
+        subSideType: undefined,
+        offsetSubSide: 0
+      }), 500);
+    }
   }
 
   handleClickIcon(e) {
@@ -66,16 +80,16 @@ export default class SideBar extends Component {
 
     switch (type.classList[4]) {
       case "fa-home":
-        this.toggleSideAndEffectIcon(SIDE_HOME, type);
+        this.iconToggleSideAndEffect(SIDE_HOME, type);
         return;
       case "fa-calendar-check":
-        this.toggleSideAndEffectIcon(SIDE_CALENDAR, type);
+        this.iconToggleSideAndEffect(SIDE_CALENDAR, type);
         return;
       case "fa-cog":
-        this.toggleSideAndEffectIcon(SIDE_SETTING, type);
+        this.iconToggleSideAndEffect(SIDE_SETTING, type);
         return;
       case "fa-question-circle":
-        this.toggleSideAndEffectIcon(SIDE_HELP, type);
+        this.iconToggleSideAndEffect(SIDE_HELP, type);
         return;
       default:
         return;
@@ -83,32 +97,46 @@ export default class SideBar extends Component {
   }
 
   handleClickDim(e) {
-    if (e.clientX > 480) {
-      this.setState({ subSideType: undefined });
-      this.removeAllBgSilver();
+    const sWidth = window.screen.width;
+    const eWidth = e.clientX;
+
+    // Check dim area depends on screen width
+    if (sWidth >= 992 && eWidth > 480) {
+      this.iconRemoveBg();
+      this.handleCloseSlide("sidebar-sub-mainnav");
+    } else if (sWidth < 992 && eWidth < sWidth / 2) {
+      this.handleCloseSlide("sidebar-smallSub-container","fadeOutRight");
     }
   }
 
-  renderSubSidebar() {
-    if (this.state.subSideType) {
+  renderSubSidebarSmall() {
+    if (this.state.subSideType === SIDE_SMALL) {
       return (
-        <div className="sidebar-sub-container d-flex ">
+        <div className="d-md-block d-lg-none">
           <div
-            className="sidebar-sub-mainnav animated fadeInLeft faster"
+            className="sidebar-smallSub-container animated fadeInRight faster"
             onMouseDown={(e) => this.handleClickDim(e)}
           >
-            <div className="w-100 mt-3 text-right">
-              <i
-                className="fas fa-times mr-3 h4"
-                onClick={() => {
-                  this.setState({ subSideType: undefined });
-                  this.removeAllBgSilver();
-                }}
-              />
-            </div>
-            <div className="sidebar-sub-listItems">
-              <div className="sidebar-sub-offset" />
-              {this.renderContentSubSidebar()}
+            <h1>Small</h1>
+          </div>
+        </div>
+      )
+    }
+  }
+
+  renderSubSidebarLarge() {
+    if (this.state.subSideType && this.state.subSideType !== SIDE_SMALL) {
+      return (
+        <div className="d-none d-lg-block">
+          <div className="sidebar-sub-container d-flex">
+            <div
+              className="sidebar-sub-mainnav animated fadeInLeft faster"
+              onMouseDown={(e) => this.handleClickDim(e)}
+            >
+              <div className="sidebar-sub-listItems">
+                <div className="sidebar-sub-offset" />
+                {this.renderContentSubSidebarLarge()}
+              </div>
             </div>
           </div>
         </div>
@@ -116,7 +144,7 @@ export default class SideBar extends Component {
     }
   }
 
-  renderContentSubSidebar() {
+  renderContentSubSidebarLarge() {
     let obj = undefined;
     switch (this.state.subSideType) {
       case SIDE_HOME:
@@ -160,9 +188,16 @@ export default class SideBar extends Component {
             onLoad={() => this.setState({ reloadImg: !this.state.reloadImg })}
           />
         </div>
+
+        {/* Show on small screen */}
         <div className="sidebar-bars">
-          <i className="fas fa-bars d-md-block d-lg-none" />
+          <i 
+            className="fas fa-bars d-md-block d-lg-none"
+            onClick={() => this.setState({ subSideType: SIDE_SMALL })}
+          />
         </div>
+
+        {/* Hide on small screen */}
         <div className="sidebar-icon-container mt-5 d-none d-lg-block">
           <div className="d-flex align-items-center flex-column h-100">
             <div className="mt-5">
@@ -187,7 +222,8 @@ export default class SideBar extends Component {
             </div>
           </div>
         </div>
-        {this.renderSubSidebar()}
+        {this.renderSubSidebarLarge()}
+        {this.renderSubSidebarSmall()}
       </div>
     );
   }
