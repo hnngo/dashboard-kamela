@@ -33,5 +33,12 @@
       "Pricing": "fas fa-tags",
       "Policies": "fas fa-book-dead"
     }
-  }
+  },
+  "companyoverview": [
+    {
+      "name": "Venus Motors",
+      "status": "Done",
+      "owner": "Rhyley Wharton"
+    }
+  ]
 }
