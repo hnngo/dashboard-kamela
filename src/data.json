@@ -13,7 +13,7 @@
       "Clients": "fas fa-users",
       "Organization": "fas fa-sitemap"
     },
-    "calendar": {
+    "time": {
       "Post": "fas fa-mail-bulk",
       "Member": "far fa-address-card",
       "Order": "fas fa-shopping-cart",

@@ -59,7 +59,7 @@ export default class SideBar extends Component {
     return nameClass === "fa-question-circle" ? y - 60 : y;
   }
 
-  handleCloseSlide(slideClass, exitStyle="fadeOutLeft") {
+  handleCloseSlide(slideClass, exitStyle = "fadeOut") {
     const $slide = document.querySelector(`.${slideClass}`);
 
     if ($slide) {
@@ -105,8 +105,22 @@ export default class SideBar extends Component {
       this.iconRemoveBg();
       this.handleCloseSlide("sidebar-sub-mainnav");
     } else if (sWidth < 992 && eWidth < sWidth / 2) {
-      this.handleCloseSlide("sidebar-smallSub-container","fadeOutRight");
+      this.handleCloseSlide("sidebar-smallSub-container");
     }
+  }
+
+  handleClickExpandNav(e) {
+    const arrowChild = e.currentTarget.childNodes[1];
+    let curStyle = arrowChild.style.transform;
+    
+    if (curStyle === "") {
+      arrowChild.style.transform = "rotate(-90deg)";
+    } else {
+      arrowChild.style.transform = "";
+    }
+
+    // arrowChild.style.transform = "rotate(-90deg)";
+    // arrowChild.style["transform-origin"] = "50% 20%";
   }
 
   renderSubSidebarSmall() {
@@ -114,14 +128,52 @@ export default class SideBar extends Component {
       return (
         <div className="d-md-block d-lg-none">
           <div
-            className="sidebar-smallSub-container animated fadeInRight faster"
+            className="sidebar-smallSub-container animated fadeIn faster"
             onMouseDown={(e) => this.handleClickDim(e)}
           >
-            <h1>Small</h1>
+            <div className="sidebar-smallSub-content">
+              {this.renderContentSubSidebarSmall()}
+            </div>
           </div>
         </div>
       )
     }
+  }
+
+  renderContentSubSidebarSmall() {
+    let res = [];
+    let mainNav = ["home", "time", "settings", "help"]
+
+    mainNav.forEach((item, i) => {
+      res.push(
+        <div key={i}>
+          <div
+            className="d-flex justify-content-between"
+            onClick={(e) => this.handleClickExpandNav(e)}
+            data-toggle="collapse"
+            data-target={"#collapse" + item + i}
+          >
+            <p className="mb-1">{item.charAt(0).toUpperCase() + item.slice(1)}</p>
+            <i className="fas fa-chevron-left" />
+          </div>
+          <div
+            className="mb-3 collapse"
+            id={"collapse" + item + i}
+          >
+            {
+              Object.keys(data.sidebar[item]).map((cat) => {
+                return (
+                  <p key={cat} className="sidebar-smallSub-listItem">{cat}</p>
+                );
+              })
+            }
+          </div>
+        </div>
+
+      );
+    })
+
+    return res;
   }
 
   renderSubSidebarLarge() {
@@ -130,7 +182,7 @@ export default class SideBar extends Component {
         <div className="d-none d-lg-block">
           <div className="sidebar-sub-container d-flex">
             <div
-              className="sidebar-sub-mainnav animated fadeInLeft faster"
+              className="sidebar-sub-mainnav animated fadeIn faster"
               onMouseDown={(e) => this.handleClickDim(e)}
             >
               <div className="sidebar-sub-listItems">
@@ -151,7 +203,7 @@ export default class SideBar extends Component {
         obj = data.sidebar.home;
         break;
       case SIDE_CALENDAR:
-        obj = data.sidebar.calendar;
+        obj = data.sidebar.time;
         break;
       case SIDE_SETTING:
         obj = data.sidebar.settings;
@@ -191,7 +243,7 @@ export default class SideBar extends Component {
 
         {/* Show on small screen */}
         <div className="sidebar-bars">
-          <i 
+          <i
             className="fas fa-bars d-md-block d-lg-none"
             onClick={() => this.setState({ subSideType: SIDE_SMALL })}
           />
