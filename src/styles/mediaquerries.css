@@ -62,6 +62,13 @@ No media query for `xs` since this is the default in Bootstrap */
     margin-left: 10px;
     margin-bottom: 8px;
   }
+
+  /* ------- DASH BOARD ------- */
+  .dashboard-container {
+    margin-left: 10px;
+    /* margin-right: 10px; */
+    margin-top: 50px;
+  }
 }
 
 @media (min-width: 576px) {

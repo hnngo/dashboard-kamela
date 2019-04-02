@@ -51,12 +51,9 @@
 
 /* ------- DASH BOARD ------- */
 .dashboard-container {
-  /* background-color: white; */
   margin-left: 30px;
   margin-right: 30px;
-  /* padding: 0 15px; */
   margin-top: 100px;
-  /* box-shadow: 0.2px 0.5px 0px 1px rgb(209, 208, 208); */
 }
 
 .board-container {
@@ -84,6 +81,10 @@
   color: #065828;
 }
 
+.co-table-header h5 {
+  font-size: 13px;
+}
+
 .co-table-data {  
   margin-top: 0px;
   padding-top: 10px;
@@ -98,8 +99,38 @@
 .co-table-row {
   border-bottom: 1px solid rgb(237, 238, 238);
   min-height: 60px;
+
+}
+
+.co-table-row p {
+  font-size: 13px;
+}
+
+.co-table-row .row .data-row {
   display: flex;
   flex-direction: column;
   justify-content: center;
 }
 
+.co-pagination-container {
+  border-top: 0.5px solid rgb(237, 238, 238);
+  padding-top: 20px;
+  margin-left: 18px;
+}
+
+.co-pagination-container li button {
+  color: #065828;
+  outline: none !important;
+  box-shadow: none !important;
+  min-width: 36px;
+}
+
+.co-pagination-container li button:hover {
+  background-color: rgb(50, 102, 50);
+  color: white;
+}
+
+.co-activePage {
+  background-color: rgb(50, 102, 50);
+  color: white !important;
+}
