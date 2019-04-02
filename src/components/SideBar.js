@@ -70,7 +70,7 @@ export default class SideBar extends Component {
       setTimeout(() => this.setState({
         subSideType: undefined,
         offsetSubSide: 0
-      }), 500);
+      }), 300);
     }
   }
 
@@ -112,15 +112,12 @@ export default class SideBar extends Component {
   handleClickExpandNav(e) {
     const arrowChild = e.currentTarget.childNodes[1];
     let curStyle = arrowChild.style.transform;
-    
+
     if (curStyle === "") {
       arrowChild.style.transform = "rotate(-90deg)";
     } else {
       arrowChild.style.transform = "";
     }
-
-    // arrowChild.style.transform = "rotate(-90deg)";
-    // arrowChild.style["transform-origin"] = "50% 20%";
   }
 
   renderSubSidebarSmall() {
@@ -280,3 +277,5 @@ export default class SideBar extends Component {
     );
   }
 }
+
+//TODO: Small screen overflow when expanding all category
