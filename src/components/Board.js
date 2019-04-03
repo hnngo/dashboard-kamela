@@ -11,6 +11,6 @@ export default class Board extends Component {
   }
 }
 
-Board.propTypes = {
-  component: PropTypes.element.isRequired
-}
+// Board.propTypes = {
+//   component: PropTypes.element.isRequired
+// };

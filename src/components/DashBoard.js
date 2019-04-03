@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import Board from './Board';
 import CompanyOverview from './graphs/CompanyOverview';
+import LineGraph from './graphs/LineGraph';
 
 export default class DashBoard extends Component {
   render() {
@@ -12,12 +13,12 @@ export default class DashBoard extends Component {
           </div>
           <div className="col-xl-4">
             <div className="row">
-              <div className="col-12 pb-2">
-                <Board number={2} />
+              <div className="col-12">
+                <Board component={<LineGraph chartName="MSFT" />} />
               </div>
             </div>
             <div className="row">
-              <div className="col-12 pb-2">
+              <div className="col-12">
                 <Board number={3} />
               </div>
             </div>

@@ -137,3 +137,8 @@
   background-color: rgb(50, 102, 50);
   color: white !important;
 }
+
+.lineChart {
+  margin-top: auto;
+  transform: scaleX(1.165) scaleY(1.18);
+}
