@@ -65,9 +65,23 @@ No media query for `xs` since this is the default in Bootstrap */
 
   /* ------- DASH BOARD ------- */
   .dashboard-container {
-    margin-left: 10px;
-    /* margin-right: 10px; */
-    margin-top: 50px;
+    margin-left: 0px;
+    margin-top: 0px;
+    margin-right: 0px;
+    padding-right: 20px;
+  }
+
+  .co-container {
+    padding: 10px 3px;
+  }
+
+  .co-table {
+    margin-top: 15px;
+    padding: 5px 4px;
+  }
+  
+  .page-link {
+    font-size: 12px;
   }
 }
 
@@ -157,6 +171,95 @@ No media query for `xs` since this is the default in Bootstrap */
     font-size: 25px;
     padding-left: 20px;
   }
+
+  /* ------- DASH BOARD ------- */
+  .dashboard-container {
+    margin-left: 20px;
+    margin-right: 20px;
+    margin-top: 100px;
+  }
+/* 
+  .board-container {
+    margin: 10px 10px;
+    background-color: white;
+    width: 100%;
+    height: 95%;
+    border-radius: 5px;
+    -webkit-box-shadow: 0px 0px 13px 0px rgba(82,63,105,0.05);
+            box-shadow: 0px 0px 13px 0px rgba(82,63,105,0.05);
+  } */
+
+  /* ----- COMPANY OVERVIEW ----- */
+  /* .co-container {
+    padding: 10px 10px;
+  }
+
+  .co-table {
+    margin-top: 30px;
+    padding: 10px 10px;
+  }
+
+  .co-table-header {
+    padding: 0 20px;
+    color: #065828;
+  }
+
+  .co-table-header h5 {
+    font-size: 14px;
+  }
+
+  .co-table-data {  
+    margin-top: 0px;
+    padding-top: 10px;
+    padding-left: 20px;
+    padding-right: 20px;
+    border-radius: 5px;
+    max-height: 400px;
+    background-color: #ffffff;
+    overflow-y: auto;
+  }
+
+  .co-table-row {
+    border-bottom: 1px solid rgb(237, 238, 238);
+    min-height: 60px;
+  }
+
+  .co-table-row p {
+    font-size: 14px;
+  }
+
+  .co-table-row .text-muted {
+    font-size: 11px;
+  }
+
+  .co-table-row .row .data-row {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+  }
+
+  .co-pagination-container {
+    border-top: 0.5px solid rgb(237, 238, 238);
+    padding-top: 20px;
+    margin-left: 18px;
+  }
+
+  .co-pagination-container li button {
+    color: #065828;
+    outline: none !important;
+    box-shadow: none !important;
+    min-width: 36px;
+  }
+
+  .co-pagination-container li button:hover {
+    background-color: rgb(50, 102, 50);
+    color: white;
+  }
+
+  .co-activePage {
+    background-color: rgb(50, 102, 50);
+    color: white !important;
+  } */
 }
 
 /* Extra large devices (large desktops, 1200px and up) */

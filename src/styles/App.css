@@ -82,7 +82,7 @@
 }
 
 .co-table-header h5 {
-  font-size: 13px;
+  font-size: 14px;
 }
 
 .co-table-data {  
@@ -99,11 +99,14 @@
 .co-table-row {
   border-bottom: 1px solid rgb(237, 238, 238);
   min-height: 60px;
-
 }
 
 .co-table-row p {
-  font-size: 13px;
+  font-size: 14px;
+}
+
+.co-table-row .text-muted {
+  font-size: 11px;
 }
 
 .co-table-row .row .data-row {
