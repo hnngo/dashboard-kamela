@@ -8,7 +8,9 @@ import {
   // DATA_HIGH,
   // DATA_LOW,
   // DATA_OPEN,
-  DATA_VOLUME
+  DATA_VOLUME,
+  DOUBLE_HEIGHT,
+  SINGLE_HEIGHT
 } from '../constants';
 import data from '../company_data_500.json';
 
@@ -49,6 +51,7 @@ export default class DashBoard extends Component {
         <div className="row py-1">
           <div className="col-xl-8">
             <Board
+              height={DOUBLE_HEIGHT}
               title={"Company Overview"}
               component={
                 <CompanyOverview data={filteredData} />
@@ -58,36 +61,42 @@ export default class DashBoard extends Component {
           <div className="col-xl-4">
             <div className="row">
               <div className="col-12">
-                <Board component={
-                  <LineGraph
-                    chartName={"MSFT-volume"}
-                    stockSymbol={"MSFT"}
-                    dataType={DATA_VOLUME}
-                    maxNumberOfData={15}
-                    offsetTop={120}
-                    showAxis={false}
-                    lineColor={"#1e5e21"}
-                    areaColor={"#dcf4dd"}
-                    titleColor={"#0e2b0f"}
-                  />
-                } />
+                <Board
+                  height={SINGLE_HEIGHT}
+                  component={
+                    <LineGraph
+                      chartName={"MSFT-volume"}
+                      stockSymbol={"MSFT"}
+                      dataType={DATA_VOLUME}
+                      maxNumberOfData={15}
+                      offsetTop={120}
+                      showAxis={false}
+                      lineColor={"#1e5e21"}
+                      areaColor={"#dcf4dd"}
+                      titleColor={"#0e2b0f"}
+                    />
+                  }
+                />
               </div>
             </div>
             <div className="row">
               <div className="col-12">
-                <Board component={
-                  <LineGraph
-                    chartName={"PLXS-volume"}
-                    stockSymbol={"PLXS"}
-                    dataType={DATA_VOLUME}
-                    maxNumberOfData={15}
-                    offsetTop={120}
-                    showAxis={false}
-                    lineColor={"#008bf2"}
-                    areaColor={"#d0ebff"}
-                    titleColor={"#003d6a"}
-                  />
-                } />
+                <Board
+                  height={SINGLE_HEIGHT}
+                  component={
+                    <LineGraph
+                      chartName={"PLXS-volume"}
+                      stockSymbol={"PLXS"}
+                      dataType={DATA_VOLUME}
+                      maxNumberOfData={15}
+                      offsetTop={120}
+                      showAxis={false}
+                      lineColor={"#008bf2"}
+                      areaColor={"#d0ebff"}
+                      titleColor={"#003d6a"}
+                    />
+                  }
+                />
               </div>
             </div>
           </div>
@@ -95,45 +104,46 @@ export default class DashBoard extends Component {
         <div className="row py-1">
           <div className="col-xl-4">
             <Board
+              height={SINGLE_HEIGHT}
               title={"Finance Summary"}
               component={<FinanceSummary data={filteredData} />}
             />
           </div>
           <div className="col-xl-4">
-            <Board number={5} />
+            <Board height={SINGLE_HEIGHT} />
           </div>
           <div className="col-xl-4">
-            <Board number={6} />
+            <Board height={SINGLE_HEIGHT} />
           </div>
         </div>
         <div className="row py-1">
           <div className="col-xl-4">
-            <Board number={7} />
+            <Board height={SINGLE_HEIGHT} />
           </div>
           <div className="col-xl-4">
-            <Board number={8} />
+            <Board height={SINGLE_HEIGHT} />
           </div>
           <div className="col-xl-4">
-            <Board number={9} />
+            <Board height={SINGLE_HEIGHT} />
           </div>
         </div>
         <div className="row py-1">
           <div className="col-xl-8">
-            <Board number={9} />
+            <Board height={SINGLE_HEIGHT} />
           </div>
           <div className="col-xl-4">
-            <Board number={10} />
+            <Board height={SINGLE_HEIGHT} />
           </div>
         </div>
         <div className="row py-1">
           <div className="col-xl-4">
-            <Board number={11} />
+            <Board height={SINGLE_HEIGHT} />
           </div>
           <div className="col-xl-4">
-            <Board number={12} />
+            <Board height={SINGLE_HEIGHT} />
           </div>
           <div className="col-xl-4">
-            <Board number={13} />
+            <Board height={SINGLE_HEIGHT} />
           </div>
         </div>
       </div>
