@@ -53,7 +53,11 @@
 /* ------- OUTSIDE SIDEBAR ------- */
 .outside-sidebar {
   min-height: 100vh;
-  background-color: #f1f1f1
+  /* background-color: #f1f1f1 */
+
+  background-image: -webkit-gradient(linear, left top, right top, from(#134e5e), to(#71b280));
+  background-image: linear-gradient(to right, #134e5e, #71b280);
+  
 }
 
 /* ------- DASH BOARD ------- */
@@ -118,15 +122,23 @@
 }
 
 .co-table-row .row .data-row {
+  display: -webkit-box;
+  display: -ms-flexbox;
   display: flex;
-  flex-direction: column;
-  justify-content: center;
+  -webkit-box-orient: vertical;
+  -webkit-box-direction: normal;
+      -ms-flex-direction: column;
+          flex-direction: column;
+  -webkit-box-pack: center;
+      -ms-flex-pack: center;
+          justify-content: center;
 }
 
 .co-table-row .row .st-none {
   position: absolute;
   top: 50%;
-  transform: translateY(-50%);
+  -webkit-transform: translateY(-50%);
+          transform: translateY(-50%);
 }
 
 .co-pagination-container {
@@ -138,7 +150,8 @@
 .co-pagination-container li button {
   color: #065828;
   outline: none !important;
-  box-shadow: none !important;
+  -webkit-box-shadow: none !important;
+          box-shadow: none !important;
   min-width: 36px;
 }
 
@@ -167,3 +180,5 @@
   top: 25%;
   left: 10%;
 }
+
+/* ----- FINANCE SUMMARY ----- */

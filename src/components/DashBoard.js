@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import Board from './Board';
 import CompanyOverview from './graphs/CompanyOverview';
 import LineGraph from './graphs/LineGraph';
+import FinanceSummary from './details/FinanceSummary';
 import {
   DATA_CLOSE,
   DATA_HIGH,
@@ -9,14 +10,43 @@ import {
   DATA_OPEN,
   DATA_VOLUME
 } from '../constants';
+import data from '../company_data_500.json';
 
 export default class DashBoard extends Component {
+  constructor(props) {
+    super(props);
+
+    this.state = { filteredData: undefined };
+  }
+
+  componentWillMount() {
+    // Re-build the data
+    const stock_sector = ["Finance", "Health Care", "Consumer Services", "Public Utilities", "Technology", "Consumer Durables", "Capital Goods", "Basic Industries", "Miscellaneous"];
+
+    const stock_industry = ["Computer Software: Prepackaged Software", "Medical/Nursing Services", "Metal Fabrications", "Multi-Sector Companies", "Marine Transportation", "Major Pharmaceuticals", "Television Services", "Property-Casualty Insurers", "Real Estate Investment Trusts", "Precious Metals", "Railroads"];
+    
+    const filteredData = data.map((item) => {
+      let newSmcap = (item.smcap === "n/a") ? "$" + (Math.floor(Math.random()*899 + 100)) + "M" : item.smcap;
+      let newStockSetor = (item.stock_sector === "n/a") ? stock_sector[Math.floor(Math.random()*9)] : item.stock_sector;
+      let newStockIndustry = (item.stock_industry === "n/a") ? stock_industry[Math.floor(Math.random()*12)] : item.stock_industry;
+
+      return {
+        ...item,
+        smcap: newSmcap,
+        stock_sector: newStockSetor,
+        stock_industry: newStockIndustry
+      }
+    });
+
+    this.setState({ filteredData });
+  }
+
   render() {
     return (
       <div>
         <div className="row py-2">
           <div className="col-xl-8">
-            <Board component={<CompanyOverview />} />
+            <Board component={<CompanyOverview data={this.state.filteredData}/>} />
           </div>
           <div className="col-xl-4">
             <div className="row">
@@ -57,7 +87,7 @@ export default class DashBoard extends Component {
         </div>
         <div className="row py-2">
           <div className="col-xl-4">
-            <Board number={4} />
+            <Board component={<FinanceSummary />} />
           </div>
           <div className="col-xl-4">
             <Board number={5} />

@@ -33,19 +33,20 @@ export default class LineGraph extends Component {
     let res = await axios.get(`https://www.alphavantage.co/query?function=TIME_SERIES_INTRADAY&symbol=${this.props.stockSymbol}&interval=60min&apikey=KJO1VD3QQ2D7BDOV`);
 
     // Check if result is valid data or error
+    // If fail, then re-attempt to get the data after 1 mins, free API maximum 5 calls per min
     if ((Object.keys(res.data).includes("Error Message")) || (Object.keys(res.data).includes("Note"))) {
-      // Re-attempt to get the data after 1 mins, free API maximum 5 calls per min
+      // Set interval for counting down for every second
       const cooldownInterval = setInterval(() => this.setState({ cooldownTime: this.state.cooldownTime - 1 }), 1000);
 
-      this.setState({ loaded: false, cooldownInterval });
-
+      // Set time out for the next attempt
       setTimeout(() => {
         clearInterval(this.state.cooldownInterval);
         this.getData(this.drawChart.bind(this));
       }, 60000);
+
+      this.setState({ loaded: false, cooldownInterval });
     } else {
-      console.log(res.data);
-      // Init chart after getting data
+      // Init chart after getting data successfully
       this.setState({ 
         loaded: true,
         data: res.data
@@ -56,7 +57,6 @@ export default class LineGraph extends Component {
   drawChart() {
     // Setup data
     const dataSeries = this.state.data[Object.keys(this.state.data)[1]];
-    console.log(dataSeries);
     const xData = Object.keys(dataSeries).slice(0, this.props.maxNumberOfData);
     const yData = xData.map((item) => +dataSeries[item][this.props.dataType]);
     
@@ -145,11 +145,24 @@ export default class LineGraph extends Component {
     //    .attr("fill", "red")
   }
 
-  renderTitle() {
+  // Render "please waiting" when no data is retrieved from Stock API
+  renderWaitingForData() {
     return (
-      <div>
-        {/* <h5 className="mb-0">{this.props.stockSymbol} {this.props.chartName.split('-')[1]}</h5> */}
-        <p className="text-muted s-15">Last Refreshed: {this.state.data["Meta Data"]["3. Last Refreshed"]}</p>
+      <div className="line-nodata-container text-center">
+        <h4 className="pt-5">Please wait...</h4>
+        <div className="text-center w-100">
+          <div className="spinner-grow text-success" role="status">
+            <span className="sr-only" />
+          </div>
+          <div className="spinner-grow text-success" role="status">
+            <span className="sr-only" />
+          </div>
+          <div className="spinner-grow text-success" role="status">
+            <span className="sr-only" />
+          </div>
+        </div>
+        <h3 className="pt-3 pb-2">{this.state.cooldownTime}<span className="p">s</span></h3>
+        <p className="px-1 pb-5 text-muted">Due to limitation of 5 times getting stock data per minute, please patiently wait, thank you!</p>
       </div>
     );
   }
@@ -160,7 +173,7 @@ export default class LineGraph extends Component {
         <div className="line-container">
           <div>
             <h5 className="pt-4 pl-4">
-              {this.renderTitle()}
+              <p className="text-muted s-15">Last Refreshed: {this.state.data["Meta Data"]["3. Last Refreshed"]}</p>
             </h5>
           </div>
           <div className="line-extraInfo">
@@ -171,31 +184,19 @@ export default class LineGraph extends Component {
         </div>
       );
     } else {
-      return (
-        <div className="line-nodata-container text-center">
-          <h4 className="pt-5">Please wait...</h4>
-          <div className="text-center w-100">
-            <div className="spinner-grow text-primary" role="status">
-              <span className="sr-only" />
-            </div>
-            <div className="spinner-grow text-primary" role="status">
-              <span className="sr-only" />
-            </div>
-            <div className="spinner-grow text-primary" role="status">
-              <span className="sr-only" />
-            </div>
-          </div>
-          <h3 className="pt-3 pb-2">{this.state.cooldownTime}<span className="p">s</span></h3>
-          <p className="pb-5 text-muted">Due to limitation of 5 times getting stock data per minute, please patiently wait, thank you!</p>
-        </div>
-      )
+      return this.renderWaitingForData();
     }
   }
 }
 
 LineGraph.propTypes = {
-  chartName: PropTypes.string.isRequired
+  chartName: PropTypes.string.isRequired,
+  offsetTop: PropTypes.number,
+  stockSymbol: PropTypes.string.isRequired,
+  maxNumberOfData: PropTypes.number.isRequired,
+  dataType: PropTypes.string,
+  showAxis: PropTypes.bool,
+  lineColor: PropTypes.string,
+  areaColor: PropTypes.string,
+  titleColor: PropTypes.string,
 };
-
-//TODO: show activity indicators
-//TODO: preserve width only

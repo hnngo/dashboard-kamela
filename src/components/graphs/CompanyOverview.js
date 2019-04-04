@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import data from '../../company_data_500.json';
+// import data from '../../company_data_500.json';
 
 export default class CompanyOverview extends Component {
   constructor(props) {
@@ -62,7 +62,7 @@ export default class CompanyOverview extends Component {
     );
   }
 
-  renderTableData() {
+  renderTableData(data) {
     // Filter the data follow the pagination
     const { currentPage } = this.state;
     const dataFiltered = data.filter((item) => {
@@ -142,7 +142,7 @@ export default class CompanyOverview extends Component {
           </div>
           <div className="w-100 border" />
           <div className="co-table-data">
-            {this.renderTableData()}
+            {this.renderTableData(this.props.data)}
           </div>
           <div>
             {this.renderPagination()}
