@@ -85,12 +85,12 @@ export default class CompanyOverview extends Component {
               <p className="m-0">
                 {item.company}
               </p>
-              <p className="text-muted">
+              <p className="text-muted mb-0">
                 {item.stock_name}
               </p>
             </div>
-            <div className="data-row col-md-2 d-none d-md-block">
-              <p className="m-0">
+            <div className="col-md-2 d-none d-md-block">
+              <p className="m-0 st-none">
                 {today.toLocaleDateString()}
               </p>
             </div>
@@ -102,8 +102,8 @@ export default class CompanyOverview extends Component {
                 </p>
               </div>
             </div>
-            <div className="data-row col-md-2 col-sm-2 d-none d-sm-block">
-              <p className="m-0">
+            <div className="col-md-2 col-sm-2 d-none d-sm-block">
+              <p className="m-0 st-none">
                 {item.stock_sector}
               </p>
             </div>

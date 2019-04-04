@@ -29,9 +29,11 @@ No media query for `xs` since this is the default in Bootstrap */
     width: 100%;
     height: 100vh;
     /* background-color: white; */
+    background-image: -webkit-gradient(linear, right top, left top, from(rgb(255, 255, 255)),  color-stop(rgb(255, 255, 255)),  to(rgba(0, 0, 0, 0.411)));
     background-image: linear-gradient(to left, rgb(255, 255, 255),  rgb(255, 255, 255),  rgba(0, 0, 0, 0.411));
     /* border-left: 1px solid rgb(207, 207, 207); */
-    box-shadow: 1px 0px 1px 2px rgb(207, 207, 207);
+    -webkit-box-shadow: 1px 0px 1px 2px rgb(207, 207, 207);
+            box-shadow: 1px 0px 1px 2px rgb(207, 207, 207);
   }
 
   .sidebar-smallSub-content {
@@ -52,9 +54,11 @@ No media query for `xs` since this is the default in Bootstrap */
     color: black;
     font-size: 16px;
     /* z-index: 1002;*/
+    -webkit-transition: 0.2s all;
     transition: 0.2s all;
     cursor: pointer;
-    transform-origin: 50% 20%;
+    -webkit-transform-origin: 50% 20%;
+            transform-origin: 50% 20%;
   }
 
   .sidebar-smallSub-listItem {
@@ -115,7 +119,8 @@ No media query for `xs` since this is the default in Bootstrap */
     margin-top: 12px;
     width: 100%;
     height: auto;
-    transform: scale(1.15)
+    -webkit-transform: scale(1.15);
+            transform: scale(1.15)
   }
 
   .sidebar-icon-container {
@@ -140,6 +145,7 @@ No media query for `xs` since this is the default in Bootstrap */
   .sidebar-sub-mainnav {
     border-left: 1px solid rgba(172, 165, 165, 0.719);
     /* background-color: white; */
+    background-image: -webkit-gradient(linear, left top, right top, from(rgb(255, 255, 255)),  color-stop(rgba(255, 255, 255, 0.87)),  to(rgba(0, 0, 0, 0.411)));
     background-image: linear-gradient(to right, rgb(255, 255, 255),  rgba(255, 255, 255, 0.87),  rgba(0, 0, 0, 0.411));
     position: relative;
     width: 100%;
@@ -156,6 +162,7 @@ No media query for `xs` since this is the default in Bootstrap */
 
   .sidebar-sub-listItems p {
     cursor: pointer;
+    -webkit-transition: padding-left 0.5s;
     transition: padding-left 0.5s;
   }
 
@@ -178,88 +185,6 @@ No media query for `xs` since this is the default in Bootstrap */
     margin-right: 20px;
     margin-top: 100px;
   }
-/* 
-  .board-container {
-    margin: 10px 10px;
-    background-color: white;
-    width: 100%;
-    height: 95%;
-    border-radius: 5px;
-    -webkit-box-shadow: 0px 0px 13px 0px rgba(82,63,105,0.05);
-            box-shadow: 0px 0px 13px 0px rgba(82,63,105,0.05);
-  } */
-
-  /* ----- COMPANY OVERVIEW ----- */
-  /* .co-container {
-    padding: 10px 10px;
-  }
-
-  .co-table {
-    margin-top: 30px;
-    padding: 10px 10px;
-  }
-
-  .co-table-header {
-    padding: 0 20px;
-    color: #065828;
-  }
-
-  .co-table-header h5 {
-    font-size: 14px;
-  }
-
-  .co-table-data {  
-    margin-top: 0px;
-    padding-top: 10px;
-    padding-left: 20px;
-    padding-right: 20px;
-    border-radius: 5px;
-    max-height: 400px;
-    background-color: #ffffff;
-    overflow-y: auto;
-  }
-
-  .co-table-row {
-    border-bottom: 1px solid rgb(237, 238, 238);
-    min-height: 60px;
-  }
-
-  .co-table-row p {
-    font-size: 14px;
-  }
-
-  .co-table-row .text-muted {
-    font-size: 11px;
-  }
-
-  .co-table-row .row .data-row {
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-  }
-
-  .co-pagination-container {
-    border-top: 0.5px solid rgb(237, 238, 238);
-    padding-top: 20px;
-    margin-left: 18px;
-  }
-
-  .co-pagination-container li button {
-    color: #065828;
-    outline: none !important;
-    box-shadow: none !important;
-    min-width: 36px;
-  }
-
-  .co-pagination-container li button:hover {
-    background-color: rgb(50, 102, 50);
-    color: white;
-  }
-
-  .co-activePage {
-    background-color: rgb(50, 102, 50);
-    color: white !important;
-  } */
 }
 
 /* Extra large devices (large desktops, 1200px and up) */

@@ -31,6 +31,7 @@ export default class DashBoard extends Component {
                     showAxis={false}
                     lineColor={"#1e5e21"}
                     areaColor={"#dcf4dd"}
+                    titleColor={"#0e2b0f"}
                   />
                 } />
               </div>
@@ -47,6 +48,7 @@ export default class DashBoard extends Component {
                     showAxis={false}
                     lineColor={"#008bf2"}
                     areaColor={"#d0ebff"}
+                    titleColor={"#003d6a"}
                   />
                 } />
               </div>

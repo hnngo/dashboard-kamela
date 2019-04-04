@@ -12,26 +12,39 @@ export default class LineGraph extends Component {
       loaded: false,
       margin: {
         top: this.props.offsetTop || 100,
-        left: 60,
+        left: 10,
         right: 10,
-        bottom: 30,
+        bottom: 10,
       },
       totalWidth: 576,
-      totalHeight: 250
+      totalHeight: 338,
+      cooldownTime: 60,
+      cooldownInterval: undefined,
     }
   }
 
   componentWillMount() {
-    // Get data from API stock
+    // Get data from API stock then draw chart from that data
     this.getData(this.drawChart.bind(this));
   }
 
   getData = async (callbackFunc) => {
+    // Get data
     let res = await axios.get(`https://www.alphavantage.co/query?function=TIME_SERIES_INTRADAY&symbol=${this.props.stockSymbol}&interval=60min&apikey=KJO1VD3QQ2D7BDOV`);
 
-    if (Object.keys(res.data).includes("Error Message")) {
-      this.setState({ loaded: false });
+    // Check if result is valid data or error
+    if ((Object.keys(res.data).includes("Error Message")) || (Object.keys(res.data).includes("Note"))) {
+      // Re-attempt to get the data after 1 mins, free API maximum 5 calls per min
+      const cooldownInterval = setInterval(() => this.setState({ cooldownTime: this.state.cooldownTime - 1 }), 1000);
+
+      this.setState({ loaded: false, cooldownInterval });
+
+      setTimeout(() => {
+        clearInterval(this.state.cooldownInterval);
+        this.getData(this.drawChart.bind(this));
+      }, 60000);
     } else {
+      console.log(res.data);
       // Init chart after getting data
       this.setState({ 
         loaded: true,
@@ -62,8 +75,11 @@ export default class LineGraph extends Component {
     // Init svg
     const svg = d3.select("#lineChart" + this.props.chartName)
                   .append("svg")
+                  .attr("width", "100%")
+                  .attr("height", hSvg)
                   .attr("viewBox", "0 0 " + totalWidth + " " + totalHeight)
-                  .attr("preserveAspectRatio", "xMinYMin meet")
+                  .attr("preserveAspectRatio", "none")
+                  // .attr("preserveAspectRatio", "xMinYMin meet")
                   .append("g")
                     .attr("transform", "translate(0," + margin.top + ")");
 
@@ -110,7 +126,7 @@ export default class LineGraph extends Component {
        .attr("class", "lineChart")
        .attr("fill", "none")
        .attr("stroke", this.props.lineColor)
-       .attr("stroke-width", "3px")
+       .attr("stroke-width", "4px")
        .attr("d", line(yData));
 
     svg.append("path")
@@ -129,16 +145,13 @@ export default class LineGraph extends Component {
     //    .attr("fill", "red")
   }
 
-  checkRenderr() {
-    // In case of unreloaded
-    if (this.state.data) {
-      try {
-        return 
-      }
-      catch {
-        return "";
-      }
-    }
+  renderTitle() {
+    return (
+      <div>
+        {/* <h5 className="mb-0">{this.props.stockSymbol} {this.props.chartName.split('-')[1]}</h5> */}
+        <p className="text-muted s-15">Last Refreshed: {this.state.data["Meta Data"]["3. Last Refreshed"]}</p>
+      </div>
+    );
   }
 
   render() {
@@ -146,19 +159,35 @@ export default class LineGraph extends Component {
       return (
         <div className="line-container">
           <div>
-            <h5 className="pt-4 pl-4 s-15">
-              {this.state.data["Meta Data"]["1. Information"]}
+            <h5 className="pt-4 pl-4">
+              {this.renderTitle()}
             </h5>
           </div>
           <div className="line-extraInfo">
-            <h3>Legend</h3>
+            <h3 className="d-inline" style={{ "color": this.props.titleColor }}>{this.props.stockSymbol}</h3>
+            <h5 className="d-inline"> - {this.props.chartName.split('-')[1]}</h5>
           </div>
           <div id={"lineChart" + this.props.chartName}/>
         </div>
       );
     } else {
       return (
-        <div/>
+        <div className="line-nodata-container text-center">
+          <h4 className="pt-5">Please wait...</h4>
+          <div className="text-center w-100">
+            <div className="spinner-grow text-primary" role="status">
+              <span className="sr-only" />
+            </div>
+            <div className="spinner-grow text-primary" role="status">
+              <span className="sr-only" />
+            </div>
+            <div className="spinner-grow text-primary" role="status">
+              <span className="sr-only" />
+            </div>
+          </div>
+          <h3 className="pt-3 pb-2">{this.state.cooldownTime}<span className="p">s</span></h3>
+          <p className="pb-5 text-muted">Due to limitation of 5 times getting stock data per minute, please patiently wait, thank you!</p>
+        </div>
       )
     }
   }

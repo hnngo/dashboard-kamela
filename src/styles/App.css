@@ -76,6 +76,7 @@
 /* ----- COMPANY OVERVIEW ----- */
 .co-container {
   padding: 10px 10px;
+  max-height: 572.5px;
 }
 
 .co-table {
@@ -122,6 +123,12 @@
   justify-content: center;
 }
 
+.co-table-row .row .st-none {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+}
+
 .co-pagination-container {
   border-top: 0.5px solid rgb(237, 238, 238);
   padding-top: 20px;
@@ -145,13 +152,18 @@
   color: white !important;
 }
 
+/* ----- LINE-CHART ----- */
 .line-container {
   position: relative;
-  max-height: 276px;
+  /* max-height: 276px; */
+}
+
+.line-nodata-container {
+  height: 276px;
 }
 
 .line-extraInfo {
   position: absolute;
   top: 25%;
-  left: 5%;
+  left: 10%;
 }
