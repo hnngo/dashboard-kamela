@@ -1,8 +1,8 @@
 import React, { Component } from 'react';
 import Board from './Board';
-import CompanyOverview from './graphs/CompanyOverview';
-import LineGraph from './graphs/LineGraph';
+import CompanyOverview from './details/CompanyOverview';
 import FinanceSummary from './details/FinanceSummary';
+import LineGraph from './graphs/LineGraph';
 import {
   // DATA_CLOSE,
   // DATA_HIGH,

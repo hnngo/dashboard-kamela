@@ -22,17 +22,7 @@ export default class Board extends Component {
   }
 
   componentDidMount() {
-    // Loop interval for resize checking
-    // const resizeEvent = setInterval(() => {
-    //   const currentSize = window.screen.width;
-    //   if (currentSize < 1200 && this.state.isCurrentScreenBig) {
-    //     this.setState({ isCurrentScreenBig: false });
-    //   } else if (currentSize >= 1200 && !this.state.isCurrentScreenBig) {
-    //     this.setState({ isCurrentScreenBig: true });
-    //   }
-    // }, 200);
 
-    // this.setState({ resizeEvent });
   }
 
   componentWillUnmount() {
@@ -50,9 +40,8 @@ export default class Board extends Component {
   }
 
   render() {
-    const height = this.state.isCurrentScreenBig ? this.props.height.toString() : "auto";
-    console.log(this.state.isCurrentScreenBig)
-    console.log(height)
+    const height = this.state.isCurrentScreenBig ? (this.props.height + "px") : "auto";
+    
     return (
       <div className="board-container" style={{ height }}>
         {this.renderTitle()}

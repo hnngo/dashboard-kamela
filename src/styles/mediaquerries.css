@@ -75,6 +75,11 @@ No media query for `xs` since this is the default in Bootstrap */
     padding-right: 20px;
   }
 
+  /* ------- COMPANY OVERVIEW ------- */
+  .co-table-header h5 {
+    font-size: 15px;
+  }
+
   .co-container {
     padding: 10px 3px;
   }
@@ -83,6 +88,14 @@ No media query for `xs` since this is the default in Bootstrap */
     margin-top: 15px;
     padding: 5px 4px;
   }
+
+  .co-table-row p {
+    font-size: 14px;
+  }
+  
+  .co-table-row .text-muted {
+    font-size: 11px;
+  }
   
   .page-link {
     font-size: 12px;
@@ -90,15 +103,7 @@ No media query for `xs` since this is the default in Bootstrap */
 }
 
 @media (min-width: 576px) {
-  /* .sidebar-container {
-    width: 100vw;
-    height: 70px;
-  }
 
-  .outside-sidebar {
-    position: relative;
-    top: 70px;
-  } */
 }
 
 /* Medium devices (tablets, 768px and up) */
@@ -186,11 +191,39 @@ No media query for `xs` since this is the default in Bootstrap */
     margin-top: 100px;
   }
 
+  /* ------- COMPANY OVERVIEW ------- */
   .co-container {
     padding: 0px 10px;
     padding-bottom: 10px;
-    max-height: 572.5px;
+    height: calc(100% - 40px);
   }
+
+  .co-table-header h5 {
+    font-size: 18px;
+  }
+
+  .co-table-row:hover {
+    /* background-color: rgb(76, 201, 142); */
+    background-image: linear-gradient(to right, #134e5e, #71b280);
+    color: white;
+  }
+
+  .co-table-row:hover p.text-muted {
+    color: rgb(230, 223, 223) !important;
+  }
+
+  .co-table-row p {
+    font-size: 15px;
+  }
+  
+  .co-table-row .text-muted {
+    font-size: 12px;
+  }
+
+  .page-link {
+    font-size: 16px;
+  }
+
 }
 
 /* Extra large devices (large desktops, 1200px and up) */

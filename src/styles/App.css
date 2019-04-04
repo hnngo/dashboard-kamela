@@ -77,16 +77,11 @@
 }
 
 /* ----- BOAD ------ */
-/* .board-title {
+/* .board-title h5 {
 
 } */
 
 /* ----- COMPANY OVERVIEW ----- */
-.co-container {
-  padding: 10px 10px;
-  height: 700px;
-}
-
 .co-table {
   margin-top: 30px;
   padding: 10px 10px;
@@ -97,17 +92,13 @@
   color: #065828;
 }
 
-.co-table-header h5 {
-  font-size: 14px;
-}
-
 .co-table-data {  
   margin-top: 0px;
   padding-top: 10px;
   padding-left: 20px;
   padding-right: 20px;
   border-radius: 5px;
-  max-height: 400px;
+  max-height: 570px;
   background-color: #ffffff;
   overflow-y: auto;
 }
@@ -115,14 +106,6 @@
 .co-table-row {
   border-bottom: 1px solid rgb(237, 238, 238);
   min-height: 60px;
-}
-
-.co-table-row p {
-  font-size: 14px;
-}
-
-.co-table-row .text-muted {
-  font-size: 11px;
 }
 
 .co-table-row .row .data-row {
@@ -172,7 +155,6 @@
 /* ----- LINE-CHART ----- */
 .line-container {
   position: relative;
-  /* max-height: 276px; */
 }
 
 .line-nodata-container {
@@ -187,5 +169,5 @@
 
 /* ----- FINANCE ----- */
 .fs-container {
-  height: 276px;
+  /* height: 276px; */
 }

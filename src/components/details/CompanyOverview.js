@@ -1,5 +1,4 @@
 import React, { Component } from 'react';
-// import data from '../../company_data_500.json';
 
 export default class CompanyOverview extends Component {
   constructor(props) {
@@ -77,7 +76,7 @@ export default class CompanyOverview extends Component {
       // Get the day 
       const today = new Date();
       today.setDate(today.getDate() - (+item.id));
-      
+
       return (
         <div className="co-table-row" key={i}>
           <div className="row">
@@ -96,7 +95,7 @@ export default class CompanyOverview extends Component {
             </div>
             <div className="data-row col-md-3 col-sm-4 col-xs-5 col-5">
               <div className="d-flex">
-                <img src={item.ava} alt={item.company}/>
+                <img src={item.ava} alt={item.company} />
                 <p className="m-0 my-auto">
                   {item.first_name} {item.last_name}
                 </p>
@@ -118,27 +117,33 @@ export default class CompanyOverview extends Component {
     })
   }
 
+  renderTableHeader() {
+    return (
+      <div className="co-table-header row">
+        <div className="col-md-3 col-sm-4 col-xs-4 col-4">
+          <h5>Company</h5>
+        </div>
+        <div className="col-md-2 d-none d-md-block">
+          <h5>Date</h5>
+        </div>
+        <div className="text-center col-md-3 col-sm-4 col-xs-5 col-5">
+          <h5 className="">Managed By</h5>
+        </div>
+        <div className="col-md-2 col-sm-2 d-none d-sm-block">
+          <h5>Stock Sector</h5>
+        </div>
+        <div className="col-md-2 col-sm-2 col-xs-3 col-3">
+          <h5>Market Cap</h5>
+        </div>
+      </div>
+    );
+  }
+
   render() {
     return (
       <div className="co-container">
         <div className="co-table">
-          <div className="co-table-header row">
-            <div className="col-md-3 col-sm-4 col-xs-4 col-4">
-              <h5>Company</h5>
-            </div>
-            <div className="col-md-2 d-none d-md-block">
-              <h5>Date</h5>
-            </div>
-            <div className="text-center col-md-3 col-sm-4 col-xs-5 col-5">
-              <h5 className="">Managed By</h5>
-            </div>
-            <div className="col-md-2 col-sm-2 d-none d-sm-block">
-              <h5>Stock Sector</h5>
-            </div>
-            <div className="col-md-2 col-sm-2 col-xs-3 col-3">
-              <h5>Market Cap</h5>
-            </div>
-          </div>
+          {this.renderTableHeader()}
           <div className="w-100 border" />
           <div className="co-table-data">
             {this.renderTableData(this.props.data)}

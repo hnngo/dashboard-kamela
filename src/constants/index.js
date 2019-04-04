@@ -10,5 +10,5 @@ export const DATA_LOW = "3. low";
 export const DATA_CLOSE = "4. close";
 export const DATA_VOLUME = "5. volume";
 
-export const DOUBLE_HEIGHT = "750px";
-export const SINGLE_HEIGHT = "365px";
+export const DOUBLE_HEIGHT = "750";
+export const SINGLE_HEIGHT = "365";

@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import * as d3 from 'd3';
 import axios from 'axios';
+import { SINGLE_HEIGHT } from '../../constants';
 
 export default class LineGraph extends Component {
   constructor(props) {
@@ -16,14 +17,15 @@ export default class LineGraph extends Component {
         right: 10,
         bottom: 10,
       },
-      totalWidth: 576,
-      totalHeight: 338,
+      totalWidth: 500,
+      totalHeight: +SINGLE_HEIGHT + 62,
       cooldownTime: 60,
       cooldownInterval: undefined,
     }
   }
 
   componentWillMount() {
+    console.log(window.screen.availHeight)
     // Get data from API stock then draw chart from that data
     this.getData(this.drawChart.bind(this));
   }
@@ -162,7 +164,7 @@ export default class LineGraph extends Component {
           </div>
         </div>
         <h3 className="pt-3 pb-2">{this.state.cooldownTime}<span className="p">s</span></h3>
-        <p className="px-1 pb-5 text-muted">Due to limitation of 5 times getting stock data per minute, please patiently wait, thank you!</p>
+        <p className="px-5 pb-5 text-muted">Due to limitation of 5 times getting stock data per minute, please patiently wait, thank you!</p>
       </div>
     );
   }
@@ -200,3 +202,5 @@ LineGraph.propTypes = {
   areaColor: PropTypes.string,
   titleColor: PropTypes.string,
 };
+
+//TODO: Fix time count down not working

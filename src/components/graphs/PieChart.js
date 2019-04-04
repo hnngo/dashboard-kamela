@@ -15,15 +15,15 @@ export default class PieChart extends Component {
       return { ...item, smcap: newSmcap }
     });
 
-    console.log(filteredData);
+    // console.log(filteredData);
 
     const catIndustry = _.uniq(filteredData.map((item) => item.stock_industry));
 
-    console.log(catIndustry)
+    // console.log(catIndustry)
 
     const catIndustrySorted = _.sortBy(filteredData, [(d) => d.smcap]);
 
-    console.log(catIndustrySorted)
+    // console.log(catIndustrySorted)
 
 
     this.state = {
