@@ -54,7 +54,6 @@
 .outside-sidebar {
   min-height: 100vh;
   /* background-color: #f1f1f1 */
-
   background-image: -webkit-gradient(linear, left top, right top, from(#134e5e), to(#71b280));
   background-image: linear-gradient(to right, #134e5e, #71b280);
   
@@ -77,10 +76,15 @@
           box-shadow: 0px 0px 13px 0px rgba(82,63,105,0.05);
 }
 
+/* ----- BOAD ------ */
+/* .board-title {
+
+} */
+
 /* ----- COMPANY OVERVIEW ----- */
 .co-container {
   padding: 10px 10px;
-  max-height: 572.5px;
+  height: 700px;
 }
 
 .co-table {
@@ -181,4 +185,7 @@
   left: 10%;
 }
 
-/* ----- FINANCE SUMMARY ----- */
+/* ----- FINANCE ----- */
+.fs-container {
+  height: 276px;
+}

@@ -121,7 +121,6 @@ export default class CompanyOverview extends Component {
   render() {
     return (
       <div className="co-container">
-        <h5 className="mt-2 ml-2">Company Overview</h5>
         <div className="co-table">
           <div className="co-table-header row">
             <div className="col-md-3 col-sm-4 col-xs-4 col-4">
@@ -153,4 +152,4 @@ export default class CompanyOverview extends Component {
   }
 }
 
-//TODO: Fix on small screen
+//TODO: Move to non-graph folder

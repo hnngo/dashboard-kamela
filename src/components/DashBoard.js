@@ -4,10 +4,10 @@ import CompanyOverview from './graphs/CompanyOverview';
 import LineGraph from './graphs/LineGraph';
 import FinanceSummary from './details/FinanceSummary';
 import {
-  DATA_CLOSE,
-  DATA_HIGH,
-  DATA_LOW,
-  DATA_OPEN,
+  // DATA_CLOSE,
+  // DATA_HIGH,
+  // DATA_LOW,
+  // DATA_OPEN,
   DATA_VOLUME
 } from '../constants';
 import data from '../company_data_500.json';
@@ -22,13 +22,13 @@ export default class DashBoard extends Component {
   componentWillMount() {
     // Re-build the data
     const stock_sector = ["Finance", "Health Care", "Consumer Services", "Public Utilities", "Technology", "Consumer Durables", "Capital Goods", "Basic Industries", "Miscellaneous"];
-
     const stock_industry = ["Computer Software: Prepackaged Software", "Medical/Nursing Services", "Metal Fabrications", "Multi-Sector Companies", "Marine Transportation", "Major Pharmaceuticals", "Television Services", "Property-Casualty Insurers", "Real Estate Investment Trusts", "Precious Metals", "Railroads"];
-    
+
     const filteredData = data.map((item) => {
-      let newSmcap = (item.smcap === "n/a") ? "$" + (Math.floor(Math.random()*899 + 100)) + "M" : item.smcap;
-      let newStockSetor = (item.stock_sector === "n/a") ? stock_sector[Math.floor(Math.random()*9)] : item.stock_sector;
-      let newStockIndustry = (item.stock_industry === "n/a") ? stock_industry[Math.floor(Math.random()*12)] : item.stock_industry;
+      // Get filtered sections
+      let newSmcap = (item.smcap === "n/a") ? "$" + (Math.floor(Math.random() * 899 + 100)) + "M" : item.smcap;
+      let newStockSetor = (item.stock_sector === "n/a") ? stock_sector[Math.floor(Math.random() * 9)] : item.stock_sector;
+      let newStockIndustry = (item.stock_industry === "n/a") ? stock_industry[Math.floor(Math.random() * 12)] : item.stock_industry;
 
       return {
         ...item,
@@ -42,11 +42,18 @@ export default class DashBoard extends Component {
   }
 
   render() {
+    const { filteredData } = this.state;
+
     return (
       <div>
-        <div className="row py-2">
+        <div className="row py-1">
           <div className="col-xl-8">
-            <Board component={<CompanyOverview data={this.state.filteredData}/>} />
+            <Board
+              title={"Company Overview"}
+              component={
+                <CompanyOverview data={filteredData} />
+              }
+            />
           </div>
           <div className="col-xl-4">
             <div className="row">
@@ -70,7 +77,7 @@ export default class DashBoard extends Component {
               <div className="col-12">
                 <Board component={
                   <LineGraph
-                    chartName={"PLXS-high"}
+                    chartName={"PLXS-volume"}
                     stockSymbol={"PLXS"}
                     dataType={DATA_VOLUME}
                     maxNumberOfData={15}
@@ -85,9 +92,12 @@ export default class DashBoard extends Component {
             </div>
           </div>
         </div>
-        <div className="row py-2">
+        <div className="row py-1">
           <div className="col-xl-4">
-            <Board component={<FinanceSummary />} />
+            <Board
+              title={"Finance Summary"}
+              component={<FinanceSummary data={filteredData} />}
+            />
           </div>
           <div className="col-xl-4">
             <Board number={5} />
@@ -96,7 +106,7 @@ export default class DashBoard extends Component {
             <Board number={6} />
           </div>
         </div>
-        <div className="row py-2">
+        <div className="row py-1">
           <div className="col-xl-4">
             <Board number={7} />
           </div>
@@ -107,7 +117,7 @@ export default class DashBoard extends Component {
             <Board number={9} />
           </div>
         </div>
-        <div className="row py-2">
+        <div className="row py-1">
           <div className="col-xl-8">
             <Board number={9} />
           </div>
@@ -115,7 +125,7 @@ export default class DashBoard extends Component {
             <Board number={10} />
           </div>
         </div>
-        <div className="row py-2">
+        <div className="row py-1">
           <div className="col-xl-4">
             <Board number={11} />
           </div>
