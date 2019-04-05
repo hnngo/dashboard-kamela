@@ -28,8 +28,8 @@ export default class PieChart extends Component {
 
     this.state = {
       filteredData,
-      totalWidth: 100,
-      totalHeight: 100
+      totalWidth: 200,
+      totalHeight: 200
     };
   }
 
@@ -45,8 +45,8 @@ export default class PieChart extends Component {
     // Init svg
     const svg = d3.select("#pieChart" + this.props.chartName)
                   .append("svg")
-                  .attr("max-width", this.state.totalWidth)
-                  .attr("max-height", this.state.totalHeight)
+                  .style("width", this.state.totalWidth)
+                  .style("height", this.state.totalHeight)
                   .append("g")
                     .attr("transform", "translate(" + (this.state.totalWidth/2) + "," + (this.state.totalHeight/2) + ")");
     
@@ -58,11 +58,11 @@ export default class PieChart extends Component {
 
     // Init arc
     const arc = d3.arc()
-                  .innerRadius(0)
+                  .innerRadius(maxRadius - 40)
                   .outerRadius(maxRadius - 5);
 
     // Drawdata
-    svg.datum(data)
+    svg.datum(data.sort((a,b) => a - b))
        .selectAll("path")
        .data(pie)
        .enter()
@@ -73,7 +73,7 @@ export default class PieChart extends Component {
 
   render() {
     return (
-      <div>
+      <div className="pl-4">
         <div id={"pieChart" + this.props.chartName}/>
       </div>
     );
@@ -83,3 +83,5 @@ export default class PieChart extends Component {
 PieChart.propTypes = {
   chartName: PropTypes.string.isRequired
 };
+
+//TODO: Add legends

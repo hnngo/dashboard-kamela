@@ -17,12 +17,14 @@ export default class Board extends Component {
 
     this.state = {
       resizeEvent,
-      isCurrentScreenBig: (window.screen.width >= 1200) ? true : false
+      isCurrentScreenBig: (window.screen.width >= 1200) ? true : false,
+      titleHeight: 0,
     };
   }
 
   componentDidMount() {
-
+    // Get height of the title to assign the rest space for content
+    this.setState({ titleHeight: document.querySelector(".board-title").clientHeight });
   }
 
   componentWillUnmount() {
@@ -32,8 +34,8 @@ export default class Board extends Component {
   renderTitle() {
     if (this.props.title) {
       return (
-        <div className="board-title pt-3 pl-3">
-          <h5>{this.props.title}</h5>
+        <div className="board-title">
+          <h5 className="pt-3 pl-3">{this.props.title}</h5>
         </div>
       );
     }
@@ -41,11 +43,19 @@ export default class Board extends Component {
 
   render() {
     const height = this.state.isCurrentScreenBig ? (this.props.height + "px") : "auto";
-    
+
     return (
-      <div className="board-container" style={{ height }}>
+      <div
+        className="board-container"
+        style={{ height }}
+      >
         {this.renderTitle()}
-        {this.props.component}
+        <div
+          className="board-content"
+          style={{ height: `calc(100% - ${this.state.titleHeight}px)` }}
+        >
+          {this.props.component}
+        </div>
       </div>
     );
   }

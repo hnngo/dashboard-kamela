@@ -2,25 +2,37 @@ import React, { Component } from 'react';
 import PieChart from '../graphs/PieChart';
 
 export default class FinanceSummary extends Component {
+  renderInfo() {
+
+  }
+
   render() {
     return (
-      <div className="fs-container">
+      <div className="fs-container h-100">
         <div>
-          <p></p>
           <select className="custom-select" id="inlineFormCustomSelect">
             <option value="1">Top 10 Stock Market Cap Companies</option>
             <option value="2">Top 50 Stock Market Cap Companies</option>
             <option value="3">Top 100 Stock Market Cap Companies</option>
           </select>
         </div>
-        <PieChart
-          chartName={"FinanceSummary"}
-          data={this.props.data}
-        />
+        <div className="row">
+          <div className="col-6 my-5">
+            <PieChart
+              chartName={"FinanceSummary"}
+              data={this.props.data}
+            />
+          </div>
+          <div className="col-6">
+            {this.renderInfo()}
+          </div>
+        </div>
       </div>
     );
   }
 }
+
+//TODO: Add more information about top companys or just #1 company
 
 /*
 Company Name

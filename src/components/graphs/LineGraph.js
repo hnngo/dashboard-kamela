@@ -25,7 +25,6 @@ export default class LineGraph extends Component {
   }
 
   componentWillMount() {
-    console.log(window.screen.availHeight)
     // Get data from API stock then draw chart from that data
     this.getData(this.drawChart.bind(this));
   }
@@ -203,4 +202,4 @@ LineGraph.propTypes = {
   titleColor: PropTypes.string,
 };
 
-//TODO: Fix time count down not working
+//TODO: Tooltip pending
