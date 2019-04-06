@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import Board from './Board';
-import CompanyOverview from './details/CompanyOverview';
-import FinanceSummary from './details/FinanceSummary';
+import CompanyOverview from './finance/CompanyOverview';
+import FinanceSummary from './finance/FinanceSummary';
 import LineGraph from './graphs/LineGraph';
 import {
   // DATA_CLOSE,

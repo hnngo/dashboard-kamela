@@ -1,7 +1,13 @@
 import React, { Component } from 'react';
 import _ from 'lodash';
-import PieChart from '../graphs/PieChart'
-import { STOCK_INDUSTRY } from '../../constants';
+import PieChart from '../graphs/PieChart';
+import SlideChoice from '../SlideChoice';
+import {
+  STOCK_INDUSTRY,
+  STOCK_SECTOR
+} from '../../constants';
+
+const COLOR_CODE_1 = ['#f7fcf5', '#e5f5e0', '#c7e9c0', '#a1d99b', '#74c476', '#41ab5d', '#238b45', '#006d2c', '#00441b'];
 
 export default class FinanceSummary extends Component {
   constructor(props) {
@@ -50,7 +56,10 @@ export default class FinanceSummary extends Component {
   render() {
     console.log(this.state.pieData)
     return (
-      <div className="fs-container h-100">
+      <div className="">
+        <SlideChoice
+          selections={['Hello', 'This is how', 'Haoassadas dasdk', "a sa sa das sa as "]}
+        />
         <div>
           <select
             className="custom-select"
@@ -63,18 +72,27 @@ export default class FinanceSummary extends Component {
           </select>
         </div>
         <div className="row px-3">
-          <div className="col-8 mt-3">
+          <div className="col-sm-6 col-12 mt-3">
             <h5>Stock industry percentage</h5>
             <div className="mt-4 ml-2">
               <PieChart
-                chartName={"FinanceSummary"}
+                chartName={"StockIndustry"}
                 data={this.state.pieData}
                 sortType={STOCK_INDUSTRY}
+                colorCode={COLOR_CODE_1}
               />
             </div>
           </div>
-          <div className="col-4">
-            {this.renderInfo()}
+          <div className="col-sm-6 col-0 mt-3">
+            <h5>Stock sector percentage</h5>
+            <div className="mt-4 ml-2">
+              <PieChart
+                chartName={"StocSector"}
+                data={this.state.pieData}
+                sortType={STOCK_SECTOR}
+                colorCode={COLOR_CODE_1}
+              />
+            </div>
           </div>
         </div>
       </div>

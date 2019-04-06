@@ -32,7 +32,7 @@ export default class PieChart extends Component {
                     .attr("transform", "translate(" + (maxRadius) + "," + (this.state.totalHeight/2) + ")");
     
     // Color scale
-    const colorScale = d3.scaleOrdinal(['#f7fcf5','#e5f5e0','#c7e9c0','#a1d99b','#74c476','#41ab5d','#238b45','#006d2c','#00441b']);
+    const colorScale = d3.scaleOrdinal(this.props.colorCode);
 
     // Init pie
     const pie = d3.pie().value((d) => d)

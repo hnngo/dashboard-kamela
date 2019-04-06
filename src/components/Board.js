@@ -63,5 +63,6 @@ export default class Board extends Component {
 
 Board.propTypes = {
   component: PropTypes.element.isRequired,
-  title: PropTypes.string
+  title: PropTypes.string,
+  height: PropTypes.string.isRequired
 };
