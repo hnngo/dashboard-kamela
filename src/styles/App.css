@@ -13,6 +13,10 @@
   border-radius: 10px;
 }
 
+.bold {
+  font-weight: bold;
+}
+
 .s-13 {
   font-size: 13px;
 }

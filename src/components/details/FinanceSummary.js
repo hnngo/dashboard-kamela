@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import _ from 'lodash';
 import PieChart from '../graphs/PieChart'
+import { STOCK_INDUSTRY } from '../../constants';
 
 export default class FinanceSummary extends Component {
   constructor(props) {
@@ -17,7 +18,7 @@ export default class FinanceSummary extends Component {
 
     // Sorted data base on stock market cap
     const dataSmcapSorted = _.sortBy(filteredData, [(d) => d.numCap]).reverse();
-    
+
     this.state = {
       filteredData,
       dataSmcapSorted,
@@ -62,11 +63,15 @@ export default class FinanceSummary extends Component {
           </select>
         </div>
         <div className="row px-3">
-          <div className="col-8 my-5">
-            <PieChart
-              chartName={"FinanceSummary"}
-              data={this.state.pieData}
-            />
+          <div className="col-8 mt-3">
+            <h5>Stock industry percentage</h5>
+            <div className="mt-4 ml-2">
+              <PieChart
+                chartName={"FinanceSummary"}
+                data={this.state.pieData}
+                sortType={STOCK_INDUSTRY}
+              />
+            </div>
           </div>
           <div className="col-4">
             {this.renderInfo()}

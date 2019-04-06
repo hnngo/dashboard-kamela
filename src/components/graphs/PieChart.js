@@ -7,30 +7,11 @@ export default class PieChart extends Component {
   constructor(props) {
     super(props);
 
-    const filteredData = this.props.data.map((item) => {
-      // Get filtered sections
-      let strCap = item.smcap.slice(1, item.smcap.length - 2);
-      let newSmcap = item.smcap.charAt(item.smcap.length - 1) === "B" ? +strCap * 1000000000 : +strCap * 1000000;
-
-      return { ...item, smcap: newSmcap }
-    });
-
-    // console.log(filteredData);
-
-    const catIndustry = _.uniq(filteredData.map((item) => item.stock_industry));
-
-    // console.log(catIndustry)
-
-    const catIndustrySorted = _.sortBy(filteredData, [(d) => d.smcap]);
-
-    // console.log(catIndustrySorted)
-
-
     this.state = {
-      filteredData,
-      totalWidth: 180,
-      totalHeight: 180,
-      svgInfo: undefined
+      totalWidth: 600,
+      totalHeight: 200,
+      svgInfo: undefined,
+      data: _.countBy(this.props.data, (d) => d[this.props.sortType])
     };
   }
 
@@ -39,7 +20,6 @@ export default class PieChart extends Component {
   }
 
   drawChart() {
-    let data = [12,23,21,34,23,43,54,65,32]
     // Calculate the max radius
     const maxRadius = Math.min(this.state.totalWidth, this.state.totalHeight) / 2;
 
@@ -49,7 +29,7 @@ export default class PieChart extends Component {
                   .style("width", this.state.totalWidth)
                   .style("height", this.state.totalHeight)
                   .append("g")
-                    .attr("transform", "translate(" + (this.state.totalWidth/2) + "," + (this.state.totalHeight/2) + ")");
+                    .attr("transform", "translate(" + (maxRadius) + "," + (this.state.totalHeight/2) + ")");
     
     // Color scale
     const colorScale = d3.scaleOrdinal(['#f7fcf5','#e5f5e0','#c7e9c0','#a1d99b','#74c476','#41ab5d','#238b45','#006d2c','#00441b']);
@@ -69,28 +49,51 @@ export default class PieChart extends Component {
                   .style('opacity', 0);
 
     const legend = svg.append("g")
-              .attr("transform", "translate(" + this.state.totalWidth +",0)");
+                      .attr("transform", "translate(" + (maxRadius + 20) + "," + (-this.state.totalHeight/2 + 16) + ")");
+    
+    Object.keys(this.state.data).forEach((item, i) => {
+      const legendRow = legend.append("g")
+                              .attr("transform", "translate(0," + (i * 20) + ")");
+      
+      legendRow.append("circle")
+               .attr("cx", 2)
+               .attr("cx", 0)
+               .attr("r", 6)
+               .style("fill", colorScale(i))
+               .attr("stroke", "#867979")
+               .attr("stroke-width", 0.5)
+               .style("cursor", "pointer");
+      
+      legendRow.append("text")
+                .attr("x", 10)
+                .attr("y", 6)
+                .style("color", "black")
+                .text(item)
+    })
 
-    const svgInfo = { svg, data, pie, arc, colorScale, tip };
+    const svgInfo = { svg, pie, arc, colorScale, tip };
 
     this.setState({ svgInfo }, () => this.drawData())
   }
 
   drawData() {
+    console.log(this.state.data)
+    console.log(Object.values(this.state.data));
+    console.log(Object.keys(this.state.data));
     const {
-      svg, data, pie, arc,
+      svg, pie, arc,
       colorScale, tip
     } = this.state.svgInfo;
 
     // Drawdata
-    svg.datum(data.sort((a,b) => a - b))
+    svg.datum(Object.values(this.state.data))
        .selectAll("path")
        .data(pie)
        .enter()
        .append("path")
        .attr("fill", (d, i) => colorScale(i))
        .attr("d", arc)
-       .on("mouseover", (d) => {
+       .on("mousemove", (d) => {
          tip.transition()
             .duration(200)
             .style("opacity", .9)

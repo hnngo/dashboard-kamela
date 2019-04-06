@@ -12,3 +12,5 @@ export const DATA_VOLUME = "5. volume";
 
 export const DOUBLE_HEIGHT = "750";
 export const SINGLE_HEIGHT = "365";
+
+export const STOCK_INDUSTRY = "stock_industry";

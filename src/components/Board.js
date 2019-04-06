@@ -35,7 +35,7 @@ export default class Board extends Component {
     if (this.props.title) {
       return (
         <div className="board-title">
-          <h5 className="pt-3 pl-3">{this.props.title}</h5>
+          <h5 className="pt-3 pl-3 bold">{this.props.title}</h5>
         </div>
       );
     }
