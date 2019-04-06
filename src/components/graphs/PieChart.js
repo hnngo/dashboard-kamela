@@ -49,7 +49,7 @@ export default class PieChart extends Component {
                   .style('opacity', 0);
 
     const legend = svg.append("g")
-                      .attr("transform", "translate(" + (maxRadius + 20) + "," + (-this.state.totalHeight/2 + 16) + ")");
+                      .attr("transform", "translate(" + (maxRadius + 20) + "," + (-this.state.totalHeight/2 + 20) + ")");
     
     Object.keys(this.state.data).forEach((item, i) => {
       const legendRow = legend.append("g")
@@ -77,9 +77,11 @@ export default class PieChart extends Component {
   }
 
   drawData() {
-    console.log(this.state.data)
-    console.log(Object.values(this.state.data));
-    console.log(Object.keys(this.state.data));
+    // Calculating percentage for tooltips
+    const sum = Object.values(this.state.data).reduce((acc, cur) => acc + cur);
+
+    const percentageArr = Object.values(this.state.data).map((item) => item * 100 / sum);
+
     const {
       svg, pie, arc,
       colorScale, tip
@@ -93,24 +95,22 @@ export default class PieChart extends Component {
        .append("path")
        .attr("fill", (d, i) => colorScale(i))
        .attr("d", arc)
-       .on("mousemove", (d) => {
-         tip.transition()
-            .duration(200)
-            .style("opacity", .9)
+       .on("mousemove", (d, i) => {
+         // Tips showing
+         tip.transition().duration(200).style("opacity", .9);
          tip.html(() => {
-           let text = `<strong>Country: </strong><span>$ {d.country}<span></br>`;
-           text += `<strong>Income: </strong><span>${d.income} <span></br>`;
-           text += `<strong>Life Expectancy: </strong><span>$ {d.life_exp}<span></br>`;
-           text += `<strong>Population: </strong><span>$ {d.population}<span></br>`;
-           return text;
-         })
-             .style("left", (d3.event.pageX) + "px")
-             .style("top", (d3.event.pageY - 60) + "px");
+            let res= `<svg height="15" width="15" style="margin: 10px 10px">`;
+            res += `<rect width="15" height="15" style="fill:${colorScale(i)};" />`;
+            res += `<span>${Object.keys(this.state.data)[i]}</span>`;
+            res += `<span style="margin-left:5px">${percentageArr[i]}%</span></svg>`;
+
+            return res;
+         }).style("left", (d3.event.pageX) + "px")
+           .style("top", (d3.event.pageY - 40) + "px");
          })
        .on("mouseout", (d) => {
-           tip.transition()
-               .duration(500)
-               .style("opacity", 0);
+         // Tips dimming
+         tip.transition().duration(500).style("opacity", 0);
        })
   }
 
@@ -130,4 +130,4 @@ PieChart.propTypes = {
   chartName: PropTypes.string.isRequired
 };
 
-//TODO: Add legends
+//TODO: Show tooltips inside pie chart

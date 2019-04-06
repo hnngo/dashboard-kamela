@@ -228,14 +228,15 @@ No media query for `xs` since this is the default in Bootstrap */
   div.tooltip {	
     position: absolute;			
     text-align: left;			
-    width: 180px;					
-    height: 60px;					
+    width: 200px;					
+    height: 40px;					
     padding: 2px;				
     font: 12px sans-serif;		
     background: rgb(0, 0, 0);	
     border: 0px;		
     border-radius: 8px;			
-    pointer-events: none;			
+    pointer-events: none;
+    color: white;
   }
 
 }
