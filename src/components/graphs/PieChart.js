@@ -28,8 +28,9 @@ export default class PieChart extends Component {
 
     this.state = {
       filteredData,
-      totalWidth: 200,
-      totalHeight: 200
+      totalWidth: 180,
+      totalHeight: 180,
+      svgInfo: undefined
     };
   }
 
@@ -61,6 +62,26 @@ export default class PieChart extends Component {
                   .innerRadius(maxRadius - 40)
                   .outerRadius(maxRadius - 5);
 
+    // Tooltip
+    const tip = d3.select('body')
+                  .append('div')
+                  .attr('class', 'tooltip')
+                  .style('opacity', 0);
+
+    const legend = svg.append("g")
+              .attr("transform", "translate(" + this.state.totalWidth +",0)");
+
+    const svgInfo = { svg, data, pie, arc, colorScale, tip };
+
+    this.setState({ svgInfo }, () => this.drawData())
+  }
+
+  drawData() {
+    const {
+      svg, data, pie, arc,
+      colorScale, tip
+    } = this.state.svgInfo;
+
     // Drawdata
     svg.datum(data.sort((a,b) => a - b))
        .selectAll("path")
@@ -69,11 +90,33 @@ export default class PieChart extends Component {
        .append("path")
        .attr("fill", (d, i) => colorScale(i))
        .attr("d", arc)
+       .on("mouseover", (d) => {
+         tip.transition()
+            .duration(200)
+            .style("opacity", .9)
+         tip.html(() => {
+           let text = `<strong>Country: </strong><span>$ {d.country}<span></br>`;
+           text += `<strong>Income: </strong><span>${d.income} <span></br>`;
+           text += `<strong>Life Expectancy: </strong><span>$ {d.life_exp}<span></br>`;
+           text += `<strong>Population: </strong><span>$ {d.population}<span></br>`;
+           return text;
+         })
+             .style("left", (d3.event.pageX) + "px")
+             .style("top", (d3.event.pageY - 60) + "px");
+         })
+       .on("mouseout", (d) => {
+           tip.transition()
+               .duration(500)
+               .style("opacity", 0);
+       })
   }
 
   render() {
+    // // Update data
+    // this.drawData();
+
     return (
-      <div className="pl-4">
+      <div className="pl-1">
         <div id={"pieChart" + this.props.chartName}/>
       </div>
     );

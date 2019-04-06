@@ -224,6 +224,20 @@ No media query for `xs` since this is the default in Bootstrap */
     font-size: 16px;
   }
 
+  
+  div.tooltip {	
+    position: absolute;			
+    text-align: left;			
+    width: 180px;					
+    height: 60px;					
+    padding: 2px;				
+    font: 12px sans-serif;		
+    background: rgb(0, 0, 0);	
+    border: 0px;		
+    border-radius: 8px;			
+    pointer-events: none;			
+  }
+
 }
 
 /* Extra large devices (large desktops, 1200px and up) */

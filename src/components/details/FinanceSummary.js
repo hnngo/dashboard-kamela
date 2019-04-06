@@ -1,29 +1,74 @@
 import React, { Component } from 'react';
-import PieChart from '../graphs/PieChart';
+import _ from 'lodash';
+import PieChart from '../graphs/PieChart'
 
 export default class FinanceSummary extends Component {
+  constructor(props) {
+    super(props);
+
+    // Filter data with smcap in string and number
+    const filteredData = this.props.data.map((item) => {
+      // Get filtered sections
+      let smcap = item.smcap.slice(1, item.smcap.length - 1);
+      let numCap = item.smcap.charAt(item.smcap.length - 1) === "B" ? +smcap * 1000000000 : +smcap * 1000000;
+
+      return { ...item, numCap }
+    });
+
+    // Sorted data base on stock market cap
+    const dataSmcapSorted = _.sortBy(filteredData, [(d) => d.numCap]).reverse();
+    
+    this.state = {
+      filteredData,
+      dataSmcapSorted,
+      pieData: dataSmcapSorted.slice(0, 10)
+    };
+  }
+
+  handleSelectChange(e) {
+    // Base on selection give the data for piechart
+    switch (e.target.value) {
+      case "1":
+        this.setState({ pieData: this.state.dataSmcapSorted.slice(0, 10) });
+        return;
+      case "2":
+        this.setState({ pieData: this.state.dataSmcapSorted.slice(0, 50) });
+        return;
+      case "3":
+        this.setState({ pieData: this.state.dataSmcapSorted.slice(0, 100) });
+        return;
+      default:
+        return;
+    }
+  }
+
   renderInfo() {
 
   }
 
   render() {
+    console.log(this.state.pieData)
     return (
       <div className="fs-container h-100">
         <div>
-          <select className="custom-select" id="inlineFormCustomSelect">
+          <select
+            className="custom-select"
+            id="inlineFormCustomSelect"
+            onChange={(e) => this.handleSelectChange(e)}
+          >
             <option value="1">Top 10 Stock Market Cap Companies</option>
             <option value="2">Top 50 Stock Market Cap Companies</option>
             <option value="3">Top 100 Stock Market Cap Companies</option>
           </select>
         </div>
-        <div className="row">
-          <div className="col-6 my-5">
+        <div className="row px-3">
+          <div className="col-8 my-5">
             <PieChart
               chartName={"FinanceSummary"}
-              data={this.props.data}
+              data={this.state.pieData}
             />
           </div>
-          <div className="col-6">
+          <div className="col-4">
             {this.renderInfo()}
           </div>
         </div>
