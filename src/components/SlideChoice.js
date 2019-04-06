@@ -13,6 +13,9 @@ export default class SlideChoice extends Component {
   }
 
   componentDidMount() {
+    // Passing default selected props to parent
+    this.props.onSelect(this.props.selections[0]);
+
     // Calculate the total div of choices
     let totalWidth = 0;
     this.props.selections.forEach((item, i) => {
@@ -44,7 +47,10 @@ export default class SlideChoice extends Component {
         choice: +id,
         selectedPos: pos,
         selectedWidth: width
-      })
+      });
+
+      // Passing props to parents component
+      this.props.onSelect(e.target.innerHTML);
     }
   }
 

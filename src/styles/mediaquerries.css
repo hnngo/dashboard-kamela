@@ -92,14 +92,20 @@ No media query for `xs` since this is the default in Bootstrap */
   .co-table-row p {
     font-size: 14px;
   }
-  
+
   .co-table-row .text-muted {
     font-size: 11px;
   }
-  
+
   .page-link {
     font-size: 12px;
   }
+
+  /* ------- FINANCE SUMMARY ------- */
+  div.tooltip {
+    display: none;
+  }
+
 }
 
 @media (min-width: 576px) {
@@ -215,7 +221,7 @@ No media query for `xs` since this is the default in Bootstrap */
   .co-table-row p {
     font-size: 15px;
   }
-  
+
   .co-table-row .text-muted {
     font-size: 12px;
   }
@@ -224,17 +230,17 @@ No media query for `xs` since this is the default in Bootstrap */
     font-size: 16px;
   }
 
-  
-  div.tooltip {	
-    position: absolute;			
-    text-align: left;			
-    width: 200px;					
-    height: 40px;					
-    padding: 2px;				
-    font: 12px sans-serif;		
-    background: rgb(0, 0, 0);	
-    border: 0px;		
-    border-radius: 8px;			
+  div.tooltip {
+    display: block;
+    position: absolute;
+    text-align: left;
+    width: 200px;
+    height: 40px;
+    padding: 2px;
+    font: 12px sans-serif;
+    background: rgb(0, 0, 0);
+    border: 0px;
+    border-radius: 8px;
     pointer-events: none;
     color: white;
   }

@@ -28,11 +28,12 @@ export default class FinanceSummary extends Component {
     this.state = {
       filteredData,
       dataSmcapSorted,
-      pieData: dataSmcapSorted.slice(0, 10)
+      pieData: dataSmcapSorted.slice(0, 10),
+      pieType: STOCK_INDUSTRY, // default
     };
   }
 
-  handleSelectChange(e) {
+  handleSelectTopComapny(e) {
     // Base on selection give the data for piechart
     switch (e.target.value) {
       case "1":
@@ -49,22 +50,33 @@ export default class FinanceSummary extends Component {
     }
   }
 
-  renderInfo() {
-
+  handleSelectSector(item) {
+    switch (item.toLowerCase()) {
+      case "industry":
+        this.setState({ pieType: STOCK_INDUSTRY });
+        return;
+      case "sector":
+        this.setState({ pieType: STOCK_SECTOR });
+        return;
+      default:
+        return;
+    }
   }
 
   render() {
-    console.log(this.state.pieData)
     return (
       <div className="">
-        <SlideChoice
-          selections={['Hello', 'This is how', 'Haoassadas dasdk', "a sa sa das sa as "]}
-        />
+        <div className="fs-slidechoice">
+          <SlideChoice
+            onSelect={(item) => this.handleSelectSector(item)}
+            selections={['Industry', 'Sector']}
+          />
+        </div>
         <div>
           <select
             className="custom-select"
-            id="inlineFormCustomSelect"
-            onChange={(e) => this.handleSelectChange(e)}
+            id="selectTop"
+            onChange={(e) => this.handleSelectTopComapny(e)}
           >
             <option value="1">Top 10 Stock Market Cap Companies</option>
             <option value="2">Top 50 Stock Market Cap Companies</option>
@@ -78,18 +90,7 @@ export default class FinanceSummary extends Component {
               <PieChart
                 chartName={"StockIndustry"}
                 data={this.state.pieData}
-                sortType={STOCK_INDUSTRY}
-                colorCode={COLOR_CODE_1}
-              />
-            </div>
-          </div>
-          <div className="col-sm-6 col-0 mt-3">
-            <h5>Stock sector percentage</h5>
-            <div className="mt-4 ml-2">
-              <PieChart
-                chartName={"StocSector"}
-                data={this.state.pieData}
-                sortType={STOCK_SECTOR}
+                sortType={this.state.pieType}
                 colorCode={COLOR_CODE_1}
               />
             </div>

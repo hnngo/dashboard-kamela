@@ -15,3 +15,5 @@ export const SINGLE_HEIGHT = "365";
 
 export const STOCK_INDUSTRY = "stock_industry";
 export const STOCK_SECTOR = "stock_sector";
+
+export const PIECHART_FS = "PIECHART_FS";

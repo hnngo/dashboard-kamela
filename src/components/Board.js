@@ -31,11 +31,18 @@ export default class Board extends Component {
     clearInterval(this.state.resizeEvent);
   }
 
+  renderOptionalHeader() {
+    if (this.props.optionalHeader) {
+      return this.props.optionalHeader;
+    }
+  }
+
   renderTitle() {
     if (this.props.title) {
       return (
-        <div className="board-title">
+        <div className="board-title d-flex justify-content-between">
           <h5 className="pt-3 pl-3 bold">{this.props.title}</h5>
+          {this.renderOptionalHeader()}
         </div>
       );
     }

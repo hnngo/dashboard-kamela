@@ -11,12 +11,26 @@ export default class PieChart extends Component {
       totalWidth: 600,
       totalHeight: 200,
       svgInfo: undefined,
-      data: _.countBy(this.props.data, (d) => d[this.props.sortType])
+      data: undefined
     };
+
+    this.drawData = this.drawData.bind(this);
   }
 
-  componentDidMount() {
-    this.drawChart();
+  componentWillMount() {
+    // Init the data by type then draw chart
+    this.setState({ 
+      data: _.countBy(this.props.data, (d) => d[this.props.sortType]) 
+    }, () => this.drawChart());
+  }
+
+  componentWillReceiveProps(newProps) {
+    // Check if pie chart receive new sort type props
+    if (this.props.sortType !== newProps.sortType) {
+      this.setState({ 
+        data: _.countBy(this.props.data, (d) => d[newProps.sortType]) 
+      }, () => this.drawData());
+    }
   }
 
   drawChart() {
@@ -47,11 +61,42 @@ export default class PieChart extends Component {
                   .append('div')
                   .attr('class', 'tooltip')
                   .style('opacity', 0);
+    
+    const svgInfo = { svg, pie, arc, colorScale, tip, maxRadius };
 
+    this.setState({ svgInfo }, () => this.drawData());
+    // this.props.saveSVG(svgInfo, PIECHART_FS);
+  }
+
+  drawData(newSortType=undefined) {
+    // console.log(this.props.sortType)
+    // console.log("drawing datwa", this.state)
+    const {
+      svg, pie, arc,
+      colorScale, tip, maxRadius
+    } = this.state.svgInfo;
+
+    let data;
+    if (newSortType) {
+      data = _.countBy(this.props.data, (d) => d[this.props.sortType]);
+    } else {
+      data = this.state.data;
+    }
+    console.log(data)
+
+    // Calculating percentage for tooltips
+    const sum = Object.values(data).reduce((acc, cur) => acc + cur);
+    const percentageArr = Object.values(data).map((item) => item * 100 / sum);
+
+    // Remove old legends
+    d3.selectAll(`.${this.props.chartName}circle`).remove();
+    d3.selectAll(`.${this.props.chartName}text`).remove();
+
+    // Add new legends
     const legend = svg.append("g")
                       .attr("transform", "translate(" + (maxRadius + 20) + "," + (-this.state.totalHeight/2 + 20) + ")");
-    
-    Object.keys(this.state.data).forEach((item, i) => {
+
+    Object.keys(data).forEach((item, i) => {
       const legendRow = legend.append("g")
                               .attr("transform", "translate(0," + (i * 20) + ")");
       
@@ -59,6 +104,7 @@ export default class PieChart extends Component {
                .attr("cx", 2)
                .attr("cx", 0)
                .attr("r", 6)
+               .attr("class", this.props.chartName + "circle")
                .style("fill", colorScale(i))
                .attr("stroke", "#867979")
                .attr("stroke-width", 0.5)
@@ -68,30 +114,16 @@ export default class PieChart extends Component {
                 .attr("x", 10)
                 .attr("y", 6)
                 .style("color", "black")
+                .attr("class", this.props.chartName + "text")
                 .text(item)
-    })
+    });
 
-    const svgInfo = { svg, pie, arc, colorScale, tip };
 
-    this.setState({ svgInfo }, () => this.drawData())
-  }
+    // Draw data
+    const path = svg.selectAll("path")
+                    .data(pie(Object.values(data)));
 
-  drawData() {
-    // Calculating percentage for tooltips
-    const sum = Object.values(this.state.data).reduce((acc, cur) => acc + cur);
-
-    const percentageArr = Object.values(this.state.data).map((item) => item * 100 / sum);
-
-    const {
-      svg, pie, arc,
-      colorScale, tip
-    } = this.state.svgInfo;
-
-    // Drawdata
-    svg.datum(Object.values(this.state.data))
-       .selectAll("path")
-       .data(pie)
-       .enter()
+    path.enter()
        .append("path")
        .attr("fill", (d, i) => colorScale(i))
        .attr("d", arc)
@@ -101,7 +133,7 @@ export default class PieChart extends Component {
          tip.html(() => {
             let res= `<svg height="15" width="15" style="margin: 10px 10px">`;
             res += `<rect width="15" height="15" style="fill:${colorScale(i)};" />`;
-            res += `<span>${Object.keys(this.state.data)[i]}</span>`;
+            res += `<span>${Object.keys(data)[i]}</span>`;
             res += `<span style="margin-left:5px">${percentageArr[i]}%</span></svg>`;
 
             return res;
@@ -115,9 +147,6 @@ export default class PieChart extends Component {
   }
 
   render() {
-    // // Update data
-    // this.drawData();
-
     return (
       <div className="pl-1">
         <div id={"pieChart" + this.props.chartName}/>
