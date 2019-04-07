@@ -11,7 +11,7 @@ export default class PieChart extends Component {
       totalWidth: 600,
       totalHeight: 200,
       svgInfo: undefined,
-      data: undefined,
+      pieData: undefined,
       toggleDraw: false,
     };
 
@@ -21,17 +21,18 @@ export default class PieChart extends Component {
   componentWillMount() {
     // Init the data by type then draw chart
     this.setState({ 
-      data: _.countBy(this.props.data, (d) => d[this.props.sortType]) 
+      pieData: _.countBy(this.props.data, (d) => d[this.props.sortType]) 
     }, () => this.drawChart());
   }
 
   componentWillReceiveProps(newProps) {
     // Check if pie chart receive new sort type props
     // Then re-draw the data before rendering
-    if (this.props.sortType !== newProps.sortType) {
+    if (this.props.sortType !== newProps.sortType || this.props.data.length !== newProps.data.length)  {
+      const oldPieData = this.state.pieData;
       this.setState({ 
-        data: _.countBy(this.props.data, (d) => d[newProps.sortType]) 
-      }, () => this.drawData());
+        pieData: _.countBy(this.props.data, (d) => d[newProps.sortType]) 
+      }, () => this.drawData(oldPieData));
     }
   }
 
@@ -71,40 +72,44 @@ export default class PieChart extends Component {
     // this.props.saveSVG(svgInfo, PIECHART_FS);
   }
 
-  drawData(newSortType=undefined) {
-    // console.log(this.props.sortType)
-    // console.log("drawing datwa", this.state)
+  drawData(oldPieData=false) {
+    // Get svg informaiton
     const {
       svg, pie, arc, legend, tip
     } = this.state.svgInfo;
 
-    let data;
-    if (newSortType) {
-      data = _.countBy(this.props.data, (d) => d[this.props.sortType]);
-    } else {
-      data = this.state.data;
+    // Prepare data for drawing
+    let data = this.state.pieData;
+    let keyData = Object.keys(data);
+    let valueData = Object.values(data);
+
+    // For better transition, merging with old values
+    if (oldPieData) {
+      console.log(Object.values(oldPieData))
+      while (valueData.length < Object.values(oldPieData).length) {
+        valueData.push(0);
+      }
     }
-    console.log(data)
-    console.log(Object.keys(data))
-    console.log(Object.values(data))
+
+    console.log(valueData)
 
     // Color scale
     const colorScale = d3.scaleOrdinal()
-                         .domain(Object.keys(data))
+                         .domain(keyData)
                          .range(this.props.colorCode);
 
-    Object.keys(data).forEach((item) => console.log(`%c ${item}`, `background: ${colorScale(item)}`));
+    keyData.forEach((item) => console.log(`%c ${item}`, `background: ${colorScale(item)}`));
 
     // Calculating percentage for tooltips
-    const sum = Object.values(data).reduce((acc, cur) => acc + cur);
-    const percentageArr = Object.values(data).map((item) => item * 100 / sum);
+    const sum = valueData.reduce((acc, cur) => acc + cur);
+    const percentageArr = valueData.map((item) => item * 100 / sum);
 
     // Remove old legends
     legend.selectAll(`.${this.props.chartName}circle`).remove();
     legend.selectAll(`.${this.props.chartName}text`).remove();
 
     // Add new legends
-    Object.keys(data).forEach((item, i) => {
+    keyData.forEach((item, i) => {
       const legendRow = legend.append("g")
                               .attr("transform", "translate(0," + (i * 20) + ")");
       
@@ -113,7 +118,7 @@ export default class PieChart extends Component {
                .attr("cx", 0)
                .attr("r", 6)
                .attr("class", this.props.chartName + "circle")
-               .style("fill", colorScale(Object.keys(data)[i]))
+               .style("fill", colorScale(keyData[i]))
                .attr("stroke", "#867979")
                .attr("stroke-width", 0.5)
                .style("cursor", "pointer")
@@ -151,18 +156,21 @@ export default class PieChart extends Component {
 
     // Draw data
     const path = svg.selectAll("path")
-                    .data(pie(Object.values(data)));
+                    .data(pie(valueData));
                  
     // Update existing arcs
     path.transition().duration(300).attrTween("d", arcTween)
     
+    // Exit old elements                    
+    // path.exit().transition().duration(300).attrTween("d", arcTween).remove();
+
     // Enter new arcs
     path.enter()
         .append("path")
-        .attr("fill", (d, i) => colorScale(Object.keys(data)[i]))
+        .attr("fill", (d, i) => colorScale(keyData[i]))
         .attr("d", arc)
         .attr("stroke", "white")
-        .attr("stroke-width", "4px")
+        .attr("stroke-width", "2px")
         .each(function(d) { this._current = d; })
         .on("mousemove", (d, i) => {
           // Tips showing
@@ -170,7 +178,7 @@ export default class PieChart extends Component {
           tip.html(() => {
              let res= `<svg height="15" width="15"  style="margin: 10px 10px">`;
              res += `<rect width="15" height="15"  style="fill:${colorScale(i)};" />`;
-             res += `<span>${Object.keys(data)[i]}</span>`;
+             res += `<span>${keyData[i]}</span>`;
              res += `<span style="margin-left:5px">${percentageArr[i]}%</span></svg>`;
  
              return res;
@@ -190,6 +198,7 @@ export default class PieChart extends Component {
   }
 
   render() {
+    console.log(this.props.data)
     return (
       <div className="pl-1">
         <div id={"pieChart" + this.props.chartName}/>
