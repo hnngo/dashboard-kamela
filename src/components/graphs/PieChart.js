@@ -8,7 +8,7 @@ export default class PieChart extends Component {
     super(props);
 
     this.state = {
-      totalWidth: 600,
+      totalWidth: 465,
       totalHeight: 200,
       svgInfo: undefined,
       pieData: undefined,
@@ -70,53 +70,68 @@ export default class PieChart extends Component {
                   .append('div')
                   .attr('class', 'tooltip')
                   .style('opacity', 0);
+
+    // Init number
+    const tipNum = svg.append("g")
+                      .attr("transform", "translate(0, 15)")
+                      .append("text")
+                      .attr("x", 0)
+                      .attr("y", 0)
+                      .style("color", "black")
+                      .style("text-anchor", "middle")
+                      .style("font-size", "50px");
     
-    const svgInfo = { svg, pie, arc, tip, maxRadius, legend };
+    const svgInfo = { svg, pie, arc, tip, maxRadius, legend, tipNum };
 
     this.setState({ svgInfo }, () => this.drawData());
   }
 
-  drawData(oldPieData=false) {
-    // Get svg informaiton
-    const {
-      svg, pie, arc, legend, tip
-    } = this.state.svgInfo;
-
+  prepareData(oldPieData=false) {
     // Prepare data for drawing
     let data = this.state.pieData;
     let keyData = Object.keys(data).sort((a, b) => data[b] - data[a]);
     let valueData = keyData.map((item) => data[item]);
+
+    // Check if data more than 9, out of color range
+    // Then set all the data to Others
     if (keyData.length > 9) {
       keyData.splice(8);
       keyData.push("Others");
 
       valueData.splice(8);
       valueData.push(1);
-
-      console.log(keyData)
-      console.log(valueData)
     }
 
     // For better transition, merging with old values
     if (oldPieData) {
-      console.log(Object.values(oldPieData))
       while (valueData.length < Object.values(oldPieData).length) {
         valueData.push(0);
       }
     }
+    
+    // Calculating percentage for tooltips
+    const sum = valueData.reduce((acc, cur) => acc + cur);
+    const percentageArr = valueData.map((item) => Math.floor(item * 100 / sum, 0));
 
-    console.log(valueData)
+    // Passing props to parents
+    this.props.getTopType(keyData[0]);
+
+    return [keyData, valueData, percentageArr];
+  }
+
+  drawData(oldPieData=false) {
+    // Get svg informaiton
+    const {
+      svg, pie, arc, legend, tip, tipNum
+    } = this.state.svgInfo;
+
+    // Get data
+    let [keyData, valueData] = this.prepareData(oldPieData)
 
     // Color scale
     const colorScale = d3.scaleOrdinal()
                          .domain(keyData)
                          .range(this.props.colorCode);
-
-    keyData.forEach((item) => console.log(`%c ${item}`, `background: ${colorScale(item)}`));
-
-    // Calculating percentage for tooltips
-    const sum = valueData.reduce((acc, cur) => acc + cur);
-    const percentageArr = valueData.map((item) => item * 100 / sum);
 
     // Remove old legends
     legend.selectAll(`.${this.props.chartName}circle`).remove();
@@ -124,6 +139,10 @@ export default class PieChart extends Component {
 
     // Add new legends
     keyData.forEach((item, i) => {
+      if (item.startsWith("Computer Software")) {
+        item = "Computer Software";
+      }
+
       const legendRow = legend.append("g")
                               .attr("transform", "translate(0," + (i * 20) + ")");
       
@@ -153,8 +172,8 @@ export default class PieChart extends Component {
     path.transition().duration(300).attrTween("d", arcTween)
     
     // Exit old elements                    
-    // path.exit().transition().duration(300).attrTween("d", arcTween).remove();
-
+    path.exit().remove();
+    
     // Enter new arcs
     path.enter()
         .append("path")
@@ -164,23 +183,34 @@ export default class PieChart extends Component {
         .attr("stroke-width", "2px")
         .each(function(d) { this._current = d; })
         .on("mousemove", (d, i) => {
+          // Get the prepared data
+          let [ key, , percentage ] = this.prepareData(oldPieData);
+
+          if (key[i] && key[i].startsWith("Computer Software")) {
+            key[i] = "Computer Software";
+          }
+
           // Tips showing
           tip.transition().duration(200).style("opacity", .9);
-
+          
           // Tips content
           tip.html(() => {
              let res= `<svg height="15" width="15"  style="margin: 10px 10px">`;
              res += `<rect width="15" height="15"  style="fill:${colorScale(keyData[i])};" />`;
-             res += `<span>${keyData[i]}</span>`;
-             res += `<span style="margin-left:5px">${percentageArr[i]}%</span></svg>`;
+             res += `<span class="my-0">${key[i]}</span></svg>`;
  
              return res;
           }).style("left", (d3.event.pageX) + "px")
             .style("top", (d3.event.pageY - 40) + "px");
-          })
+
+            tipNum.text(percentage[i] + "%")
+        })
         .on("mouseout", (d) => {
           // Tips dimming
-          tip.transition().duration(500).style("opacity", 0);
+          tip.transition().duration(200).style("opacity", 0);
+
+          //
+          tipNum.text("");
         });
 
     function arcTween(a) {
@@ -191,7 +221,6 @@ export default class PieChart extends Component {
   }
 
   render() {
-    console.log(this.props.data)
     return (
       <div className="pl-1">
         <div id={"pieChart" + this.props.chartName}/>

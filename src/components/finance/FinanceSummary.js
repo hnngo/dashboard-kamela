@@ -34,6 +34,7 @@ export default class FinanceSummary extends Component {
       dataSmcapSorted,
       pieData: dataSmcapSorted.slice(0, 10),
       pieType: STOCK_INDUSTRY, // default
+      topType: undefined
     };
   }
 
@@ -67,6 +68,48 @@ export default class FinanceSummary extends Component {
     }
   }
 
+  renderSumarryInfo() {
+    if (this.state.topType) {
+      console.log(this.state)
+      const dataInType = _.filter(this.state.filteredData, (d) => d[this.state.pieType] === this.state.topType);
+      const sortDataInType = dataInType.sort((a, b) => b.numCap - a.numCap);
+      console.log(dataInType)
+      console.log(sortDataInType)
+      if (sortDataInType.length === 0) {
+        return <div />;
+      }
+
+      return (
+        <div>
+          <h2>#1 <span className="h6">
+            Leader in top stock market cap
+          </span></h2>
+          <div>
+            <h6 className="s-13">Stock Industry: <span className="h6">
+              {sortDataInType[0].stock_industry}
+            </span></h6>
+
+            <h6 className="s-13">Company: <span className="h6">
+              {sortDataInType[0].company}
+            </span></h6>
+
+            <h6 className="s-13">Owner: <span className="h6">
+              {sortDataInType[0].first_name + " " + sortDataInType[0].last_name}
+            </span></h6>
+
+            <h6 className="s-13">Stock Name: <span className="h6">
+              {sortDataInType[0].stock_name}
+            </span></h6>
+
+            <h6 className="mt-3 s-13">Stock Market Cap: <span className="h2">
+              {sortDataInType[0].smcap}
+            </span></h6>
+          </div>
+        </div>
+      );
+    }
+  }
+
   render() {
     return (
       <div className="">
@@ -88,15 +131,20 @@ export default class FinanceSummary extends Component {
           </select>
         </div>
         <div className="row px-3">
-          <div className="col-sm-6 col-12 mt-3">
-            <h5>Stock industry percentage</h5>
+          <div className="col-sm-7 col-12 mt-3">
             <div className="mt-4 ml-2">
               <PieChart
                 chartName={"StockIndustry"}
                 data={this.state.pieData}
                 sortType={this.state.pieType}
                 colorCode={COLOR_CODE_3}
+                getTopType={(info) => this.setState({ topType: info })}
               />
+            </div>
+          </div>
+          <div className="col-sm-5 d-none d-sm-block mt-3">
+            <div className="mt-4 ml-2">
+              {this.renderSumarryInfo()}
             </div>
           </div>
         </div>

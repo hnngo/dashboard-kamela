@@ -126,7 +126,7 @@ export default class SideBar extends Component {
         <div className="d-md-block d-lg-none">
           <div
             className="sidebar-smallSub-container animated fadeIn faster"
-            onMouseDown={(e) => this.handleClickDim(e)}
+            onClick={(e) => this.handleClickDim(e)}
           >
             <div className="sidebar-smallSub-content">
               {this.renderContentSubSidebarSmall()}
