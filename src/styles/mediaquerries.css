@@ -28,12 +28,11 @@ No media query for `xs` since this is the default in Bootstrap */
     top: 0;
     width: 100%;
     height: 100vh;
-    /* background-color: white; */
     background-image: -webkit-gradient(linear, right top, left top, from(rgb(255, 255, 255)),  color-stop(rgb(255, 255, 255)),  to(rgba(0, 0, 0, 0.411)));
     background-image: linear-gradient(to left, rgb(255, 255, 255),  rgb(255, 255, 255),  rgba(0, 0, 0, 0.411));
-    /* border-left: 1px solid rgb(207, 207, 207); */
     -webkit-box-shadow: 1px 0px 1px 2px rgb(207, 207, 207);
             box-shadow: 1px 0px 1px 2px rgb(207, 207, 207);
+    overflow-y: auto;
   }
 
   .sidebar-smallSub-content {
@@ -105,7 +104,6 @@ No media query for `xs` since this is the default in Bootstrap */
   div.tooltip {
     display: none;
   }
-
 }
 
 @media (min-width: 576px) {
@@ -230,6 +228,7 @@ No media query for `xs` since this is the default in Bootstrap */
     font-size: 16px;
   }
 
+  /* ------- FINANCE SUMMARY ------- */
   div.tooltip {
     display: block;
     position: absolute;
@@ -244,7 +243,6 @@ No media query for `xs` since this is the default in Bootstrap */
     pointer-events: none;
     color: white;
   }
-
 }
 
 /* Extra large devices (large desktops, 1200px and up) */

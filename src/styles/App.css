@@ -183,6 +183,8 @@
   -webkit-box-shadow: inset 0 0 3px #a3a3a3;
   box-shadow:         inset 0 0 3px #a3a3a3;
   position: relative;
+  min-height: 36px;
+  padding-right: 5px;
 }
 
 .sc-bg-selected {
@@ -222,6 +224,17 @@
   position: absolute;
   top: 16px;
   right: 10px;
+}
+
+.fs-top {
+  color: #195e28;
+}
+
+.fs-top-small {
+  margin-top: 60px;
+  padding-left: 110px;
+  padding-right: 20px;
+  text-align: center;
 }
 
 .custom-select {

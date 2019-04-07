@@ -8,8 +8,12 @@ export default class PieChart extends Component {
     super(props);
 
     this.state = {
+      resizeEvent: undefined,
+      smallScreen: false,
+      prevWidth: undefined,
       totalWidth: 465,
       totalHeight: 200,
+      radius: 100,
       svgInfo: undefined,
       pieData: undefined,
       toggleDraw: false,
@@ -19,10 +23,37 @@ export default class PieChart extends Component {
   }
 
   componentWillMount() {
+    // Loop interval for resize checking
+    const resizeEvent = setInterval(() => {
+      const currentSize = window.screen.width;
+      let smallScreen, prevWidth = undefined, setState = false;
+
+      // Checking for show Top company info
+      if ((currentSize <= 576) && (currentSize !== this.state.prevWidth)) {
+        setState = true;
+        smallScreen = true;
+        prevWidth = currentSize;
+      } else if ((currentSize > 576) && (this.state.smallScreen)) {
+        setState = true;
+        smallScreen = false;
+      }
+
+      if (setState) {
+        this.setState({ prevWidth, smallScreen }, () => this.drawData());
+      }
+    }, 200);
+
     // Init the data by type then draw chart
-    this.setState({ 
+    this.setState({
+      resizeEvent,
+      prevWidth: window.screen.width,
+      smallScreen: window.screen.width <= 576 ? true : false,
       pieData: _.countBy(this.props.data, (d) => d[this.props.sortType]) 
     }, () => this.drawChart());
+  }
+
+  componentWillUnmount() {
+    clearInterval(this.state.resizeEvent);
   }
 
   componentWillReceiveProps(newProps) {
@@ -42,28 +73,25 @@ export default class PieChart extends Component {
   }
   
   drawChart() {
-    // Calculate the max radius
-    const maxRadius = Math.min(this.state.totalWidth, this.state.totalHeight) / 2;
-
     // Init svg
     const svg = d3.select("#pieChart" + this.props.chartName)
                   .append("svg")
                   .style("width", this.state.totalWidth)
                   .style("height", this.state.totalHeight)
                   .append("g")
-                    .attr("transform", "translate(" + (maxRadius) + "," + (this.state.totalHeight/2) + ")");
+                    .attr("transform", "translate(" + (this.state.radius) + "," + (this.state.totalHeight / 2) + ")");
 
     // Init pie
     const pie = d3.pie().value((d) => d).sort(null)
 
     // Init arc
     const arc = d3.arc()
-                  .innerRadius(maxRadius - 40)
-                  .outerRadius(maxRadius - 5);
+                  .innerRadius(this.state.radius - 40)
+                  .outerRadius(this.state.radius - 5);
               
     // Init legends
     const legend = svg.append("g")
-    .attr("transform", "translate(" + (maxRadius + 20) + "," + (-this.state.totalHeight/2 + 20) + ")");
+    // .attr("transform", "translate(" + (this.state.radius + 20) + "," + (-this.state.totalHeight/2 + 20) + ")");
 
     // Tooltip
     const tip = d3.select('body')
@@ -81,7 +109,7 @@ export default class PieChart extends Component {
                       .style("text-anchor", "middle")
                       .style("font-size", "50px");
     
-    const svgInfo = { svg, pie, arc, tip, maxRadius, legend, tipNum };
+    const svgInfo = { svg, pie, arc, tip, legend, tipNum };
 
     this.setState({ svgInfo }, () => this.drawData());
   }
@@ -124,6 +152,23 @@ export default class PieChart extends Component {
     const {
       svg, pie, arc, legend, tip, tipNum
     } = this.state.svgInfo;
+
+    // Check if small width then translate svg and g to fit screen width
+    if (this.state.smallScreen) {
+      d3.select("#pieChart" + this.props.chartName + " svg")
+        .style("height", 400);
+
+      svg.attr("transform", "translate(" + (window.screen.width / 2 - 30) + "," + (this.state.radius) + ")");
+
+      legend.attr("transform", "translate(" + (-this.state.radius) + "," + (this.state.totalHeight - 70) + ")");
+    } else {
+      d3.select("#pieChart" + this.props.chartName + " svg")
+        .style("height", this.state.totalHeight);
+
+      svg.attr("transform", "translate(" + (this.state.radius) + "," + (this.state.totalHeight/2) + ")");
+
+      legend.attr("transform", "translate(" + (this.state.radius + 20) + "," + (-this.state.totalHeight/2 + 20) + ")");
+    }
 
     // Get data
     let [keyData, valueData] = this.prepareData(oldPieData)
@@ -234,3 +279,4 @@ PieChart.propTypes = {
 };
 
 //TODO: Show tooltips inside pie chart
+//TODO: Find way to show percentage on small screen

@@ -279,4 +279,3 @@ export default class SideBar extends Component {
 }
 
 //TODO: Small screen overflow when expanding all category
-//TODO: Fix safari cannot touch the dim part

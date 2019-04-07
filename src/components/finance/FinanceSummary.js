@@ -30,12 +30,39 @@ export default class FinanceSummary extends Component {
     const dataSmcapSorted = _.sortBy(filteredData, [(d) => d.numCap]).reverse();
 
     this.state = {
+      resizeEvent: undefined,
+      showTopInfo: true,
       filteredData,
       dataSmcapSorted,
       pieData: dataSmcapSorted.slice(0, 10),
       pieType: STOCK_INDUSTRY, // default
       topType: undefined
     };
+  }
+
+  componentWillMount() {
+    // Loop interval for resize checking
+    const resizeEvent = setInterval(() => {
+      const currentSize = window.screen.width;
+      let showTopInfo, smallSlide, setState = false;
+
+      // Checking for show Top company info
+      if (((currentSize < 1600 && currentSize >= 1200) || (currentSize < 920)) && (this.state.showTopInfo)) {
+        showTopInfo = false;
+        setState = true;
+      } else if (!((currentSize < 1600 && currentSize >= 1200) || (currentSize < 920)) && !this.state.showTopInfo) {
+        showTopInfo = true;
+        setState = true;
+      }
+
+      if (setState) {
+        this.setState({ resizeEvent, showTopInfo, smallSlide });
+      }
+    }, 200);
+  }
+
+  componentWillUnmount() {
+    clearInterval(this.state.resizeEvent);
   }
 
   handleSelectTopComapny(e) {
@@ -70,43 +97,70 @@ export default class FinanceSummary extends Component {
 
   renderSumarryInfo() {
     if (this.state.topType) {
-      console.log(this.state)
       const dataInType = _.filter(this.state.filteredData, (d) => d[this.state.pieType] === this.state.topType);
       const sortDataInType = dataInType.sort((a, b) => b.numCap - a.numCap);
-      console.log(dataInType)
-      console.log(sortDataInType)
+
       if (sortDataInType.length === 0) {
         return <div />;
       }
 
-      return (
-        <div>
-          <h2>#1 <span className="h6">
-            Leader in top stock market cap
-          </span></h2>
+      if (this.state.showTopInfo) {
+        return (
           <div>
-            <h6 className="s-13">Stock Industry: <span className="h6">
-              {sortDataInType[0].stock_industry}
-            </span></h6>
-
-            <h6 className="s-13">Company: <span className="h6">
-              {sortDataInType[0].company}
-            </span></h6>
-
-            <h6 className="s-13">Owner: <span className="h6">
-              {sortDataInType[0].first_name + " " + sortDataInType[0].last_name}
-            </span></h6>
-
-            <h6 className="s-13">Stock Name: <span className="h6">
-              {sortDataInType[0].stock_name}
-            </span></h6>
-
-            <h6 className="mt-3 s-13">Stock Market Cap: <span className="h2">
-              {sortDataInType[0].smcap}
-            </span></h6>
+            <div className="text-center">
+              <h2 className="m-0">#1 <span className="h5 bold fs-top">
+                {sortDataInType[0].company}
+              </span></h2>
+            </div>
+            <div className="fs-data-extra">
+              <div className="row">
+                <div className="col-6 text-center">
+                  <div className="m-2 p-1">
+                    <h6 className="s-13">Stock Market Cap</h6>
+                    <p className="bold h4">
+                      {sortDataInType[0].smcap}
+                    </p>
+                  </div>
+                </div>
+                <div className="col-6 text-center">
+                  <div className="m-2 p-1">
+                    <h6 className="s-13">Owner</h6>
+                    <p className="bold h4">
+                      {sortDataInType[0].first_name + " " + sortDataInType[0].last_name}
+                    </p>
+                  </div>
+                </div>
+              </div>
+              <div className="row">
+                <div className="col-6 text-center">
+                  <div className="mb-2 p-1">
+                    <h6 className="s-13">Average Product Cost</h6>
+                    <p className="bold h4">
+                      {sortDataInType[0].ave_products_cost}
+                    </p>
+                  </div>
+                </div>
+                <div className="col-6 text-center">
+                  <div className="mb-2 p-1">
+                    <h6 className="s-13">Company Main Stock Market</h6>
+                    <p className="bold h4">
+                      {sortDataInType[0].stock_market}
+                    </p>
+                  </div>
+                </div>
+              </div>
+            </div>
           </div>
-        </div>
-      );
+        );
+      } else {
+        return (
+          <div className="fs-top-small">
+            <h2 className="m-0">#1 <span className="h5 bold fs-top">
+              {sortDataInType[0].company}
+            </span></h2>
+          </div>
+        );
+      }
     }
   }
 
@@ -116,7 +170,8 @@ export default class FinanceSummary extends Component {
         <div className="fs-slidechoice">
           <SlideChoice
             onSelect={(item) => this.handleSelectSector(item)}
-            selections={['Industry', 'Sector']}
+            smallSlide={this.state.smallSlide}
+            selections={["Industry", "Sector"]}
           />
         </div>
         <div>
@@ -131,8 +186,8 @@ export default class FinanceSummary extends Component {
           </select>
         </div>
         <div className="row px-3">
-          <div className="col-sm-7 col-12 mt-3">
-            <div className="mt-4 ml-2">
+          <div className="col-sm-6 col-12 mt-3">
+            <div className="my-4 ml-2">
               <PieChart
                 chartName={"StockIndustry"}
                 data={this.state.pieData}
@@ -142,8 +197,8 @@ export default class FinanceSummary extends Component {
               />
             </div>
           </div>
-          <div className="col-sm-5 d-none d-sm-block mt-3">
-            <div className="mt-4 ml-2">
+          <div className="col-sm-6 d-none d-sm-block mt-3 ">
+            <div className="fs-summary-info pt-1 pb-2">
               {this.renderSumarryInfo()}
             </div>
           </div>
@@ -152,32 +207,3 @@ export default class FinanceSummary extends Component {
     );
   }
 }
-
-//TODO: Add more information about top companys or just #1 company
-
-/*
-Company Name
-Loop Inc.
-SM cap:
-$520,000
-Business Description:
-Lorem Ipsum is simply dummy text of the printing and typesetting industry.
-Employee Amount:
-1,300
-Emal:
-supporet@keenthemes.com
-Phone:
-(0) 123 456 78 90
-Annual Companies Taxes EMS
-$500,000
-Next Tax Review Date
-July 24,2017
-Total Annual Profit Before Tax
-$3,800,000
-Type Of Market Share
-Grossery
-Avarage Product Price
-$60,70
-Satisfication Rate
-
-*/

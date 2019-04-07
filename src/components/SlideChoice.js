@@ -5,7 +5,6 @@ export default class SlideChoice extends Component {
     super(props);
 
     this.state = {
-      totalWidth: 0,
       choice: 0,
       selectedPos: 0,
       selectedWidth: 0,
@@ -13,32 +12,22 @@ export default class SlideChoice extends Component {
   }
 
   componentDidMount() {
-    // Passing default selected props to parent
-    this.props.onSelect(this.props.selections[0]);
-
-    // Calculate the total div of choices
-    let totalWidth = 0;
-    this.props.selections.forEach((item, i) => {
-      totalWidth += document.querySelector(".sel" + i).clientWidth;
-    })
-    
     // Calculate the first init width of selected div
     this.setState({
-      totalWidth: totalWidth + 10, // 10 for margin
-      selectedWidth: document.querySelector(".sel0").clientWidth,
+      selectedWidth: document.querySelector("div.sel0").clientWidth,
     });
   }
 
   handleClickChoice(e) {
     // Get the choice id
-    const id = e.target.parentNode.classList[e.target.parentNode.classList.length - 1].slice(3);
+    const id = e.target.classList[e.target.classList.length - 1].slice(3);
 
-    const $selected = document.querySelector(".sel" + id);
+    const $selected = document.querySelector("div.sel" + id);
     if ($selected) {
       // Get the selected position and width
       let pos = 0;
       for (let x = 0; x < +id; x++) {
-        pos += document.querySelector(".sel" + x).clientWidth;
+        pos += document.querySelector("div.sel" + x).clientWidth;
       }
 
       const width = $selected.clientWidth;
@@ -47,10 +36,10 @@ export default class SlideChoice extends Component {
         choice: +id,
         selectedPos: pos,
         selectedWidth: width
+      }, () => {
+        // Passing props to parents component
+        this.props.onSelect(this.props.selections[this.state.choice]);
       });
-
-      // Passing props to parents component
-      this.props.onSelect(e.target.innerHTML);
     }
   }
 
@@ -59,6 +48,10 @@ export default class SlideChoice extends Component {
     return this.props.selections.map((selection, i) => {
       let divClass = "d-inline";
 
+      if (this.props.smallSlide || window.screen.width <= 576) {
+        selection = selection.charAt(0)
+      }
+
       if (i === this.state.choice) {
         divClass += " sc-selected";
       } else {
@@ -66,11 +59,8 @@ export default class SlideChoice extends Component {
       }
 
       return (
-        <div key={i} className={divClass + " sel" + i}>
-          <p
-            className={"m-0"}
-            onClick={(e) => this.handleClickChoice(e)}
-          >{selection}</p>
+        <div key={i} className={divClass + " sel" + i} onClick={(e) => this.handleClickChoice(e)}>
+          <p className={"m-0 sel" + i}>{selection}</p>
         </div>
       );
     })
@@ -78,7 +68,7 @@ export default class SlideChoice extends Component {
 
   render() {
     return (
-      <div className="sc-container" style={{ width: this.state.totalWidth }}>
+      <div className="sc-container">
         <div className="sc-bg-selected" style={{ left: this.state.selectedPos, width: this.state.selectedWidth }} />
         <div className="sc-choices">
           {this.renderSlideChoices()}
@@ -87,3 +77,5 @@ export default class SlideChoice extends Component {
     );
   }
 }
+
+//TODO: FIXME: change screen width change selected bg
