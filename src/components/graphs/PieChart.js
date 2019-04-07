@@ -26,16 +26,21 @@ export default class PieChart extends Component {
   }
 
   componentWillReceiveProps(newProps) {
-    // Check if pie chart receive new sort type props
+    // Check if pie chart receive new sort type or new data props
     // Then re-draw the data before rendering
-    if (this.props.sortType !== newProps.sortType || this.props.data.length !== newProps.data.length)  {
+    if (this.props.sortType !== newProps.sortType) {
       const oldPieData = this.state.pieData;
       this.setState({ 
         pieData: _.countBy(this.props.data, (d) => d[newProps.sortType]) 
       }, () => this.drawData(oldPieData));
+    } else if (this.props.data.length !== newProps.data.length) {
+      const oldPieData = this.state.pieData;
+      this.setState({ 
+        pieData: _.countBy(newProps.data, (d) => d[this.props.sortType]) 
+      }, () => this.drawData(oldPieData));
     }
   }
-
+  
   drawChart() {
     // Calculate the max radius
     const maxRadius = Math.min(this.state.totalWidth, this.state.totalHeight) / 2;
@@ -69,7 +74,6 @@ export default class PieChart extends Component {
     const svgInfo = { svg, pie, arc, tip, maxRadius, legend };
 
     this.setState({ svgInfo }, () => this.drawData());
-    // this.props.saveSVG(svgInfo, PIECHART_FS);
   }
 
   drawData(oldPieData=false) {
@@ -80,8 +84,18 @@ export default class PieChart extends Component {
 
     // Prepare data for drawing
     let data = this.state.pieData;
-    let keyData = Object.keys(data);
-    let valueData = Object.values(data);
+    let keyData = Object.keys(data).sort((a, b) => data[b] - data[a]);
+    let valueData = keyData.map((item) => data[item]);
+    if (keyData.length > 9) {
+      keyData.splice(8);
+      keyData.push("Others");
+
+      valueData.splice(8);
+      valueData.push(1);
+
+      console.log(keyData)
+      console.log(valueData)
+    }
 
     // For better transition, merging with old values
     if (oldPieData) {
@@ -121,30 +135,7 @@ export default class PieChart extends Component {
                .style("fill", colorScale(keyData[i]))
                .attr("stroke", "#867979")
                .attr("stroke-width", 0.5)
-               .style("cursor", "pointer")
-               .on("click", () => {
-                console.log("index: " + i);
-                let notShow = [];
-
-                // Re-formating the circle fill color
-                let selectCircle = d3.select("." + this.props.chartName + "circle");
-                if (selectCircle.style("fill") === "white" || selectCircle.style("fill") === "rgb(0, 0, 0)") {
-                  // fill data
-                  selectCircle.style("fill", colorScale(i));
-
-                  // Update notShow
-                  // notShow = [...this.state.notShow];
-                  // notShow.splice(notShow.indexOf(i), 1);
-                } else {
-                  // un-fill data
-                  selectCircle.style("fill", "white");
-                  
-                  // Update notShow
-                  // notShow = [...this.state.notShow, i];
-                }
-                
-                this.setState({ toggleDraw: !this.state.toggleDraw });
-              });
+               .style("cursor", "pointer");
 
       legendRow.append("text")
                 .attr("x", 10)
@@ -175,9 +166,11 @@ export default class PieChart extends Component {
         .on("mousemove", (d, i) => {
           // Tips showing
           tip.transition().duration(200).style("opacity", .9);
+
+          // Tips content
           tip.html(() => {
              let res= `<svg height="15" width="15"  style="margin: 10px 10px">`;
-             res += `<rect width="15" height="15"  style="fill:${colorScale(i)};" />`;
+             res += `<rect width="15" height="15"  style="fill:${colorScale(keyData[i])};" />`;
              res += `<span>${keyData[i]}</span>`;
              res += `<span style="margin-left:5px">${percentageArr[i]}%</span></svg>`;
  

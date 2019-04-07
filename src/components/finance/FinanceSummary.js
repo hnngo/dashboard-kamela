@@ -9,6 +9,10 @@ import {
 
 const COLOR_CODE_1 = ['#f7fcf5', '#e5f5e0', '#c7e9c0', '#a1d99b', '#74c476', '#41ab5d', '#238b45', '#006d2c', '#00441b'];
 
+const COLOR_CODE_2 = ["#ffffe5", "#f7fcb9", "#d9f0a3", "#addd8e", "#78c679", "#41ab5d", "#238443", "#006837", "#004529"];
+
+const COLOR_CODE_3 = ["#c51b7d", "#de77ae", "#f1b6da", "#fde0ef", "#E1E1E1", "#e6f5d0", "#b8e186", "#7fbc41", "#4d9221"];
+
 export default class FinanceSummary extends Component {
   constructor(props) {
     super(props);
@@ -91,7 +95,7 @@ export default class FinanceSummary extends Component {
                 chartName={"StockIndustry"}
                 data={this.state.pieData}
                 sortType={this.state.pieType}
-                colorCode={COLOR_CODE_1}
+                colorCode={COLOR_CODE_3}
               />
             </div>
           </div>
