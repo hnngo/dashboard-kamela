@@ -4,14 +4,9 @@ import PieChart from '../graphs/PieChart';
 import SlideChoice from '../SlideChoice';
 import {
   STOCK_INDUSTRY,
-  STOCK_SECTOR
+  STOCK_SECTOR,
+  COLOR_CODE_3
 } from '../../constants';
-
-const COLOR_CODE_1 = ['#f7fcf5', '#e5f5e0', '#c7e9c0', '#a1d99b', '#74c476', '#41ab5d', '#238b45', '#006d2c', '#00441b'];
-
-const COLOR_CODE_2 = ["#ffffe5", "#f7fcb9", "#d9f0a3", "#addd8e", "#78c679", "#41ab5d", "#238443", "#006837", "#004529"];
-
-const COLOR_CODE_3 = ["#c51b7d", "#de77ae", "#f1b6da", "#fde0ef", "#E1E1E1", "#e6f5d0", "#b8e186", "#7fbc41", "#4d9221"];
 
 export default class FinanceSummary extends Component {
   constructor(props) {
@@ -95,6 +90,32 @@ export default class FinanceSummary extends Component {
     }
   }
 
+  handleMouseEnter(e) {
+    // If width is small then no animation
+    if (window.screen.width < 1200) {
+      return;
+    }
+
+    const $hoveredItem = e.target.id ? document.querySelector(`#${e.target.id} p`) : "";
+
+    if ($hoveredItem) {
+      $hoveredItem.classList.add("animated", "pulse", "infinite");
+    }
+  }
+
+  handleMouseLeave(e) {
+    // If width is small then no animation
+    if (window.screen.width < 1200) {
+      return;
+    }
+
+    const $hoveredItem = e.target.id ? document.querySelector(`#${e.target.id} p`) : "";
+
+    if ($hoveredItem) {
+      $hoveredItem.classList.remove("animated", "pulse", "infinite");
+    }
+  }
+
   renderSumarryInfo() {
     if (this.state.topType) {
       const dataInType = _.filter(this.state.filteredData, (d) => d[this.state.pieType] === this.state.topType);
@@ -115,7 +136,12 @@ export default class FinanceSummary extends Component {
             <div className="fs-data-extra">
               <div className="row">
                 <div className="col-6 text-center">
-                  <div className="m-2 p-1">
+                  <div
+                    id={"fsInfoSmcap"}
+                    className="m-2 p-1"
+                    onMouseEnter={(e) => this.handleMouseEnter(e)}
+                    onMouseLeave={(e) => this.handleMouseLeave(e)}
+                  >
                     <h6 className="s-13">Stock Market Cap</h6>
                     <p className="bold h4">
                       {sortDataInType[0].smcap}
@@ -123,7 +149,12 @@ export default class FinanceSummary extends Component {
                   </div>
                 </div>
                 <div className="col-6 text-center">
-                  <div className="m-2 p-1">
+                  <div
+                    id={"fsInfoOwner"}
+                    className="m-2 p-1"
+                    onMouseEnter={(e) => this.handleMouseEnter(e)}
+                    onMouseLeave={(e) => this.handleMouseLeave(e)}
+                  >
                     <h6 className="s-13">Owner</h6>
                     <p className="bold h4">
                       {sortDataInType[0].first_name + " " + sortDataInType[0].last_name}
@@ -133,7 +164,12 @@ export default class FinanceSummary extends Component {
               </div>
               <div className="row">
                 <div className="col-6 text-center">
-                  <div className="mb-2 p-1">
+                  <div
+                    id={"fsInfoAPCost"}
+                    className="mb-2 p-1"
+                    onMouseEnter={(e) => this.handleMouseEnter(e)}
+                    onMouseLeave={(e) => this.handleMouseLeave(e)}
+                  >
                     <h6 className="s-13">Average Product Cost</h6>
                     <p className="bold h4">
                       {sortDataInType[0].ave_products_cost}
@@ -141,7 +177,12 @@ export default class FinanceSummary extends Component {
                   </div>
                 </div>
                 <div className="col-6 text-center">
-                  <div className="mb-2 p-1">
+                  <div
+                    id={"fsInfoSMarket"}
+                    className="mb-2 p-1"
+                    onMouseEnter={(e) => this.handleMouseEnter(e)}
+                    onMouseLeave={(e) => this.handleMouseLeave(e)}
+                  >
                     <h6 className="s-13">Company Main Stock Market</h6>
                     <p className="bold h4">
                       {sortDataInType[0].stock_market}

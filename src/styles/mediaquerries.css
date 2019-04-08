@@ -243,6 +243,10 @@ No media query for `xs` since this is the default in Bootstrap */
     pointer-events: none;
     color: white;
   }
+
+  .se-container button:hover {
+    background-color: #094b24;
+  }
 }
 
 /* Extra large devices (large desktops, 1200px and up) */

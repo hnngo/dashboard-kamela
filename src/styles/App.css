@@ -151,12 +151,12 @@
 }
 
 .co-pagination-container li button:hover {
-  background-color: rgb(31, 71, 31);
+  background-color: #065828;
   color: white;
 }
 
 .co-activePage {
-  background-color: rgb(31, 71, 31);
+  background-color: #065828;
   color: white !important;
 }
 
@@ -223,7 +223,7 @@
 .fs-slidechoice {
   position: absolute;
   top: 16px;
-  right: 10px;
+  right: 15px;
 }
 
 .fs-top {
@@ -240,4 +240,96 @@
 .custom-select {
   box-shadow: none !important;
   outline: none !important;
+}
+
+/* ----- SEARCH ENDPOINT ----- */
+.se-container {
+  padding: 0 10px;
+  position: relative;
+  height: 100%;
+  min-height: 300px;
+}
+
+.se-container input[type=text] {
+  width: calc(100% - 60px);
+  border-radius: 10px;
+  border: 0.5px solid #0a6d33;
+  padding: 5px 15px;
+  padding-right: 30px;
+  outline: none;
+}
+
+.se-container button {
+  position: absolute;
+  right: 10px;
+  width: 80px;
+  border-radius: 10px;
+  background-color: #0a6d33;
+  border: 1px solid #0a6d33;
+  color: white;
+  padding: 5px 5px;
+  outline: none;
+}
+
+.se-no-res {
+  width: 70%;
+  text-align: center;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
+
+.se-no-res p {
+  font-size: 20px;
+}
+
+.se-no-res span {
+  color: #065828;
+  font-size: 30px;
+  font-weight: bold;
+  margin: 0 5px;
+}
+
+.se-row {
+  padding: 10px 20px;
+  text-align: center;
+}
+
+.se-row div {
+  padding: 0 10px;
+  margin: 3px 10px;
+  border-radius: 10px;
+  border: 2px solid #065828;
+  cursor: pointer;
+}
+
+.se-row div p {
+  margin: 0;
+  padding: 2px 0;
+}
+
+.se-row div:hover,
+.se-active {
+  background-color: #065828;
+  color: white;
+}
+
+.se-detail {
+  padding: 10px 20px;
+}
+
+.se-detail .row {
+  margin-bottom: 15px;
+}
+
+.se-detail p {
+  margin: 0;
+}
+
+.se-detail span {
+  margin: 0;
+  font-weight: bold;
+  font-size: 20px;
+  color: #065828;
 }

@@ -13,6 +13,7 @@ import {
   SINGLE_HEIGHT
 } from '../constants';
 import data from '../company_data_500.json';
+import SearchEndPoints from './finance/SearchEndPoints';
 
 export default class DashBoard extends Component {
   constructor(props) {
@@ -110,7 +111,11 @@ export default class DashBoard extends Component {
             />
           </div>
           <div className="col-xl-4">
-            <Board height={SINGLE_HEIGHT} />
+            <Board
+              height={SINGLE_HEIGHT}
+              title={"Search Endpoint"}
+              component={<SearchEndPoints />}
+            />
           </div>
         </div>
         <div className="row py-1">
