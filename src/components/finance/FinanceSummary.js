@@ -187,7 +187,7 @@ export default class FinanceSummary extends Component {
         </div>
         <div className="row px-3">
           <div className="col-sm-6 col-12 mt-3">
-            <div className="my-4 ml-2">
+            <div className="mt-3 mb-4 ml-2">
               <PieChart
                 chartName={"StockIndustry"}
                 data={this.state.pieData}

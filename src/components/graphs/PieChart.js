@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import * as d3 from 'd3';
 import _ from 'lodash';
+import { STOCK_INDUSTRY } from '../../constants';
 
 export default class PieChart extends Component {
   constructor(props) {
@@ -12,7 +13,7 @@ export default class PieChart extends Component {
       smallScreen: false,
       prevWidth: undefined,
       totalWidth: 465,
-      totalHeight: 200,
+      totalHeight: 220,
       radius: 100,
       svgInfo: undefined,
       pieData: undefined,
@@ -156,11 +157,11 @@ export default class PieChart extends Component {
     // Check if small width then translate svg and g to fit screen width
     if (this.state.smallScreen) {
       d3.select("#pieChart" + this.props.chartName + " svg")
-        .style("height", 400);
+        .style("height", 420);
 
       svg.attr("transform", "translate(" + (window.screen.width / 2 - 30) + "," + (this.state.radius) + ")");
 
-      legend.attr("transform", "translate(" + (-this.state.radius) + "," + (this.state.totalHeight - 70) + ")");
+      legend.attr("transform", "translate(" + (-this.state.radius + 10) + "," + (this.state.totalHeight - 70) + ")");
     } else {
       d3.select("#pieChart" + this.props.chartName + " svg")
         .style("height", this.state.totalHeight);
@@ -183,13 +184,25 @@ export default class PieChart extends Component {
     legend.selectAll(`.${this.props.chartName}text`).remove();
 
     // Add new legends
+    const legendCategory = this.props.sortType === STOCK_INDUSTRY ? "Top Industry" : "Top Sector";
+
+    legend.append("text")
+          .attr("transform", "translate(70, -10)")
+          .attr("x", 10)
+          .attr("y", 6)
+          .style("color", "black")
+          .style("font-weight", "bold")
+          .attr("class", this.props.chartName + "text")
+          .attr("text-anchor", "middle")
+          .text(legendCategory);
+
     keyData.forEach((item, i) => {
       if (item.startsWith("Computer Software")) {
         item = "Computer Software";
       }
 
       const legendRow = legend.append("g")
-                              .attr("transform", "translate(0," + (i * 20) + ")");
+                              .attr("transform", "translate(0," + (i * 20 + 20) + ")");
       
       legendRow.append("circle")
                .attr("cx", 2)
@@ -205,6 +218,7 @@ export default class PieChart extends Component {
                 .attr("x", 10)
                 .attr("y", 6)
                 .style("color", "black")
+                .style("font-size", "15px")
                 .attr("class", this.props.chartName + "text")
                 .text(item)
     });
