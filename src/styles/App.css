@@ -37,7 +37,7 @@
 
 .sidebar-icon-container i {
   font-size: 26px;
-  color: #0a6d33;
+  color: #195e28;
   cursor: pointer;
 }
 
@@ -49,7 +49,7 @@
 }
 
 .sidebar-bars i {
-  color: #09632f;
+  color: #195e28;
   font-size: 22px;
   cursor: pointer;
 }
@@ -143,7 +143,7 @@
 }
 
 .co-pagination-container li button {
-  color: #065828;
+  color: #195e28;
   outline: none !important;
   -webkit-box-shadow: none !important;
           box-shadow: none !important;
@@ -151,12 +151,12 @@
 }
 
 .co-pagination-container li button:hover {
-  background-color: #065828;
+  background-color: #195e28;
   color: white;
 }
 
 .co-activePage {
-  background-color: #065828;
+  background-color: #195e28;
   color: white !important;
 }
 
@@ -250,22 +250,32 @@
   min-height: 300px;
 }
 
-.se-container input[type=text] {
-  width: calc(100% - 60px);
-  border-radius: 10px;
-  border: 0.5px solid #0a6d33;
-  padding: 5px 15px;
-  padding-right: 30px;
-  outline: none;
+.se-searchbar {
+  position: absolute;
+  top: -40px;
+  right: 0px;
+  /* width: 48px; */
+  transition: 0.5s;
+  padding-right: 15px;
 }
 
-.se-container button {
+.se-searchbar input[type=text] {
+  width: 100%;
+  border-radius: 20px;
+  border: 0.5px solid #195e28;
+  padding: 5px 15px;
+  outline: none;
+  position: relative;
+  transition: 0.5s;
+}
+
+.se-searchbar button {
   position: absolute;
   right: 10px;
-  width: 80px;
-  border-radius: 10px;
-  background-color: #0a6d33;
-  border: 1px solid #0a6d33;
+  width: 38px;
+  border-radius: 20px;
+  background-color: #195e28;
+  border: 1px solid #195e28;
   color: white;
   padding: 5px 5px;
   outline: none;
@@ -300,7 +310,7 @@
   padding: 0 10px;
   margin: 3px 10px;
   border-radius: 10px;
-  border: 2px solid #065828;
+  border: 2px solid #195e28;
   cursor: pointer;
 }
 
@@ -311,7 +321,7 @@
 
 .se-row div:hover,
 .se-active {
-  background-color: #065828;
+  background-color: #195e28;
   color: white;
 }
 
@@ -331,5 +341,5 @@
   margin: 0;
   font-weight: bold;
   font-size: 20px;
-  color: #065828;
+  color: #195e28;
 }

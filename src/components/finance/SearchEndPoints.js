@@ -10,10 +10,53 @@ export default class SearchEndPoints extends Component {
       choice: 0,
       inputSearch: ""
     };
+  }
 
+  componentDidMount() {
+    // Set initial width for input
+    const $searchbar = document.querySelector(".se-searchbar");
+
+    if ($searchbar) {
+      if (window.screen.width > 576) {
+        $searchbar.style.width = "48px";
+      } else {
+        document.querySelector("#se-input").placeholder = "search";
+        $searchbar.style.width = "130px";
+      }
+    }
+  }
+
+  handleMouseEnter() {
+    // Show input in large screen
+    if (window.screen.width <= 576) {
+      return;
+    }
+
+    const $searchbar = document.querySelector(".se-searchbar");
+
+    if ($searchbar) {
+      $searchbar.style.width = "200px";
+
+      // Set timeout for collapsing input width if no input
+      setTimeout(() => {
+        if (!this.state.inputSearch) {
+          $searchbar.style.width = "48px";
+        }
+      }, 3000);
+    }
   }
 
   handleInputSearch(inputSearch) {
+    // Set timeout for collapsing input width if user input then erase all input
+    if (window.screen.width > 576) {
+      const $searchbar = document.querySelector(".se-searchbar");
+      setTimeout(() => {
+        if (!inputSearch) {
+          $searchbar.style.width = "48px";
+        }
+      }, 3000);
+    }
+    
     // Save the input search in state
     this.setState({ inputSearch });
   }
@@ -23,7 +66,7 @@ export default class SearchEndPoints extends Component {
     if (!this.state.inputSearch) {
       return;
     }
-    
+
     const res = await axios.get(`https://www.alphavantage.co/query?function=SYMBOL_SEARCH&keywords=${this.state.inputSearch}&apikey=KJO1VD3QQ2D7BDOV`);
 
     // Check if return data is okay
@@ -62,18 +105,18 @@ export default class SearchEndPoints extends Component {
         </div>
         <div className="row">
           <div className="col-6 d-flex">
-            <p>Type:&nbsp;<span className="info">{item["3. type"]}</span></p>       
+            <p>Type:&nbsp;<span className="info">{item["3. type"]}</span></p>
           </div>
           <div className="col-6 d-flex">
-            <p>Region:&nbsp;<span className="info">{item["4. region"]}</span></p>    
+            <p>Region:&nbsp;<span className="info">{item["4. region"]}</span></p>
           </div>
         </div>
         <div className="row">
           <div className="col-6 d-flex">
-            <p>Market Open:&nbsp;<span className="info">{item["5. marketOpen"]}</span></p>     
+            <p>Market Open:&nbsp;<span className="info">{item["5. marketOpen"]}</span></p>
           </div>
           <div className="col-6 d-flex">
-            <p>Market Close:&nbsp;<span className="info">{item["6. marketClose"]}</span></p>     
+            <p>Market Close:&nbsp;<span className="info">{item["6. marketClose"]}</span></p>
           </div>
         </div>
         <div className="row">
@@ -117,17 +160,21 @@ export default class SearchEndPoints extends Component {
   render() {
     return (
       <div className="se-container">
-        <input
-          type="text"
-          placeholder="Enter a symbols or companies"
-          value={this.state.inputSearch}
-          onChange={(e) => this.handleInputSearch(e.target.value)}
-        />
-        <button
-          onClick={() => this.handleClick()}
-        >
-          Go
-        </button>
+        <div className="se-searchbar">
+          <input
+            id="se-input"
+            type="text"
+            placeholder="Enter a symbol"
+            value={this.state.inputSearch}
+            onChange={(e) => this.handleInputSearch(e.target.value)}
+          />
+          <button
+            onMouseEnter={() => this.handleMouseEnter()}
+            onClick={() => this.handleClick()}
+          >
+            <i className="fas fa-search" />
+          </button>
+        </div>
         {this.renderSearchResults()}
       </div>
     );
