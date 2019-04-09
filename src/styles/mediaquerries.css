@@ -245,8 +245,14 @@ No media query for `xs` since this is the default in Bootstrap */
   }
 
   /* ------- SEARCH ENDPOINT ------- */
-  .se-container button:hover {
-    background-color: #094b24;
+  .se-row div:hover,
+  .se-active {
+    background-color: #195e28;
+    color: white;
+  }
+  
+  .se-row div:hover p.se-symbol {
+    color: white;
   }
 }
 

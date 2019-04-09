@@ -56,7 +56,7 @@ export default class SearchEndPoints extends Component {
         }
       }, 3000);
     }
-    
+
     // Save the input search in state
     this.setState({ inputSearch });
   }
@@ -79,13 +79,22 @@ export default class SearchEndPoints extends Component {
 
   renderMatchedData() {
     return this.state.result.map((item, i) => {
-      const divClass = (this.state.choice === i) ? "se-active" : "";
-
-      return (
-        <div key={i} className={divClass}>
-          <p>{item["1. symbol"]}</p>
-        </div>
-      );
+      // const divClass = (this.state.choice === i) ? "se-active" : "";
+      if (window.screen.width >= 600) {
+        return (
+          <div key={i} className={"col-6"}>
+            <p className="se-symbol">{item["1. symbol"]}</p>
+            <p>{item["2. name"]}</p>
+          </div>
+        );
+      } else {
+        return (
+          <div key={i} className={"col-12"}>
+            <p className="se-symbol">{item["1. symbol"]}</p>
+            <p>{item["2. name"]}</p>
+          </div>
+        );
+      }
     });
   }
 
@@ -137,12 +146,12 @@ export default class SearchEndPoints extends Component {
       if (this.state.result.length > 0) {
         return (
           <div>
-            <div className="row se-row">
+            <div className="se-row row">
               {this.renderMatchedData()}
             </div>
-            <div>
+            {/* <div>
               {this.renderDetailMatchedData()}
-            </div>
+            </div> */}
           </div>
         );
       } else {
