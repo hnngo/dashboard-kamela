@@ -180,7 +180,6 @@
 .sc-container {
   background-color: #195e28;
   border-radius: 17px;
-  -moz-box-shadow:    inset 0 0 3px #a3a3a3;
   -webkit-box-shadow: inset 0 0 3px #a3a3a3;
   box-shadow:         inset 0 0 3px #a3a3a3;
   position: relative;
@@ -195,11 +194,15 @@
   background-color: #ffffff;
   margin: 3px 5px;
   height: 30px;
-  box-shadow: 0px 0px 13px 0px rgb(85, 85, 85);
+  -webkit-box-shadow: 0px 0px 13px 0px rgb(85, 85, 85);
+          box-shadow: 0px 0px 13px 0px rgb(85, 85, 85);
+  -webkit-transition: 0.6s;
   transition: 0.6s;
 }
 
 .sc-choices {
+  display: -webkit-box;
+  display: -ms-flexbox;
   display: flex;
   cursor: pointer;
   margin-left: 5px;
@@ -239,7 +242,8 @@
 }
 
 .custom-select {
-  box-shadow: none !important;
+  -webkit-box-shadow: none !important;
+          box-shadow: none !important;
   outline: none !important;
 }
 
@@ -256,6 +260,7 @@
   top: 20px;
   right: 5px;
   /* width: 48px; */
+  -webkit-transition: 0.5s;
   transition: 0.5s;
   padding-right: 15px;
 }
@@ -267,6 +272,7 @@
   padding: 5px 15px;
   outline: none;
   position: relative;
+  -webkit-transition: 0.5s;
   transition: 0.5s;
 }
 
@@ -288,7 +294,8 @@
   position: absolute;
   top: 50%;
   left: 50%;
-  transform: translate(-50%, -50%);
+  -webkit-transform: translate(-50%, -50%);
+          transform: translate(-50%, -50%);
 }
 
 .se-no-res p {
@@ -305,19 +312,28 @@
 .se-row {
   margin: 15px 0px;
   padding: 5px 30px;
-  text-align: center;
   max-height: 250px;
   overflow-x: auto;
-  background-color: #effff3;
+  background-color: #effaf1;
   border-radius: 30px;
   border: 3px solid #195e28;
+}
+
+.se-res {
+  text-align: center;
+}
+
+.se-row .row,
+.se-row .animated,
+.se-res {
+  margin: 0;
+  padding: 0;
 }
 
 .se-row div {
   margin: 10px 0;
   padding: 5px 10px;
   border-radius: 30px;
-  /* border: 2px solid #195e28; */
   cursor: pointer;
 }
 .se-row p.se-symbol {
@@ -330,15 +346,26 @@
   margin: 0;
   padding: 0;
   font-size: 15px;
-
 }
 
 .se-detail {
+  display: none;
   padding: 10px 20px;
+}
+
+.se-detail .se-back {
+  font-size: 26px;
+  color: #065828;
+  margin: 0;
+  padding: 0;
 }
 
 .se-detail .row {
   margin-bottom: 15px;
+}
+
+.se-detail .row div {
+  margin: 0;
 }
 
 .se-detail p {

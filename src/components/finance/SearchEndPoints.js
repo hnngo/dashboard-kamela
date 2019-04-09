@@ -7,7 +7,7 @@ export default class SearchEndPoints extends Component {
 
     this.state = {
       result: undefined,
-      choice: 0,
+      choice: undefined,
       inputSearch: ""
     };
   }
@@ -61,7 +61,45 @@ export default class SearchEndPoints extends Component {
     this.setState({ inputSearch });
   }
 
-  async handleClick() {
+  handleClickDetail(index) {
+    this.setState({ choice: index }, () => {
+      // Let all the data fly left
+      const $rowData = document.querySelector(".se-row .animated");
+      const $rowDetail = document.querySelector(".se-detail");
+
+      if ($rowData && $rowDetail) {
+        $rowData.classList.remove("fadeInLeft");
+        $rowData.classList.add("fadeOutLeft");
+
+        setTimeout(() => {
+          $rowData.style.display = "none";
+          $rowDetail.style.display = "block";
+          $rowDetail.classList.remove("fadeOutRight", "fast");
+          $rowDetail.classList.add("fadeInRight");
+        }, 400);
+      }
+    });
+  }
+
+  handleClickBack() {
+    // Let all the data fly left
+    const $rowData = document.querySelector(".se-row .animated");
+    const $rowDetail = document.querySelector(".se-detail");
+    console.log($rowData, $rowDetail)
+
+    if ($rowData && $rowDetail) {
+      $rowDetail.classList.remove("fadeInRight");
+      $rowDetail.classList.add("fadeOutRight");
+      
+      $rowData.style.display = "block";
+      $rowData.classList.remove("fadeOutLeft");
+      $rowData.classList.add("fadeInLeft");;
+    }
+
+    this.setState({ choice: undefined })
+  }
+
+  async handleClickSearch() {
     // Check if input nothing then do nothing
     if (!this.state.inputSearch) {
       return;
@@ -79,60 +117,60 @@ export default class SearchEndPoints extends Component {
 
   renderMatchedData() {
     return this.state.result.map((item, i) => {
-      // const divClass = (this.state.choice === i) ? "se-active" : "";
-      if (window.screen.width >= 600) {
-        return (
-          <div key={i} className={"col-6"}>
-            <p className="se-symbol">{item["1. symbol"]}</p>
-            <p>{item["2. name"]}</p>
-          </div>
-        );
-      } else {
-        return (
-          <div key={i} className={"col-12"}>
-            <p className="se-symbol">{item["1. symbol"]}</p>
-            <p>{item["2. name"]}</p>
-          </div>
-        );
-      }
+      const divClass = (window.screen.width >= 600) ? "col-6" : "col-12";
+
+      return (
+        <div
+          key={i}
+          className={"se-res " + divClass}
+          onClick={() => this.handleClickDetail(i)}
+        >
+          <p className="se-symbol">{item["1. symbol"]}</p>
+          <p>{item["2. name"]}</p>
+        </div>
+      );
     });
   }
 
   renderDetailMatchedData() {
+    if (this.state.choice === undefined) {
+      return;
+    }
+
     const item = this.state.result[this.state.choice];
+    let divClass = (window.screen.width >= 600) ? "col-6" : "col-12";
+    divClass += " d-flex"
 
     return (
-      <div className="se-detail">
+      <div className="se-detail animated">
+        <i
+          className="se-back fas fa-arrow-circle-left"
+          onClick={() => this.handleClickBack()}
+        />
         <div className="row">
-          <div className="col-6 d-flex">
+          <div className={divClass}>
             <p>Symbol:&nbsp;
             <span className="info">{item["1. symbol"]}</span></p>
           </div>
-          <div className="col-6 d-flex">
+          <div className={divClass}>
             <p>Name:&nbsp;<span className="info">{item["2. name"]}</span></p>
           </div>
-        </div>
-        <div className="row">
-          <div className="col-6 d-flex">
+          <div className={divClass}>
             <p>Type:&nbsp;<span className="info">{item["3. type"]}</span></p>
           </div>
-          <div className="col-6 d-flex">
+          <div className={divClass}>
             <p>Region:&nbsp;<span className="info">{item["4. region"]}</span></p>
           </div>
-        </div>
-        <div className="row">
-          <div className="col-6 d-flex">
+          <div className={divClass}>
             <p>Market Open:&nbsp;<span className="info">{item["5. marketOpen"]}</span></p>
           </div>
-          <div className="col-6 d-flex">
+          <div className={divClass}>
             <p>Market Close:&nbsp;<span className="info">{item["6. marketClose"]}</span></p>
           </div>
-        </div>
-        <div className="row">
-          <div className="col-6 d-flex">
+          <div className={divClass}>
             <p>Time Zone:&nbsp;<span className="info">{item["7. timezone"]}</span></p>
           </div>
-          <div className="col-6 d-flex">
+          <div className={divClass}>
             <p>Currency:&nbsp;<span className="info">{item["8. currency"]}</span></p>
           </div>
         </div>
@@ -146,12 +184,14 @@ export default class SearchEndPoints extends Component {
       if (this.state.result.length > 0) {
         return (
           <div>
-            <div className="se-row row">
-              {this.renderMatchedData()}
-            </div>
-            {/* <div>
+            <div className="se-row">
+              <div className="animated">
+                <div className="row">
+                  {this.renderMatchedData()}
+                </div>
+              </div>
               {this.renderDetailMatchedData()}
-            </div> */}
+            </div>
           </div>
         );
       } else {
@@ -179,7 +219,7 @@ export default class SearchEndPoints extends Component {
           />
           <button
             onMouseEnter={() => this.handleMouseEnter()}
-            onClick={() => this.handleClick()}
+            onClick={() => this.handleClickSearch()}
           >
             <i className="fas fa-search" />
           </button>

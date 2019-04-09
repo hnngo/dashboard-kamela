@@ -104,6 +104,19 @@ No media query for `xs` since this is the default in Bootstrap */
   div.tooltip {
     display: none;
   }
+
+  /* ------- SEARCH ENDPOINT ------- */
+  .se-detail .se-back {
+    position: -webkit-sticky; /* Safari */
+    position: sticky;
+    top: 0;
+    right: 0;
+    font-size: 26px;
+    color: #065828;
+    margin: 0;
+    padding-left: 95%;
+  }
+  
 }
 
 @media (min-width: 576px) {
@@ -208,6 +221,7 @@ No media query for `xs` since this is the default in Bootstrap */
 
   .co-table-row:hover {
     /* background-color: rgb(76, 201, 142); */
+    background-image: -webkit-gradient(linear, left top, right top, from(#134e5e), to(#71b280));
     background-image: linear-gradient(to right, #134e5e, #71b280);
     color: white;
   }
@@ -245,13 +259,14 @@ No media query for `xs` since this is the default in Bootstrap */
   }
 
   /* ------- SEARCH ENDPOINT ------- */
-  .se-row div:hover,
+  .se-row .se-res:hover,
   .se-active {
-    background-color: #195e28;
+    background-image: -webkit-gradient(linear, left top, right top, from(#134e5e), to(#71b280));
+    background-image: linear-gradient(to right, #134e5e, #71b280);
     color: white;
   }
   
-  .se-row div:hover p.se-symbol {
+  .se-row .se-res:hover p.se-symbol {
     color: white;
   }
 }
