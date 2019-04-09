@@ -57,8 +57,7 @@
 
 /* ------- OUTSIDE SIDEBAR ------- */
 .outside-sidebar {
-  min-height: 100vh;
-  /* background-color: #f1f1f1 */
+  min-height: 100%;
   background-image: -webkit-gradient(linear, left top, right top, from(#134e5e), to(#71b280));
   background-image: linear-gradient(to right, #134e5e, #71b280);
 }
@@ -71,7 +70,6 @@
 }
 
 .board-container {
-  display: relative;
   margin: 10px 10px;
   background-color: white;
   width: 100%;
@@ -80,15 +78,6 @@
           box-shadow: 0px 0px 13px 0px rgba(82,63,105,0.05);
 
 }
-
-.board-content {
-  display: relative;
-}
-
-/* ----- BOAD ------ */
-/* .board-title h5 {
-
-} */
 
 /* ----- COMPANY OVERVIEW ----- */
 .co-table {
@@ -224,6 +213,10 @@
 }
 
 /* ----- FINANCE ----- */
+.fs-container {
+  overflow: hidden;
+}
+
 .fs-slidechoice {
   position: absolute;
   top: 16px;
@@ -310,13 +303,14 @@
 }
 
 .se-row {
-  margin: 15px 0px;
+  margin: 15px 20px;
   padding: 5px 30px;
-  max-height: 250px;
+  height: 280px;
   overflow-x: auto;
   background-color: #effaf1;
   border-radius: 30px;
   border: 3px solid #195e28;
+  box-shadow: inset 0px 0px 5px 0px rgb(85, 85, 85);
 }
 
 .se-res {
@@ -351,13 +345,6 @@
 .se-detail {
   display: none;
   padding: 10px 20px;
-}
-
-.se-detail .se-back {
-  font-size: 26px;
-  color: #065828;
-  margin: 0;
-  padding: 0;
 }
 
 .se-detail .row {

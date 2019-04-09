@@ -90,7 +90,7 @@ export default class SearchEndPoints extends Component {
     if ($rowData && $rowDetail) {
       $rowDetail.classList.remove("fadeInRight");
       $rowDetail.classList.add("fadeOutRight");
-      
+
       $rowData.style.display = "block";
       $rowData.classList.remove("fadeOutLeft");
       $rowData.classList.add("fadeInLeft");;
@@ -179,23 +179,26 @@ export default class SearchEndPoints extends Component {
   }
 
   renderSearchResults() {
-    console.log(this.state.result)
+    console.log(this.state.result);
+
     if (this.state.result) {
       if (this.state.result.length > 0) {
         return (
-          <div>
-            <div className="se-row">
-              <div className="animated">
-                <div className="row">
-                  {this.renderMatchedData()}
-                </div>
+          <div className="se-row">
+            <div className="animated">
+              <div className="row">
+                {this.renderMatchedData()}
               </div>
-              {this.renderDetailMatchedData()}
             </div>
+            {this.renderDetailMatchedData()}
           </div>
         );
       } else {
-        return <div />;
+        return (
+          <div className="se-no-res">
+            <p>There are no resuls for <span>"{this.state.inputSearch}"</span></p>
+          </div>
+        );
       }
     } else {
       return (

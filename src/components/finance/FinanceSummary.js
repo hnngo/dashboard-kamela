@@ -207,7 +207,7 @@ export default class FinanceSummary extends Component {
 
   render() {
     return (
-      <div className="">
+      <div className="fs-container">
         <div className="fs-slidechoice">
           <SlideChoice
             onSelect={(item) => this.handleSelectSector(item)}
@@ -228,7 +228,7 @@ export default class FinanceSummary extends Component {
         </div>
         <div className="row px-3">
           <div className="col-sm-6 col-12 mt-3">
-            <div className="mt-3 mb-4 ml-2">
+            <div className="mt-2 mb-4 ml-2">
               <PieChart
                 chartName={"StockIndustry"}
                 data={this.state.pieData}
