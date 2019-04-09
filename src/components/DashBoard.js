@@ -3,6 +3,9 @@ import Board from './Board';
 import CompanyOverview from './finance/CompanyOverview';
 import FinanceSummary from './finance/FinanceSummary';
 import LineGraph from './graphs/LineGraph';
+import SearchEndPoints from './finance/SearchEndPoints';
+import TechnicalIndicators from './finance/TechnicalIndicators';
+import data from '../company_data_500.json';
 import {
   // DATA_CLOSE,
   // DATA_HIGH,
@@ -12,9 +15,6 @@ import {
   DOUBLE_HEIGHT,
   SINGLE_HEIGHT
 } from '../constants';
-import data from '../company_data_500.json';
-import SearchEndPoints from './finance/SearchEndPoints';
-
 export default class DashBoard extends Component {
   constructor(props) {
     super(props);
@@ -122,9 +122,9 @@ export default class DashBoard extends Component {
           <div className="col-xl-8">
             <Board
               height={DOUBLE_HEIGHT}
-              title={"Company Overview"}
+              title={"Technical Indicators"}
               component={
-                <CompanyOverview data={filteredData} />
+                <TechnicalIndicators />
               }
             />
           </div>

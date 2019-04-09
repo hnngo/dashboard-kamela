@@ -179,8 +179,6 @@ export default class SearchEndPoints extends Component {
   }
 
   renderSearchResults() {
-    console.log(this.state.result);
-
     if (this.state.result) {
       if (this.state.result.length > 0) {
         return (
