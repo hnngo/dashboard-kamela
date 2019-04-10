@@ -8,6 +8,7 @@ export default class LineIndicators extends Component {
     super(props);
 
     this.state = {
+      svgInfo: undefined,
       data: undefined,
       loaded: true, // Temporarily
       margin: {
@@ -25,60 +26,43 @@ export default class LineIndicators extends Component {
 
   componentWillMount() {
     // Getting data and draw when data is loaded fully
-    this.getData(this.drawChart.bind(this));
+    this.getData(this.props.tiType, () => this.drawChart());
   }
 
+  componentWillReceiveProps(newProps) {
+    if (newProps.tiType !== this.props.tiType) {
+      this.getData(newProps.tiType, () => this.drawData());
+    }
+  }
 
-
-  getData = (callback) => {
+  getData = async (APILink, callback) => {
     // Get data from stock API
-    const data = [];
-    this.props.tiType.forEach(async (item, i) => {
-      let res = await axios.get(item);
+    let res = await axios.get(APILink);
 
-      // Check if result is valid data or error
-      // If fail, then re-attempt to get the data after 1 mins, free API maximum 5 calls per min
-      if ((Object.keys(res.data).includes("Error Message")) || (Object.keys(res.data).includes("Note"))) {
-        // Set interval for counting down for every second
-        const cooldownInterval = setInterval(() => this.setState({ cooldownTime: this.state.cooldownTime - 1 }), 1000);
+    // Check if result is valid data or error
+    // If fail, then re-attempt to get the data after 1 mins, free API maximum 5 calls per min
+    if ((Object.keys(res.data).includes("Error Message")) || (Object.keys(res.data).includes("Note"))) {
+      // Set interval for counting down for every second
+      const cooldownInterval = setInterval(() => this.setState({ cooldownTime: this.state.cooldownTime - 1 }), 1000);
 
-        // Set time out for the next attempt
-        setTimeout(() => {
-          clearInterval(this.state.cooldownInterval);
-          this.getData(this.drawChart.bind(this));
-        }, 60000);
+      // Set time out for the next attempt
+      setTimeout(() => {
+        clearInterval(this.state.cooldownInterval);
+        this.getData(this.drawChart.bind(this));
+      }, 60000);
 
-        this.setState({ loaded: false, cooldownInterval });
-      } else {
-        // Store data
-        data.push(res.data);
-
-        // Init chart after getting data fully
-        if (data.length === this.props.tiType.length) {
-          this.setState({ data, loaded: true }, () => callback());
-        }
-      }
-    });
+      this.setState({ loaded: false, cooldownInterval });
+    } else {
+      this.setState({ 
+        data: res.data,
+        loaded: true 
+      }, () => callback());
+    }
   }
 
   drawChart() {
-    // Setup data
-    let lineNames = [];
-    let yData = [];
-
-    this.state.data.forEach((item, i) => {
-      lineNames.push(item[Object.keys(item)[0]]["2: Indicator"]);
-
-      let temp = Object.values(item[Object.keys(item)[1]]).slice(0, 100);
-      yData.push(temp.map((item) => +item[Object.keys(item)[0]]))
-    });
-    
-    console.log(lineNames);
-    console.log(yData);
-    
     // Setup margin
     const { margin, totalWidth, totalHeight } = this.state;
-
     let wSvg, hSvg;
     wSvg = totalWidth - margin.left - margin.right;
     hSvg = totalHeight - margin.top - margin.bottom;
@@ -99,86 +83,26 @@ export default class LineIndicators extends Component {
                      .range([0, wSvg]);
 
     // Y scale
-    const maxY = d3.max(yData.map((item) => d3.max(item)));
-    const minY = d3.min(yData.map((item) => d3.min(item)));
-
     const yScale = d3.scaleLinear()
-                     .domain([minY - 20, maxY + 20])
+                    //  .domain([minY - 20, maxY + 20])
                      .range([hSvg, 0]);
     
     // X Axis
     const xAxis = d3.axisBottom(xScale).tickValues([]);
     svg.append("g")
        .call(xAxis)
-       .attr("transform", `translate(0,${hSvg/2 - margin.top/2})`);
+       .attr("transform", `translate(0,${hSvg/2})`)
+       .style("stroke-width", 0.2);;
       
     // Y Axis
-    const yAxis = d3.axisLeft(yScale);
-    svg.append("g")
-       .call(yAxis);
-    
-    // Line Division
-    const lines = [];
-    let linesTemp = {
-      pattern: undefined,
-      points: []
-    };
-    
-    yData.forEach((yDataEach) => {
-      console.log(yDataEach)
-      yDataEach.forEach((item, i) => {
-        console.log(item, i)
-        if (i === 0) {
-          linesTemp.pattern = item >= 0 ? "positive" : "negative";
-          linesTemp.points.push({ x: 0, y: item });
-          console.log("AAA<",linesTemp)
-        } else if ((item >= 0 && linesTemp.pattern === "positive") || (item < 0 && linesTemp.pattern === "negative")) {
-          linesTemp.points.push({ x: i, y: item });
-        } else if ((item >= 0 && linesTemp.pattern === "negative") || (item < 0 && linesTemp.pattern === "positive")) {
-          linesTemp.points.push({ x: i - 0.5, y: 0 });
-          lines.push(linesTemp);
+    // const yAxis = d3.axisLeft(yScale);
+    const yAxisGroup = svg.append("g")
+                        //  .call(yAxis)
+                          .style("stroke-width", 0.2);
+                        
+    const svgInfo = { svg, yScale, xScale, yAxisGroup };
 
-          linesTemp = {
-            pattern: undefined,
-            points: []
-          };
-
-          linesTemp.pattern = lines[lines.length - 1].pattern === "positive" ? "negative" : "positive";
-          linesTemp.points = [
-            { x: i - 0.5, y: 0 }, 
-            { x: i, y: item }
-          ];
-        }
-        console.log(linesTemp);
-      });
-    });
-
-    console.log(lines);
-
-    const line1 = d3.line()
-                   .x((d) => xScale(d.x))
-                   .y((d) => yScale(d.y))
-                   .curve(d3.curveBasis);
-                
- 
-    // Init path
-      svg.selectAll("path.ti")
-          .data(lines)
-          .enter()
-          .append("path")
-          .attr("class", "lineChart")
-          .attr("fill", "none")
-          .attr("d", (d) => line1(d.points))
-          .attr("stroke",  (d) => {
-            if (d.pattern >= "positive") {
-              return "green";
-            } else {
-              return "red";
-            }
-          })
-          .attr("stroke-width","4px")
-
-        
+    this.setState({ svgInfo }, () => this.drawData())
 
     // svg.append("path")
     //    .attr("class", "lineChart")
@@ -194,6 +118,97 @@ export default class LineIndicators extends Component {
     //    .attr("cy", (d, i) => yScale(d))
     //    .attr("r", 3)
     //    .attr("fill", "red")
+  }
+
+  drawData() {
+    const {
+      svg, yScale, xScale, yAxisGroup
+    } = this.state.svgInfo;
+
+    // Setup data
+    const { data } = this.state;
+    let lineNames = (data[Object.keys(data)[0]]["2: Indicator"]);
+    let temp = Object.values(data[Object.keys(data)[1]]).slice(0, 100);
+    let yData = temp.map((item) => +item[Object.keys(item)[0]])
+    
+    console.log(lineNames);
+    console.log(yData);
+    
+    // Define range of Y-axis
+    const maxY = d3.max(yData);
+    const minY = d3.min(yData);
+
+    if (minY >= 0) {
+      yScale.domain([-maxY - 20, maxY + 20]);
+    } else if (-minY < maxY) {
+      yScale.domain([-maxY - 20, maxY + 20]);
+    } else {
+      yScale.domain([minY - 20, -minY + 20]);
+    }
+    yAxisGroup.call(d3.axisLeft(yScale));
+
+    // Line Division
+    let lines = [];
+    let linesTemp = {
+      pattern: undefined,
+      points: []
+    };
+
+    yData.forEach((item, i) => {
+      if (i === 0) {
+        linesTemp.pattern = item >= 0 ? "positive" : "negative";
+        linesTemp.points.push({ x: 0, y: item });
+      } else if ((item >= 0 && linesTemp.pattern === "positive") || (item < 0 && linesTemp.pattern === "negative")) {
+        linesTemp.points.push({ x: i, y: item });
+      } else if ((item >= 0 && linesTemp.pattern === "negative") || (item < 0 && linesTemp.pattern === "positive")) {
+        linesTemp.points.push({ x: i - 0.5, y: 0 });
+        lines.push(linesTemp);
+
+        linesTemp = {
+          pattern: undefined,
+          points: []
+        };
+
+        linesTemp.pattern = lines[lines.length - 1].pattern === "positive" ? "negative" : "positive";
+        linesTemp.points = [
+          { x: i - 0.5, y: 0 }, 
+          { x: i, y: item }
+        ];
+      }
+    });
+    console.log(lines);
+
+    // Init line
+    const line = d3.line()
+                    .x((d) => xScale(d.x))
+                    .y((d) => yScale(d.y))
+                    .curve(d3.curveBasis);               
+
+
+    d3.selectAll("path.ti").remove().transition().duration(300)
+
+    const pathTI = svg.selectAll("path.ti")
+                      .data(lines);
+
+    pathTI.exit()
+          .transition().duration(300)
+            .attr("y", yScale(0))
+            .remove();
+
+    // Draw lines
+    pathTI.enter()
+          .append("path")
+          .attr("class", "ti")
+          .attr("fill", "none")
+          .attr("d", (d) => line(d.points))
+          .attr("stroke",  (d) => {
+            if (d.pattern >= "positive") {
+              return "green";
+            } else {
+              return "red";
+            }
+          })
+          .attr("stroke-width","3px");   
   }
 
   // Render "please waiting" when no data is retrieved from Stock API
@@ -254,4 +269,5 @@ export default class LineIndicators extends Component {
 
 //TODO: Tooltip pending
 //TODO: Check if need wait bc of demo key
+//TODO: Show activities indicator when waiting
 

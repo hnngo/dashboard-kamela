@@ -35,8 +35,8 @@ export const TI_ADX = "https://www.alphavantage.co/query?function=ADX&symbol=MSF
 export const TI_CCI = "https://www.alphavantage.co/query?function=CCI&symbol=MSFT&interval=daily&time_period=10&apikey=demo";
 //CCI
 
-export const TI_DEMA = "https://www.alphavantage.co/query?function=DEMA&symbol=MSFT&interval=weekly&time_period=10&series_type=open&apikey=demo";
+export const TI_CMO = "https://www.alphavantage.co/query?function=CMO&symbol=MSFT&interval=weekly&time_period=10&series_type=close&apikey=demo";
 
 
-export const TI_RSI = "https://www.alphavantage.co/query?function=RSI&symbol=MSFT&interval=weekly&time_period=10&series_type=open&apikey=demo";
+export const TI_AROONOS = "https://www.alphavantage.co/query?function=AROONOSC&symbol=MSFT&interval=daily&time_period=10&apikey=demo";
 

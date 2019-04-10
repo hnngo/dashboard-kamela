@@ -3,22 +3,40 @@ import { DATA_VOLUME } from '../../constants';
 import LineIndicators from '../graphs/LineIndicators';
 import {
   SINGLE_HEIGHT,
-  TI_DEMA,
-  TI_EMA,
-  TI_RSI,
-  TI_SMA,
-  TI_WMA,
+  TI_CMO,
+  TI_AROONOS,
   TI_CCI
 } from '../../constants';
 
 export default class TechnicalIndicators extends Component {
+  constructor(props) {
+    super(props);
+
+    this.state = {
+      selectTI: TI_CCI
+    }
+  }
+
+  handleSelectTI(e) {
+    this.setState({ selectTI: e.target.value });
+  }
+
   render() {
     return (
       <div>
+        <select
+          className="custom-select"
+          id="selectTI"
+          onChange={(e) => this.handleSelectTI(e)}
+        >
+          <option value={TI_CCI}>Commodity Channel Index (CCI)</option>
+          <option value={TI_AROONOS}>Aroon Oscillator (AROONOSC)</option>
+          <option value={TI_CMO}>Chande Momentum Oscillator (CMO)</option>
+        </select>
         <div className="row">
           <LineIndicators
             chartName={"TI"}
-            tiType={[TI_CCI]}
+            tiType={this.state.selectTI}
             stockSymbol={"AAPL"}
             dataType={DATA_VOLUME}
             maxNumberOfData={15}
