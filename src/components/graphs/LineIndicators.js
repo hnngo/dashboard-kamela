@@ -2,14 +2,6 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import * as d3 from 'd3';
 import axios from 'axios';
-import {
-  SINGLE_HEIGHT,
-  TI_DEMA,
-  TI_EMA,
-  TI_RSI,
-  TI_SMA,
-  TI_WMA
-} from '../../constants';
 
 export default class LineIndicators extends Component {
   constructor(props) {
@@ -20,12 +12,12 @@ export default class LineIndicators extends Component {
       loaded: true, // Temporarily
       margin: {
         top: 10,
-        left: 10,
+        left: 30,
         right: 10,
-        bottom: 10,
+        bottom: 30,
       },
       totalWidth: 800,
-      totalHeight: 200,
+      totalHeight: 300,
       cooldownTime: 60,
       cooldownInterval: undefined,
     }
@@ -39,11 +31,9 @@ export default class LineIndicators extends Component {
 
 
   getData = (callback) => {
-    const dataSet = [TI_RSI, TI_SMA, TI_WMA];
-
     // Get data from stock API
     const data = [];
-    dataSet.forEach(async (item, i) => {
+    this.props.tiType.forEach(async (item, i) => {
       let res = await axios.get(item);
 
       // Check if result is valid data or error
@@ -64,7 +54,7 @@ export default class LineIndicators extends Component {
         data.push(res.data);
 
         // Init chart after getting data fully
-        if (data.length === dataSet.length) {
+        if (data.length === this.props.tiType.length) {
           this.setState({ data, loaded: true }, () => callback());
         }
       }
@@ -93,14 +83,6 @@ export default class LineIndicators extends Component {
     wSvg = totalWidth - margin.left - margin.right;
     hSvg = totalHeight - margin.top - margin.bottom;
 
-    // if (this.props.showAxis) {
-    //   wSvg = totalWidth - margin.left - margin.right;
-    //   hSvg = totalHeight - margin.top - margin.bottom;
-    // } else {
-    //   wSvg = totalWidth;
-    //   hSvg = totalHeight - margin.top;
-    // }
-
     // Init svg
     const svg = d3.select("#lineChart" + this.props.chartName)
                   .append("svg")
@@ -112,57 +94,90 @@ export default class LineIndicators extends Component {
                     .attr("transform", `translate(${margin.left},${margin.top})`);
 
     // X scale
-    // const timeParse = d3.timeParse("%Y-%m-%d %H:%M:%S");
     const xScale = d3.scaleTime()
                      .domain([0, 100])
                      .range([0, wSvg]);
 
     // Y scale
-
-    const maxY = d3.max([d3.max(yData[0]), d3.max(yData[1]), d3.max(yData[2])]);
-    const minY = d3.min([d3.min(yData[0]), d3.min(yData[1]), d3.min(yData[2])]);
-
+    const maxY = d3.max(yData.map((item) => d3.max(item)));
+    const minY = d3.min(yData.map((item) => d3.min(item)));
 
     const yScale = d3.scaleLinear()
-                     .domain([minY, maxY])
+                     .domain([minY - 20, maxY + 20])
                      .range([hSvg, 0]);
     
+    // X Axis
+    const xAxis = d3.axisBottom(xScale).tickValues([]);
+    svg.append("g")
+       .call(xAxis)
+       .attr("transform", `translate(0,${hSvg/2 - margin.top/2})`);
+      
+    // Y Axis
+    const yAxis = d3.axisLeft(yScale);
+    svg.append("g")
+       .call(yAxis);
     
-    if (this.props.showAxis) {
-      // X Axis
-      const xAxis = d3.axisBottom(xScale);
-      svg.append("g")
-        .call(xAxis)
-        .attr("transform", "translate(0," + hSvg + ")");
-        
-      // Y Axis
-      const yAxis = d3.axisLeft(yScale);
-      svg.append("g")
-        .call(yAxis);
-    }
+    // Line Division
+    const lines = [];
+    let linesTemp = {
+      pattern: undefined,
+      points: []
+    };
     
-    // Line's generator
-    const line = d3.line()
-                   .x((d, i) => xScale(i))
-                   .y((d) => yScale(d))
-                   .curve(d3.curveMonotoneX);
+    yData.forEach((yDataEach) => {
+      console.log(yDataEach)
+      yDataEach.forEach((item, i) => {
+        console.log(item, i)
+        if (i === 0) {
+          linesTemp.pattern = item >= 0 ? "positive" : "negative";
+          linesTemp.points.push({ x: 0, y: item });
+          console.log("AAA<",linesTemp)
+        } else if ((item >= 0 && linesTemp.pattern === "positive") || (item < 0 && linesTemp.pattern === "negative")) {
+          linesTemp.points.push({ x: i, y: item });
+        } else if ((item >= 0 && linesTemp.pattern === "negative") || (item < 0 && linesTemp.pattern === "positive")) {
+          linesTemp.points.push({ x: i - 0.5, y: 0 });
+          lines.push(linesTemp);
 
-    // Create area below line
-    // const area = d3.area()
-    //                .x((d, i) => xScale(i))
-    //                .y0(hSvg)
-    //                .y1((d) => yScale(d))
-    //                .curve(d3.curveMonotoneX);
+          linesTemp = {
+            pattern: undefined,
+            points: []
+          };
+
+          linesTemp.pattern = lines[lines.length - 1].pattern === "positive" ? "negative" : "positive";
+          linesTemp.points = [
+            { x: i - 0.5, y: 0 }, 
+            { x: i, y: item }
+          ];
+        }
+        console.log(linesTemp);
+      });
+    });
+
+    console.log(lines);
+
+    const line1 = d3.line()
+                   .x((d) => xScale(d.x))
+                   .y((d) => yScale(d.y))
+                   .curve(d3.curveBasis);
+                
  
     // Init path
-    yData.forEach((item) => {
-      svg.append("path")
-      .attr("class", "lineChart")
-      .attr("fill", "none")
-      .attr("stroke", this.props.lineColor)
-      .attr("stroke-width", "4px")
-      .attr("d", line(item))
-    })
+      svg.selectAll("path.ti")
+          .data(lines)
+          .enter()
+          .append("path")
+          .attr("class", "lineChart")
+          .attr("fill", "none")
+          .attr("d", (d) => line1(d.points))
+          .attr("stroke",  (d) => {
+            if (d.pattern >= "positive") {
+              return "green";
+            } else {
+              return "red";
+            }
+          })
+          .attr("stroke-width","4px")
+
         
 
     // svg.append("path")
@@ -239,3 +254,4 @@ export default class LineIndicators extends Component {
 
 //TODO: Tooltip pending
 //TODO: Check if need wait bc of demo key
+
