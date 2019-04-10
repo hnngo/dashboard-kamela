@@ -79,7 +79,7 @@ export default class LineIndicators extends Component {
 
     // X scale
     const xScale = d3.scaleTime()
-                     .domain([0, 100])
+                     .domain([-1, 100])
                      .range([0, wSvg]);
 
     // Y scale
@@ -92,6 +92,7 @@ export default class LineIndicators extends Component {
     svg.append("g")
        .call(xAxis)
        .attr("transform", `translate(0,${hSvg/2})`)
+       .style("z-index","10")
        .style("stroke-width", 0.2);;
       
     // Y Axis
@@ -100,7 +101,7 @@ export default class LineIndicators extends Component {
                         //  .call(yAxis)
                           .style("stroke-width", 0.2);
                         
-    const svgInfo = { svg, yScale, xScale, yAxisGroup };
+    const svgInfo = { svg, yScale, xScale, yAxisGroup, hSvg };
 
     this.setState({ svgInfo }, () => this.drawData())
 
@@ -122,7 +123,7 @@ export default class LineIndicators extends Component {
 
   drawData() {
     const {
-      svg, yScale, xScale, yAxisGroup
+      svg, yScale, xScale, yAxisGroup, hSvg
     } = this.state.svgInfo;
 
     // Setup data
@@ -184,16 +185,16 @@ export default class LineIndicators extends Component {
                     .y((d) => yScale(d.y))
                     .curve(d3.curveBasis);               
 
-
-    d3.selectAll("path.ti").remove().transition().duration(300)
+    const area = d3.area()
+                  .x((d) => xScale(d.x))
+                  .y0(hSvg/2)
+                  .y1((d) => yScale(d.y))
+                  .curve(d3.curveBasis);
+           
+    d3.selectAll("path.ti").remove();
 
     const pathTI = svg.selectAll("path.ti")
                       .data(lines);
-
-    pathTI.exit()
-          .transition().duration(300)
-            .attr("y", yScale(0))
-            .remove();
 
     // Draw lines
     pathTI.enter()
@@ -208,7 +209,24 @@ export default class LineIndicators extends Component {
               return "red";
             }
           })
-          .attr("stroke-width","3px");   
+          .attr("stroke-width","3px");
+
+    svg.selectAll("path.tiArea")
+       .data(lines)
+       .enter()
+       .append("path")
+       .attr("class", "tiArea")
+       .attr("id", (d, i) => `${this.props.chartName}area${i}`)
+       .attr("fill", "white")
+       .attr("d", (d) => area(d.points))
+       .style("opacity", 0.4)
+       .on("mousemove", (d, i) => {
+         d3.select(`#${this.props.chartName}area${i}`).attr("fill", d.pattern === "positive" ? "green" : "red");
+       })
+       .on("mouseout", (d, i) => {
+          d3.select(`#${this.props.chartName}area${i}`).attr("fill", "white");
+        })
+         
   }
 
   // Render "please waiting" when no data is retrieved from Stock API
@@ -270,4 +288,4 @@ export default class LineIndicators extends Component {
 //TODO: Tooltip pending
 //TODO: Check if need wait bc of demo key
 //TODO: Show activities indicator when waiting
-
+//TODO: Fix mousemove in other data

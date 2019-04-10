@@ -128,8 +128,8 @@ export default class LineGraph extends Component {
        .attr("fill", "none")
        .attr("stroke", this.props.lineColor)
        .attr("stroke-width", "4px")
-       .attr("d", line(yData));
-
+       .attr("d", line(yData))
+       
     svg.append("path")
        .attr("class", "lineChart")
        .attr("fill", this.props.areaColor)
