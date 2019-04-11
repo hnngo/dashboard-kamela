@@ -101,17 +101,7 @@ export default class LineIndicators extends Component {
                         
     const svgInfo = { svg, yScale, xScale, yAxisGroup, hSvg };
 
-    this.setState({ svgInfo }, () => this.drawData())
-
-    // Draw data dot circle
-    // svg.selectAll("circle")
-    //    .data(yDataVolume)
-    //    .enter()
-    //    .append("circle")
-    //    .attr("cx", (d, i) => xScale(timeParse(xData[i])))
-    //    .attr("cy", (d, i) => yScale(d))
-    //    .attr("r", 3)
-    //    .attr("fill", "red")
+    this.setState({ svgInfo }, () => this.drawData());
   }
 
   drawData() {
@@ -121,12 +111,8 @@ export default class LineIndicators extends Component {
 
     // Setup data
     const { data } = this.state;
-    let lineNames = (data[Object.keys(data)[0]]["2: Indicator"]);
     let temp = Object.values(data[Object.keys(data)[1]]).slice(0, 100);
     let yData = temp.map((item) => +item[Object.keys(item)[0]]).reverse();
-    
-    console.log(lineNames);
-    console.log(yData);
     
     // Define range of Y-axis
     const maxY = d3.max(yData);
@@ -178,36 +164,20 @@ export default class LineIndicators extends Component {
     const line = d3.line()
                     .x((d) => xScale(d.x))
                     .y((d) => yScale(d.y))
-                    .curve(d3.curveBasis);               
+                    // .curve(d3.curveBasis);               
     // Init area
     const area = d3.area()
                   .x((d) => xScale(d.x))
                   .y0(hSvg/2)
                   .y1((d) => yScale(d.y))
-                  .curve(d3.curveBasis);
-           
-    d3.selectAll("path.ti").remove();
-    d3.selectAll("path.tiArea").remove();
+                  // .curve(d3.curveBasis);
+      
+    // Erase old data
+    svg.selectAll("path.ti").remove();
+    svg.selectAll("path.tiArea").remove();
+    svg.selectAll("circle").remove();
 
-    const pathTI = svg.selectAll("path.ti")
-                      .data(lines);
-
-    // Draw lines
-    pathTI.enter()
-          .append("path")
-          .attr("class", "ti")
-          .attr("fill", "none")
-          .attr("d", (d) => line(d.points))
-          .attr("stroke",  (d) => {
-            if (d.pattern >= "positive") {
-              return "green";
-            } else {
-              return "red";
-            }
-          })
-          .attr("stroke-width","3px");
-    
-    // Draw area
+    // Draw area first to get lower z-index
     svg.selectAll("path.tiArea")
        .data(lines)
        .enter()
@@ -224,7 +194,41 @@ export default class LineIndicators extends Component {
        .on("mouseout", (d, i) => {
          let id = `#${this.props.chartName}area${i}`;
          d3.select(id).attr("fill", "white");
-       })
+       });
+
+    // Draw lines
+    svg.selectAll("path.ti")
+        .data(lines)
+        .enter()
+        .append("path")
+        .attr("class", "ti")
+        .attr("fill", "none")
+        .attr("d", (d) => line(d.points))
+        .attr("stroke",  (d) => {
+          if (d.pattern >= "positive") {
+            return "green";
+          } else {
+            return "red";
+          }
+        })
+        .attr("stroke-width","3px");
+
+    console.log(lines);
+    // Draw data dot circle
+    lines.forEach((line, i) => {
+      svg.selectAll(`circle.${this.props.chartName}circle${i}`)
+        .data(line.points)
+        .enter()
+        .append("circle")
+        .attr("class", `${this.props.chartName}circle${i}`)
+        .attr("cx", (d, i) => xScale(d.x))
+        .attr("cy", (d, i) => yScale(d.y))
+        .attr("r", (d, i) => d.y !== 0 ? 4 : 0)
+        .attr("fill", (d, i) => {
+          return d.y >= 0 ? "green" : "red";
+        })
+    });
+
          
   }
 
@@ -288,3 +292,6 @@ export default class LineIndicators extends Component {
 //TODO: Check if need wait bc of demo key
 //TODO: Show activities indicator when waiting
 //TODO: Fix mousemove in other data
+//TODO: On small screen draw less number of data
+//TODO: Correct the width to have rounded circle
+//TODO: With top peak stroke only not fill
