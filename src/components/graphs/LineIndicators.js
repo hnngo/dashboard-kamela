@@ -84,7 +84,6 @@ export default class LineIndicators extends Component {
 
     // Y scale
     const yScale = d3.scaleLinear()
-                    //  .domain([minY - 20, maxY + 20])
                      .range([hSvg, 0]);
     
     // X Axis
@@ -92,8 +91,7 @@ export default class LineIndicators extends Component {
     svg.append("g")
        .call(xAxis)
        .attr("transform", `translate(0,${hSvg/2})`)
-       .style("z-index","10")
-       .style("stroke-width", 0.2);;
+       .style("stroke-width", 0.1);
       
     // Y Axis
     // const yAxis = d3.axisLeft(yScale);
@@ -104,11 +102,6 @@ export default class LineIndicators extends Component {
     const svgInfo = { svg, yScale, xScale, yAxisGroup, hSvg };
 
     this.setState({ svgInfo }, () => this.drawData())
-
-    // svg.append("path")
-    //    .attr("class", "lineChart")
-    //    .attr("fill", this.props.areaColor)
-    //    .attr("d", area(yData[0]));
 
     // Draw data dot circle
     // svg.selectAll("circle")
@@ -130,7 +123,7 @@ export default class LineIndicators extends Component {
     const { data } = this.state;
     let lineNames = (data[Object.keys(data)[0]]["2: Indicator"]);
     let temp = Object.values(data[Object.keys(data)[1]]).slice(0, 100);
-    let yData = temp.map((item) => +item[Object.keys(item)[0]])
+    let yData = temp.map((item) => +item[Object.keys(item)[0]]).reverse();
     
     console.log(lineNames);
     console.log(yData);
@@ -140,11 +133,11 @@ export default class LineIndicators extends Component {
     const minY = d3.min(yData);
 
     if (minY >= 0) {
-      yScale.domain([-maxY - 20, maxY + 20]);
+      yScale.domain([-maxY - 10, maxY + 10]);
     } else if (-minY < maxY) {
-      yScale.domain([-maxY - 20, maxY + 20]);
+      yScale.domain([-maxY - 10, maxY + 10]);
     } else {
-      yScale.domain([minY - 20, -minY + 20]);
+      yScale.domain([minY - 10, -minY + 10]);
     }
     yAxisGroup.call(d3.axisLeft(yScale));
 
@@ -159,6 +152,9 @@ export default class LineIndicators extends Component {
       if (i === 0) {
         linesTemp.pattern = item >= 0 ? "positive" : "negative";
         linesTemp.points.push({ x: 0, y: item });
+      } else if (i === yData.length - 1) {
+        linesTemp.points.push({ x: i, y: item });
+        lines.push(linesTemp);
       } else if ((item >= 0 && linesTemp.pattern === "positive") || (item < 0 && linesTemp.pattern === "negative")) {
         linesTemp.points.push({ x: i, y: item });
       } else if ((item >= 0 && linesTemp.pattern === "negative") || (item < 0 && linesTemp.pattern === "positive")) {
@@ -177,14 +173,13 @@ export default class LineIndicators extends Component {
         ];
       }
     });
-    console.log(lines);
 
     // Init line
     const line = d3.line()
                     .x((d) => xScale(d.x))
                     .y((d) => yScale(d.y))
                     .curve(d3.curveBasis);               
-
+    // Init area
     const area = d3.area()
                   .x((d) => xScale(d.x))
                   .y0(hSvg/2)
@@ -192,6 +187,7 @@ export default class LineIndicators extends Component {
                   .curve(d3.curveBasis);
            
     d3.selectAll("path.ti").remove();
+    d3.selectAll("path.tiArea").remove();
 
     const pathTI = svg.selectAll("path.ti")
                       .data(lines);
@@ -210,7 +206,8 @@ export default class LineIndicators extends Component {
             }
           })
           .attr("stroke-width","3px");
-
+    
+    // Draw area
     svg.selectAll("path.tiArea")
        .data(lines)
        .enter()
@@ -221,11 +218,13 @@ export default class LineIndicators extends Component {
        .attr("d", (d) => area(d.points))
        .style("opacity", 0.4)
        .on("mousemove", (d, i) => {
-         d3.select(`#${this.props.chartName}area${i}`).attr("fill", d.pattern === "positive" ? "green" : "red");
+         let id = `#${this.props.chartName}area${i}`;
+         d3.select(id).attr("fill", d.pattern === "positive" ? "green" : "red");
        })
        .on("mouseout", (d, i) => {
-          d3.select(`#${this.props.chartName}area${i}`).attr("fill", "white");
-        })
+         let id = `#${this.props.chartName}area${i}`;
+         d3.select(id).attr("fill", "white");
+       })
          
   }
 

@@ -306,7 +306,7 @@
   margin: 15px 20px;
   padding: 5px 30px;
   height: 280px;
-  overflow-x: auto;
+  overflow-x: hidden;
   background-color: #effaf1;
   border-radius: 30px;
   border: 3px solid #195e28;
