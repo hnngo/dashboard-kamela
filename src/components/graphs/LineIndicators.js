@@ -20,12 +20,40 @@ export default class LineIndicators extends Component {
       totalWidth: 800,
       totalHeight: 300,
       number: 100,
+      resizeEvent: undefined
     }
   }
 
   componentWillMount() {
     // Getting data and draw when data is loaded fully
     this.getData(this.props.tiType, () => this.drawChart());
+  }
+
+  componentDidMount() {
+    // Loop interval for resize checking
+    const resizeEvent = setInterval(() => {
+      const $tiContainer = document.querySelector(".ti-container");
+
+      if ($tiContainer) {
+        const currentWidth = $tiContainer.clientWidth;
+
+        if (this.state.totalWidth !== currentWidth) {
+          let number = currentWidth > 576 ? this.state.number : 50;
+
+          this.setState({ 
+            totalWidth: $tiContainer.clientWidth,
+            loaded: false,
+            number
+          }, () => this.getData(this.props.tiType, () => this.drawChart()));
+        }
+      }
+    }, 200);
+
+    this.setState({ resizeEvent });
+  }
+
+  componentWillUnmount() {
+    clearInterval(this.state.resizeEvent);
   }
 
   componentWillReceiveProps(newProps) {
@@ -287,7 +315,7 @@ export default class LineIndicators extends Component {
           if (d.y >= 0) {
             return yScale(d.y) - 10;
           } else {
-            return yScale(d.y) + 15;
+            return yScale(d.y) + 20;
           }
         })
         .attr("text-anchor", "middle")
@@ -331,17 +359,10 @@ export default class LineIndicators extends Component {
   }
 }
 
-// LineIndicators.propTypes = {
-//   chartName: PropTypes.string.isRequired,
-//   offsetTop: PropTypes.number,
-//   stockSymbol: PropTypes.string.isRequired,
-//   maxNumberOfData: PropTypes.number.isRequired,
-//   dataType: PropTypes.string,
-//   showAxis: PropTypes.bool,
-//   lineColor: PropTypes.string,
-//   areaColor: PropTypes.string,
-//   titleColor: PropTypes.string,
-// };
+LineIndicators.propTypes = {
+  chartName: PropTypes.string.isRequired,
+  tiType: PropTypes.string.isRequired
+};
 
 //TODO: On small screen draw less number of data
 //TODO: Correct the width to have rounded circle

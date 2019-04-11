@@ -26,15 +26,15 @@ export default class PieChart extends Component {
   componentWillMount() {
     // Loop interval for resize checking
     const resizeEvent = setInterval(() => {
-      const currentSize = window.screen.width;
+      const currentWidth = window.screen.width;
       let smallScreen, prevWidth = undefined, setState = false;
 
       // Checking for show Top company info
-      if ((currentSize <= 576) && (currentSize !== this.state.prevWidth)) {
+      if ((currentWidth <= 576) && (currentWidth !== this.state.prevWidth)) {
         setState = true;
         smallScreen = true;
-        prevWidth = currentSize;
-      } else if ((currentSize > 576) && (this.state.smallScreen)) {
+        prevWidth = currentWidth;
+      } else if ((currentWidth > 576) && (this.state.smallScreen)) {
         setState = true;
         smallScreen = false;
       }

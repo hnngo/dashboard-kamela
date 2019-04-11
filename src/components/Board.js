@@ -7,10 +7,10 @@ export default class Board extends Component {
 
     // Loop interval for resize checking
     const resizeEvent = setInterval(() => {
-      const currentSize = window.screen.width;
-      if (currentSize < 1200 && this.state.isCurrentScreenBig) {
+      const currentWidth = window.screen.width;
+      if (currentWidth < 1200 && this.state.isCurrentScreenBig) {
         this.setState({ isCurrentScreenBig: false });
-      } else if (currentSize >= 1200 && !this.state.isCurrentScreenBig) {
+      } else if (currentWidth >= 1200 && !this.state.isCurrentScreenBig) {
         this.setState({ isCurrentScreenBig: true });
       }
     }, 200);

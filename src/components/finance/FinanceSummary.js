@@ -38,14 +38,14 @@ export default class FinanceSummary extends Component {
   componentWillMount() {
     // Loop interval for resize checking
     const resizeEvent = setInterval(() => {
-      const currentSize = window.screen.width;
+      const currentWidth = window.screen.width;
       let showTopInfo, smallSlide, setState = false;
 
       // Checking for show Top company info
-      if (((currentSize < 1600 && currentSize >= 1200) || (currentSize < 920)) && (this.state.showTopInfo)) {
+      if (((currentWidth < 1600 && currentWidth >= 1200) || (currentWidth < 920)) && (this.state.showTopInfo)) {
         showTopInfo = false;
         setState = true;
-      } else if (!((currentSize < 1600 && currentSize >= 1200) || (currentSize < 920)) && !this.state.showTopInfo) {
+      } else if (!((currentWidth < 1600 && currentWidth >= 1200) || (currentWidth < 920)) && !this.state.showTopInfo) {
         showTopInfo = true;
         setState = true;
       }
