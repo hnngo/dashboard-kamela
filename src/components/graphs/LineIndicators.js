@@ -14,13 +14,14 @@ export default class LineIndicators extends Component {
       margin: {
         top: 10,
         left: 30,
-        right: 10,
+        right: 20,
         bottom: 30,
       },
       totalWidth: 800,
       totalHeight: 300,
       cooldownTime: 60,
       cooldownInterval: undefined,
+      number: 100,
     }
   }
 
@@ -79,7 +80,7 @@ export default class LineIndicators extends Component {
 
     // X scale
     const xScale = d3.scaleTime()
-                     .domain([-1, 100])
+                     .domain([-1, this.state.number])
                      .range([0, wSvg]);
 
     // Y scale
@@ -111,7 +112,7 @@ export default class LineIndicators extends Component {
 
     // Setup data
     const { data } = this.state;
-    let temp = Object.values(data[Object.keys(data)[1]]).slice(0, 100);
+    let temp = Object.values(data[Object.keys(data)[1]]).slice(0, this.state.number);
     let yData = temp.map((item) => +item[Object.keys(item)[0]]).reverse();
     
     // Define range of Y-axis
@@ -119,11 +120,11 @@ export default class LineIndicators extends Component {
     const minY = d3.min(yData);
 
     if (minY >= 0) {
-      yScale.domain([-maxY - 10, maxY + 10]);
+      yScale.domain([-maxY - 15, maxY + 15]);
     } else if (-minY < maxY) {
-      yScale.domain([-maxY - 10, maxY + 10]);
+      yScale.domain([-maxY - 15, maxY + 15]);
     } else {
-      yScale.domain([minY - 10, -minY + 10]);
+      yScale.domain([minY - 15, -minY + 15]);
     }
     yAxisGroup.call(d3.axisLeft(yScale));
 
@@ -176,25 +177,8 @@ export default class LineIndicators extends Component {
     svg.selectAll("path.ti").remove();
     svg.selectAll("path.tiArea").remove();
     svg.selectAll("circle").remove();
-
-    // Draw area first to get lower z-index
-    svg.selectAll("path.tiArea")
-       .data(lines)
-       .enter()
-       .append("path")
-       .attr("class", "tiArea")
-       .attr("id", (d, i) => `${this.props.chartName}area${i}`)
-       .attr("fill", "white")
-       .attr("d", (d) => area(d.points))
-       .style("opacity", 0.4)
-       .on("mousemove", (d, i) => {
-         let id = `#${this.props.chartName}area${i}`;
-         d3.select(id).attr("fill", d.pattern === "positive" ? "green" : "red");
-       })
-       .on("mouseout", (d, i) => {
-         let id = `#${this.props.chartName}area${i}`;
-         d3.select(id).attr("fill", "white");
-       });
+    svg.selectAll("line").remove();
+    svg.selectAll(`text[class^="${this.props.chartName}"]`).remove();
 
     // Draw lines
     svg.selectAll("path.ti")
@@ -213,23 +197,100 @@ export default class LineIndicators extends Component {
         })
         .attr("stroke-width","3px");
 
-    console.log(lines);
+    // Draw area first to get lower z-index
+    svg.selectAll("path.tiArea")
+       .data(lines)
+       .enter()
+       .append("path")
+       .attr("class", "tiArea")
+       .attr("id", (d, i) => `${this.props.chartName}area${i}`)
+       .attr("fill", "white")
+       .attr("d", (d) => area(d.points))
+       .style("opacity", 0.4)
+       .on("mousemove", (d, i) => {
+         d3.select(`#${this.props.chartName}area${i}`).attr("fill", d.pattern === "positive" ? "green" : "red");
+         
+         d3.select(`circle.${this.props.chartName}circle${i}`).attr("display", "block");
+
+         d3.select(`line.${this.props.chartName}line${i}`).attr("display", "block");
+
+         d3.select(`text.${this.props.chartName}text${i}`).attr("display", "block");
+       })
+       .on("mouseout", (d, i) => {
+         d3.select(`#${this.props.chartName}area${i}`).attr("fill", "white");
+
+         d3.select(`circle.${this.props.chartName}circle${i}`).attr("display", "none");
+
+         d3.select(`line.${this.props.chartName}line${i}`).attr("display", "none");
+
+         d3.select(`text.${this.props.chartName}text${i}`).attr("display", "none");
+       })
+      //  .on("mouseenter", (d) => console.log(d));
+
+    const peaks = lines.map((item) => {
+      let maxVal, peakVal, res;
+
+      if (item.pattern === "positive") {        
+        maxVal = d3.max(Object.values(item.points).map((p) => p.y))
+      } else if (item.pattern === "negative") {   
+        maxVal = d3.min(Object.values(item.points).map((p) => p.y))
+      }
+
+      peakVal = item.points.filter((d) => d.y === maxVal);
+      res = { ...item };
+      res.points = peakVal;
+      return res;
+    });
+
     // Draw data dot circle
-    lines.forEach((line, i) => {
+    peaks.forEach((peak, i) => {
       svg.selectAll(`circle.${this.props.chartName}circle${i}`)
-        .data(line.points)
+        .data(peak.points)
         .enter()
         .append("circle")
         .attr("class", `${this.props.chartName}circle${i}`)
-        .attr("cx", (d, i) => xScale(d.x))
-        .attr("cy", (d, i) => yScale(d.y))
-        .attr("r", (d, i) => d.y !== 0 ? 4 : 0)
-        .attr("fill", (d, i) => {
+        .attr("cx", (d) => xScale(d.x))
+        .attr("cy", (d) => yScale(d.y))
+        .attr("r", (d) => d.y !== 0 ? 4 : 0)
+        .attr("fill", "none")
+        .attr("display", "none")
+        .attr("stroke", (d) => {
           return d.y >= 0 ? "green" : "red";
         })
-    });
+        .attr("stroke-width", 3);
 
-         
+      svg.selectAll(`line.${this.props.chartName}line${i}`)
+        .data(peak.points)
+        .enter()
+        .append("line")
+        .attr("class", `${this.props.chartName}line${i}`)
+        .attr("x1", xScale(-1))
+        .attr("y1", (d) => yScale(d.y))
+        .attr("x2", (d) => xScale(d.x))
+        .attr("y2", (d) => yScale(d.y))
+        .attr("stroke", "black")
+        .attr("stroke-width", 0.5)
+        .attr("stroke-dasharray", "5,5")
+        .attr("display", "none");
+
+      svg.selectAll(`text.${this.props.chartName}text${i}`)
+        .data(peak.points)
+        .enter()
+        .append("text")
+        .attr("class", `${this.props.chartName}text${i}`)
+        .attr("x", (d) => xScale(d.x))
+        .attr("y", (d) => {
+          if (d.y >= 0) {
+            return yScale(d.y) - 5;
+          } else {
+            return yScale(d.y) + 15;
+          }
+        })
+        .attr("text-anchor", "middle")
+        .attr("font-size", "12px")
+        .text((d) => d.y)
+        .attr("display", "none");
+    });
   }
 
   // Render "please waiting" when no data is retrieved from Stock API
@@ -295,3 +356,4 @@ export default class LineIndicators extends Component {
 //TODO: On small screen draw less number of data
 //TODO: Correct the width to have rounded circle
 //TODO: With top peak stroke only not fill
+
