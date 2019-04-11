@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import * as d3 from 'd3';
 import axios from 'axios';
 
-export default class LineIndicators extends Component {
+export default class LineStockSeries extends Component {
   constructor(props) {
     super(props);
 
@@ -359,7 +359,10 @@ export default class LineIndicators extends Component {
   }
 }
 
-LineIndicators.propTypes = {
-  chartName: PropTypes.string.isRequired,
-  tiType: PropTypes.string.isRequired
-};
+// LineIndicators.propTypes = {
+//   chartName: PropTypes.string.isRequired,
+//   tiType: PropTypes.string.isRequired
+// };
+
+//TODO: On small screen draw less number of data
+//TODO: Correct the width to have rounded circle

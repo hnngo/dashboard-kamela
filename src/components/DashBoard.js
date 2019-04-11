@@ -15,6 +15,7 @@ import {
   DOUBLE_HEIGHT,
   SINGLE_HEIGHT
 } from '../constants';
+
 export default class DashBoard extends Component {
   constructor(props) {
     super(props);

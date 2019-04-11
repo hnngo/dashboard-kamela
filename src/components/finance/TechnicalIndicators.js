@@ -8,6 +8,7 @@ import {
   TI_EMA,
   TI_ROC
 } from '../../constants';
+import LineStockSeries from '../graphs/LineStockSeries';
 
 export default class TechnicalIndicators extends Component {
   constructor(props) {
@@ -44,7 +45,13 @@ export default class TechnicalIndicators extends Component {
           />
         </div>
         <div className="row">
-          Sector 2
+          <div className="board-title ml-3 d-flex justify-content-between">
+            <h5 className="pt-3 pl-3 bold">Stock Times Series</h5>
+          </div>
+          <LineStockSeries
+            chartName={"SS"}
+            tiType={this.state.selectTI}
+          />
         </div>
       </div>
     );
