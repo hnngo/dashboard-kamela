@@ -157,6 +157,8 @@
 
 .line-nodata-container {
   height: 276px;
+  margin: 10px 10px;
+  padding: 0px 30px;
 }
 
 .line-extraInfo {
@@ -315,6 +317,7 @@
 
 .se-res {
   text-align: center;
+  cursor: pointer;
 }
 
 .se-row .row,
@@ -328,8 +331,8 @@
   margin: 10px 0;
   padding: 5px 10px;
   border-radius: 30px;
-  cursor: pointer;
 }
+
 .se-row p.se-symbol {
   color: #195e28;
   font-size: 24px;
@@ -366,9 +369,10 @@
   color: #195e28;
 }
 
-.li-container {
+.ti-container {
   margin: 10px 10px;
   padding: 0px 30px;
   width: 100%;
+  height: 276px;
 }
 

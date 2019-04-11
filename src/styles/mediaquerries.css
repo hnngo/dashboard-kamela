@@ -276,6 +276,7 @@ No media query for `xs` since this is the default in Bootstrap */
     color: #065828;
     margin: 10px 0;
     padding: 0;
+    cursor: pointer;
   }
 }
 
