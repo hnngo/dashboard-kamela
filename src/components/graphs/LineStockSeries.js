@@ -26,34 +26,34 @@ export default class LineStockSeries extends Component {
 
   componentWillMount() {
     // Getting data and draw when data is loaded fully
-    this.getData(this.props.tiType, () => this.drawChart());
+    this.getData(this.props.stSeries, () => this.drawChart());
   }
 
   componentDidMount() {
     // Loop interval for resize checking
-    const resizeEvent = setInterval(() => {
-      const $tiContainer = document.querySelector(".ti-container");
+    // const resizeEvent = setInterval(() => {
+    //   const $tiContainer = document.querySelector(".ti-container");
 
-      if ($tiContainer) {
-        const currentWidth = $tiContainer.clientWidth;
+    //   if ($tiContainer) {
+    //     const currentWidth = $tiContainer.clientWidth;
 
-        if (this.state.totalWidth !== currentWidth) {
-          let number = currentWidth > 576 ? this.state.number : 50;
+    //     if (this.state.totalWidth !== currentWidth) {
+    //       let number = currentWidth > 576 ? this.state.number : 50;
 
-          this.setState({ 
-            totalWidth: $tiContainer.clientWidth,
-            loaded: false,
-            number
-          }, () => this.getData(this.props.tiType, () => this.drawChart()));
-        }
-      }
-    }, 200);
+    //       this.setState({ 
+    //         totalWidth: $tiContainer.clientWidth,
+    //         loaded: false,
+    //         number
+    //       }, () => this.getData(this.props.tiType, () => this.drawChart()));
+    //     }
+    //   }
+    // }, 200);
 
-    this.setState({ resizeEvent });
+    // this.setState({ resizeEvent });
   }
 
   componentWillUnmount() {
-    clearInterval(this.state.resizeEvent);
+    // clearInterval(this.state.resizeEvent);
   }
 
   componentWillReceiveProps(newProps) {
@@ -86,6 +86,8 @@ export default class LineStockSeries extends Component {
   }
 
   drawChart() {
+    console.log(this.state.data);
+    return;
     // Setup margin
     const { margin, totalWidth, totalHeight } = this.state;
     let wSvg = totalWidth - margin.left - margin.right;
@@ -354,6 +356,7 @@ export default class LineStockSeries extends Component {
         </div>
       );
     } else {
+      return <div />
       return this.renderWaitingForData();
     }
   }

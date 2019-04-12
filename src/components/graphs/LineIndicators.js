@@ -86,6 +86,11 @@ export default class LineIndicators extends Component {
   }
 
   drawChart() {
+    // If re-draw from old data then remove before re-draw
+    if (this.state.svgInfo) {
+      d3.select("#lineChart" + this.props.chartName + " svg").remove();
+    }
+
     // Setup margin
     const { margin, totalWidth, totalHeight } = this.state;
     let wSvg = totalWidth - margin.left - margin.right;

@@ -27,13 +27,11 @@ export const COLOR_CODE_3 = ["#c51b7d", "#de77ae", "#f1b6da", "#fde0ef", "#E1E1E
 
 /* ------------- Technical Indicators ------------- */
 export const TI_APO = "https://www.alphavantage.co/query?function=APO&symbol=MSFT&interval=daily&series_type=close&fastperiod=10&matype=1&apikey=demo";
-
 export const TI_EMA = "https://www.alphavantage.co/query?function=EMA&symbol=MSFT&interval=weekly&time_period=10&series_type=open&apikey=demo";
-
 export const TI_CCI = "https://www.alphavantage.co/query?function=CCI&symbol=MSFT&interval=daily&time_period=10&apikey=demo";
-
 export const TI_CMO = "https://www.alphavantage.co/query?function=CMO&symbol=MSFT&interval=weekly&time_period=10&series_type=close&apikey=demo";
-
 export const TI_ROC = "https://www.alphavantage.co/query?function=ROC&symbol=MSFT&interval=weekly&time_period=10&series_type=close&apikey=demo";
-
 export const TI_AROONOS = "https://www.alphavantage.co/query?function=AROONOSC&symbol=MSFT&interval=daily&time_period=10&apikey=demo";
+
+/* ------------- Stock Times Series ------------- */
+export const STS_MSFT = "https://www.alphavantage.co/query?function=TIME_SERIES_INTRADAY&symbol=MSFT&interval=5min&apikey=demo"

@@ -6,7 +6,8 @@ import {
   TI_AROONOS,
   TI_CCI,
   TI_EMA,
-  TI_ROC
+  TI_ROC,
+  STS_MSFT
 } from '../../constants';
 import LineStockSeries from '../graphs/LineStockSeries';
 
@@ -50,6 +51,7 @@ export default class TechnicalIndicators extends Component {
           </div>
           <LineStockSeries
             chartName={"SS"}
+            stSeries={STS_MSFT}
             tiType={this.state.selectTI}
           />
         </div>
