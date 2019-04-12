@@ -21,10 +21,10 @@ export default class LineStockSeries extends Component {
         top: 10,
         left: 45,
         right: 20,
-        bottom: 100,
+        bottom: 30,
       },
       totalWidth: 800,
-      totalHeight: 400,
+      totalHeight: 320,
       number: 40,
       resizeEvent: undefined
     }
@@ -145,7 +145,7 @@ export default class LineStockSeries extends Component {
                      .range([hSvg, 0]);
 
     // X Axis
-    const xAxis = d3.axisBottom(xScale);
+    const xAxis = d3.axisBottom(xScale).tickValues([]);
     svg.append("g")
        .call(xAxis)
        .attr("transform", `translate(0, ${hSvg})`)
@@ -177,83 +177,41 @@ export default class LineStockSeries extends Component {
       yData
     } = this.state.svgInfo;
 
-    // Line Division for better visuallization
-    // let lines = [];
-    // let linesTemp = {
-    //   pattern: undefined,
-    //   points: []
-    // };
-    // let yData= [];
-    // yData.forEach((item, i) => {
-    //   if (i === 0) {
-    //     linesTemp.pattern = item >= 0 ? "positive" : "negative";
-    //     linesTemp.points.push({ x: 0, y: item });
-    //   } else if (i === yData.length - 1) {
-    //     linesTemp.points.push({ x: i, y: item });
-    //     lines.push(linesTemp);
-    //   } else if ((item >= 0 && linesTemp.pattern === "positive") || (item < 0 && linesTemp.pattern === "negative")) {
-    //     linesTemp.points.push({ x: i, y: item });
-    //   } else if ((item >= 0 && linesTemp.pattern === "negative") || (item < 0 && linesTemp.pattern === "positive")) {
-    //     // Set the x connector smooth
-    //     let x2 = i, y2 = item;
-    //     let x1 = i - 1, y1 = linesTemp.points[linesTemp.points.length - 1].y;
-    //     let xConnect =  (x2 * y1 - x1 * y2) / (y1 -y2);
-
-    //     linesTemp.points.push({ x: xConnect, y: 0 });
-    //     lines.push(linesTemp);
-
-    //     linesTemp = {
-    //       pattern: undefined,
-    //       points: []
-    //     };
-
-    //     linesTemp.pattern = lines[lines.length - 1].pattern === "positive" ? "negative" : "positive";
-    //     linesTemp.points = [
-    //       { x: xConnect, y: 0 },
-    //       { x: i, y: item }
-    //     ];
-    //   }
-    // });
-
-     // Init line
-     const line = d3.line()
-                    .x((d, i) => xScale(xData[i]))
-                    .y((d) => yScale(d))
-                    // .curve(d3.curveMonotoneX);
 
     console.log(yData);
-    let yOpen = yData.map((item) => +item[DATA_OPEN])
-    let yClose = yData.map((item) => +item[DATA_CLOSE])
-    let yHigh = yData.map((item) => +item[DATA_HIGH])
-    let yLow = yData.map((item) => +item[DATA_LOW])
 
-    //  svg.append("path")
-    //     .attr("class", "lineChart")
-    //     .attr("fill", "none")
-    //     .attr("d", line(yOpen))
-    //     .attr("stroke", "#000")
-    //     .attr("stroke-width", "1px")
-    console.log(yOpen);
-    console.log(yClose);
+    svg.selectAll("line.stsHighLow")
+       .data(yData)
+       .enter()
+       .append("line")
+       .attr("x1", (d, i) => xScale(xData[i]) + xScale.bandwidth()/2)
+       .attr("y1", (d, i) => yScale(+d[DATA_HIGH]))
+       .attr("x2", (d, i) => xScale(xData[i]) + xScale.bandwidth()/2)
+       .attr("y2", (d, i) => yScale(+d[DATA_LOW]))
+       .attr("stroke", "black")
+       .attr("stroke-width", 1);
+
     svg.selectAll("rect.stsOpenClose")
        .data(yData)
        .enter()
        .append("rect")
        .attr("x", (d, i) => xScale(xData[i]))
        .attr("y", (d, i) => {
-         let res = (yOpen[i] >= yClose[i]) ? yOpen[i] : yClose[i];
+         let res = (+d[DATA_OPEN] >= +d[DATA_CLOSE]) ? +d[DATA_OPEN] : +d[DATA_CLOSE];
+
 
          return yScale(res);
        })
        .attr("width", xScale.bandwidth)
        .attr("height", (d, i) => {
-          let res = Math.abs(yScale(yOpen[i]) - yScale(yClose[i]));
+          let res = Math.abs(yScale(+d[DATA_OPEN]) - yScale(+d[DATA_CLOSE]));
 
           return res;
        })
        .attr("fill", (d, i) => {
-         return (yOpen[i] >= yClose[i]) ? "red" : "green";
+         return (+d[DATA_OPEN] >= +d[DATA_CLOSE]) ? "red" : "green";
        });
+
 
 
     // Init area below line
@@ -404,5 +362,7 @@ export default class LineStockSeries extends Component {
 //   tiType: PropTypes.string.isRequired
 // };
 
-//TODO: On small screen draw less number of data
-//TODO: Correct the width to have rounded circle
+//TODO: Small screen
+//TODO: Responsive
+//TODO: Render no res
+//TODO: Add changing data dynamically
