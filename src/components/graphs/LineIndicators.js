@@ -73,7 +73,7 @@ export default class LineIndicators extends Component {
     if ((Object.keys(res.data).includes("Error Message")) || (Object.keys(res.data).includes("Note"))) {
       // Set time out for the next attempt
       setTimeout(() => {
-        this.getData(this.drawChart.bind(this));
+        this.getData(this.props.tiType, () => this.drawChart());
       }, 5000);
 
       this.setState({ loaded: false });

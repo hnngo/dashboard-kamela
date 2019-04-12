@@ -2,6 +2,12 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import * as d3 from 'd3';
 import axios from 'axios';
+import {
+  DATA_LOW,
+  DATA_HIGH,
+  DATA_CLOSE,
+  DATA_OPEN,
+} from '../../constants';
 
 export default class LineStockSeries extends Component {
   constructor(props) {
@@ -13,13 +19,13 @@ export default class LineStockSeries extends Component {
       loaded: false, // Temporarily
       margin: {
         top: 10,
-        left: 30,
+        left: 45,
         right: 20,
-        bottom: 30,
+        bottom: 100,
       },
       totalWidth: 800,
-      totalHeight: 300,
-      number: 100,
+      totalHeight: 400,
+      number: 40,
       resizeEvent: undefined
     }
   }
@@ -57,11 +63,11 @@ export default class LineStockSeries extends Component {
   }
 
   componentWillReceiveProps(newProps) {
-    if (newProps.tiType !== this.props.tiType) {
-      this.setState({ loaded: false }, () => {
-        this.getData(newProps.tiType, () => this.drawChart());
-      })
-    }
+    // if (newProps.tiType !== this.props.tiType) {
+    //   this.setState({ loaded: false }, () => {
+    //     this.getData(newProps.tiType, () => this.drawChart());
+    //   })
+    // }
   }
 
   getData = async (APILink, callback) => {
@@ -73,7 +79,7 @@ export default class LineStockSeries extends Component {
     if ((Object.keys(res.data).includes("Error Message")) || (Object.keys(res.data).includes("Note"))) {
       // Set time out for the next attempt
       setTimeout(() => {
-        this.getData(this.drawChart.bind(this));
+        this.getData(this.props.tiType, () => this.drawChart());
       }, 5000);
 
       this.setState({ loaded: false });
@@ -87,7 +93,17 @@ export default class LineStockSeries extends Component {
 
   drawChart() {
     console.log(this.state.data);
-    return;
+
+    // If re-draw from old data then remove before re-draw
+    if (this.state.svgInfo) {
+      d3.select("#lineChart" + this.props.chartName + " svg").remove();
+    }
+
+    // Setup data
+    const dataSeries = this.state.data[Object.keys(this.state.data)[1]];
+    const xData = Object.keys(dataSeries).slice(0, this.state.number).reverse();
+    const yData = xData.map((item) => dataSeries[item]);
+
     // Setup margin
     const { margin, totalWidth, totalHeight } = this.state;
     let wSvg = totalWidth - margin.left - margin.right;
@@ -104,28 +120,50 @@ export default class LineStockSeries extends Component {
                     .attr("transform", `translate(${margin.left},${margin.top})`);
 
     // X scale
-    const xScale = d3.scaleTime()
-                     .domain([-1, this.state.number])
-                     .range([0, wSvg]);
+    
+    console.log("xData", xData)
+    const timeParse = d3.timeParse("%Y-%m-%d %H:%M:%S");
+    // const xScale = d3.scaleTime()
+    //                  .domain([timeParse(xData[0]), timeParse(xData[xData.length - 1])])
+    //                  .range([0, wSvg]);
+    const xScale = d3.scaleBand()
+                     .domain(xData)
+                     .range([0, wSvg])
+                     .paddingInner(0.2)
+                     .paddingOuter(0.2)
+
+    // Define range of Y-axis
+    let yLowArr = [], yHighArr = [];
+    xData.forEach((item) => {
+      yLowArr.push(+dataSeries[item][DATA_LOW]);
+      yHighArr.push(+dataSeries[item][DATA_HIGH]);
+    });
 
     // Y scale
     const yScale = d3.scaleLinear()
+                     .domain([d3.min(yLowArr) - 0.1, d3.max(yHighArr) + 0.1])
                      .range([hSvg, 0]);
 
     // X Axis
-    const xAxis = d3.axisBottom(xScale).tickValues([]);
+    const xAxis = d3.axisBottom(xScale);
     svg.append("g")
        .call(xAxis)
-       .attr("transform", `translate(0,${hSvg/2})`)
-       .style("stroke-width", 0.2);
+       .attr("transform", `translate(0, ${hSvg})`)
+       .style("stroke-width", 0.2)
+       .selectAll("text")
+          .attr("x", -5)
+          .attr("y", 10)
+          .attr("text-anchor", "end")
+          .attr("transform", "rotate(-50)");
 
     // Y Axis
-    const yAxisGroup = svg.append("g")
-                        //  .call(yAxis)
-                          .style("stroke-width", 0.2);
+    const yAxis = d3.axisLeft(yScale);
+    svg.append("g")
+       .call(yAxis)
+       .style("stroke-width", 0.2);
 
     // Store important svg info in state
-    const svgInfo = { svg, yScale, xScale, yAxisGroup, hSvg };
+    const svgInfo = { svg, yScale, xScale, timeParse, xData, dataSeries, yData };  
 
     // Set state then trigger draw data 
     this.setState({ svgInfo }, () => this.drawData());
@@ -134,197 +172,196 @@ export default class LineStockSeries extends Component {
   drawData() {
     // Get svg info from state
     const {
-      svg, yScale, xScale, yAxisGroup, hSvg
+      svg, yScale, xScale,
+      timeParse, xData, dataSeries,
+      yData
     } = this.state.svgInfo;
 
-    // Setup data
-    const { data } = this.state;
-    let temp = Object.values(data[Object.keys(data)[1]]).slice(0, this.state.number);
-    let yData = temp.map((item) => +item[Object.keys(item)[0]]).reverse();
-
-    // Define range of Y-axis
-    const maxY = d3.max(yData);
-    const minY = d3.min(yData);
-
-    if (minY >= 0) {
-      yScale.domain([-maxY - 15, maxY + 15]);
-    } else if (-minY < maxY) {
-      yScale.domain([-maxY - 15, maxY + 15]);
-    } else {
-      yScale.domain([minY - 15, -minY + 15]);
-    }
-    yAxisGroup.call(d3.axisLeft(yScale));
-
     // Line Division for better visuallization
-    let lines = [];
-    let linesTemp = {
-      pattern: undefined,
-      points: []
-    };
+    // let lines = [];
+    // let linesTemp = {
+    //   pattern: undefined,
+    //   points: []
+    // };
+    // let yData= [];
+    // yData.forEach((item, i) => {
+    //   if (i === 0) {
+    //     linesTemp.pattern = item >= 0 ? "positive" : "negative";
+    //     linesTemp.points.push({ x: 0, y: item });
+    //   } else if (i === yData.length - 1) {
+    //     linesTemp.points.push({ x: i, y: item });
+    //     lines.push(linesTemp);
+    //   } else if ((item >= 0 && linesTemp.pattern === "positive") || (item < 0 && linesTemp.pattern === "negative")) {
+    //     linesTemp.points.push({ x: i, y: item });
+    //   } else if ((item >= 0 && linesTemp.pattern === "negative") || (item < 0 && linesTemp.pattern === "positive")) {
+    //     // Set the x connector smooth
+    //     let x2 = i, y2 = item;
+    //     let x1 = i - 1, y1 = linesTemp.points[linesTemp.points.length - 1].y;
+    //     let xConnect =  (x2 * y1 - x1 * y2) / (y1 -y2);
 
-    yData.forEach((item, i) => {
-      if (i === 0) {
-        linesTemp.pattern = item >= 0 ? "positive" : "negative";
-        linesTemp.points.push({ x: 0, y: item });
-      } else if (i === yData.length - 1) {
-        linesTemp.points.push({ x: i, y: item });
-        lines.push(linesTemp);
-      } else if ((item >= 0 && linesTemp.pattern === "positive") || (item < 0 && linesTemp.pattern === "negative")) {
-        linesTemp.points.push({ x: i, y: item });
-      } else if ((item >= 0 && linesTemp.pattern === "negative") || (item < 0 && linesTemp.pattern === "positive")) {
-        // Set the x connector smooth
-        let x2 = i, y2 = item;
-        let x1 = i - 1, y1 = linesTemp.points[linesTemp.points.length - 1].y;
-        let xConnect =  (x2 * y1 - x1 * y2) / (y1 -y2);
+    //     linesTemp.points.push({ x: xConnect, y: 0 });
+    //     lines.push(linesTemp);
 
-        linesTemp.points.push({ x: xConnect, y: 0 });
-        lines.push(linesTemp);
+    //     linesTemp = {
+    //       pattern: undefined,
+    //       points: []
+    //     };
 
-        linesTemp = {
-          pattern: undefined,
-          points: []
-        };
+    //     linesTemp.pattern = lines[lines.length - 1].pattern === "positive" ? "negative" : "positive";
+    //     linesTemp.points = [
+    //       { x: xConnect, y: 0 },
+    //       { x: i, y: item }
+    //     ];
+    //   }
+    // });
 
-        linesTemp.pattern = lines[lines.length - 1].pattern === "positive" ? "negative" : "positive";
-        linesTemp.points = [
-          { x: xConnect, y: 0 },
-          { x: i, y: item }
-        ];
-      }
-    });
+     // Init line
+     const line = d3.line()
+                    .x((d, i) => xScale(xData[i]))
+                    .y((d) => yScale(d))
+                    // .curve(d3.curveMonotoneX);
 
-    // Init line
-    const line = d3.line()
-                    .x((d) => xScale(d.x))
-                    .y((d) => yScale(d.y))
-                    // .curve(d3.curveBasis);
+    console.log(yData);
+    let yOpen = yData.map((item) => +item[DATA_OPEN])
+    let yClose = yData.map((item) => +item[DATA_CLOSE])
+    let yHigh = yData.map((item) => +item[DATA_HIGH])
+    let yLow = yData.map((item) => +item[DATA_LOW])
+
+    //  svg.append("path")
+    //     .attr("class", "lineChart")
+    //     .attr("fill", "none")
+    //     .attr("d", line(yOpen))
+    //     .attr("stroke", "#000")
+    //     .attr("stroke-width", "1px")
+    console.log(yOpen);
+    console.log(yClose);
+    svg.selectAll("rect.stsOpenClose")
+       .data(yData)
+       .enter()
+       .append("rect")
+       .attr("x", (d, i) => xScale(xData[i]))
+       .attr("y", (d, i) => {
+         let res = (yOpen[i] >= yClose[i]) ? yOpen[i] : yClose[i];
+
+         return yScale(res);
+       })
+       .attr("width", xScale.bandwidth)
+       .attr("height", (d, i) => {
+          let res = Math.abs(yScale(yOpen[i]) - yScale(yClose[i]));
+
+          return res;
+       })
+       .attr("fill", (d, i) => {
+         return (yOpen[i] >= yClose[i]) ? "red" : "green";
+       });
+
 
     // Init area below line
-    const area = d3.area()
-                  .x((d) => xScale(d.x))
-                  .y0(hSvg/2)
-                  .y1((d) => yScale(d.y))
-                  // .curve(d3.curveBasis);
+    // const area = d3.area()
+    //               .x((d) => xScale(d.x))
+    //               .y0(hSvg/2)
+    //               .y1((d) => yScale(d.y))
+    //               // .curve(d3.curveBasis);
 
     // Calculate the peak values of each range
-    const peaks = lines.map((item) => {
-      let maxVal, peakVal, res;
+    // const peaks = lines.map((item) => {
+    //   let maxVal, peakVal, res;
 
-      if (item.pattern === "positive") {
-        maxVal = d3.max(Object.values(item.points).map((p) => p.y))
-      } else if (item.pattern === "negative") {
-        maxVal = d3.min(Object.values(item.points).map((p) => p.y))
-      }
+    //   if (item.pattern === "positive") {
+    //     maxVal = d3.max(Object.values(item.points).map((p) => p.y))
+    //   } else if (item.pattern === "negative") {
+    //     maxVal = d3.min(Object.values(item.points).map((p) => p.y))
+    //   }
 
-      peakVal = item.points.filter((d) => d.y === maxVal);
-      res = { ...item };
-      res.points = peakVal;
-      return res;
-    });
+    //   peakVal = item.points.filter((d) => d.y === maxVal);
+    //   res = { ...item };
+    //   res.points = peakVal;
+    //   return res;
+    // });
 
     // Erase old data
-    svg.selectAll("path.ti").remove();
-    svg.selectAll("path.tiArea").remove();
-    svg.selectAll("circle").remove();
-    svg.selectAll("line").remove();
-    svg.selectAll(`text[class^="${this.props.chartName}"]`).remove();
+    // svg.selectAll("path.sts").remove();
 
-    // Draw lines
-    svg.selectAll("path.ti")
-        .data(lines)
-        .enter()
-        .append("path")
-        .attr("class", "ti")
-        .attr("fill", "none")
-        .attr("d", (d) => line(d.points))
-        .attr("stroke",  (d) => {
-          if (d.pattern >= "positive") {
-            return "green";
-          } else {
-            return "red";
-          }
-        })
-        .attr("stroke-width","3px");
 
     // Draw area
-    svg.selectAll("path.tiArea")
-       .data(lines)
-       .enter()
-       .append("path")
-       .attr("class", "tiArea")
-       .attr("id", (d, i) => `${this.props.chartName}area${i}`)
-       .attr("fill", "white")
-       .attr("d", (d) => area(d.points))
-       .style("opacity", 0.4)
-       .on("mousemove", (d, i) => {
-         d3.select(`#${this.props.chartName}area${i}`).attr("fill", d.pattern === "positive" ? "green" : "red");
+    // svg.selectAll("path.tiArea")
+    //    .data(lines)
+    //    .enter()
+    //    .append("path")
+    //    .attr("class", "tiArea")
+    //    .attr("id", (d, i) => `${this.props.chartName}area${i}`)
+    //    .attr("fill", "white")
+    //    .attr("d", (d) => area(d.points))
+    //    .style("opacity", 0.4)
+    //    .on("mousemove", (d, i) => {
+    //      d3.select(`#${this.props.chartName}area${i}`).attr("fill", d.pattern === "positive" ? "green" : "red");
 
-         // Show peak value info
-         ["circle", "line", "text"].forEach(item => {
-           d3.select(`${item}.${this.props.chartName}${item}${i}`).attr("display", "block");
-         });
-       })
-       .on("mouseout", (d, i) => {
-         d3.select(`#${this.props.chartName}area${i}`).attr("fill", "white");
+    //      // Show peak value info
+    //      ["circle", "line", "text"].forEach(item => {
+    //        d3.select(`${item}.${this.props.chartName}${item}${i}`).attr("display", "block");
+    //      });
+    //    })
+    //    .on("mouseout", (d, i) => {
+    //      d3.select(`#${this.props.chartName}area${i}`).attr("fill", "white");
          
-         // Hide peak value info
-         ["circle", "line", "text"].forEach(item => {
-           d3.select(`${item}.${this.props.chartName}${item}${i}`).attr("display", "none");
-         });
-       })
+    //      // Hide peak value info
+    //      ["circle", "line", "text"].forEach(item => {
+    //        d3.select(`${item}.${this.props.chartName}${item}${i}`).attr("display", "none");
+    //      });
+    //    })
 
-    // Draw peak value information
-    peaks.forEach((peak, i) => {
-      // Peak circle
-      svg.selectAll(`circle.${this.props.chartName}circle${i}`)
-        .data(peak.points)
-        .enter()
-        .append("circle")
-        .attr("class", `${this.props.chartName}circle${i}`)
-        .attr("cx", (d) => xScale(d.x))
-        .attr("cy", (d) => yScale(d.y))
-        .attr("r", (d) => d.y !== 0 ? 4 : 0)
-        .attr("fill", "none")
-        .attr("display", "none")
-        .attr("stroke", (d) => {
-          return d.y >= 0 ? "green" : "red";
-        })
-        .attr("stroke-width", 3);
+    // // Draw peak value information
+    // peaks.forEach((peak, i) => {
+    //   // Peak circle
+    //   svg.selectAll(`circle.${this.props.chartName}circle${i}`)
+    //     .data(peak.points)
+    //     .enter()
+    //     .append("circle")
+    //     .attr("class", `${this.props.chartName}circle${i}`)
+    //     .attr("cx", (d) => xScale(d.x))
+    //     .attr("cy", (d) => yScale(d.y))
+    //     .attr("r", (d) => d.y !== 0 ? 4 : 0)
+    //     .attr("fill", "none")
+    //     .attr("display", "none")
+    //     .attr("stroke", (d) => {
+    //       return d.y >= 0 ? "green" : "red";
+    //     })
+    //     .attr("stroke-width", 3);
       
-      // Peak line to y-Axis
-      svg.selectAll(`line.${this.props.chartName}line${i}`)
-        .data(peak.points)
-        .enter()
-        .append("line")
-        .attr("class", `${this.props.chartName}line${i}`)
-        .attr("x1", xScale(-1))
-        .attr("y1", (d) => yScale(d.y))
-        .attr("x2", (d) => xScale(d.x))
-        .attr("y2", (d) => yScale(d.y))
-        .attr("stroke", "black")
-        .attr("stroke-width", 0.5)
-        .attr("stroke-dasharray", "5,5")
-        .attr("display", "none");
+    //   // Peak line to y-Axis
+    //   svg.selectAll(`line.${this.props.chartName}line${i}`)
+    //     .data(peak.points)
+    //     .enter()
+    //     .append("line")
+    //     .attr("class", `${this.props.chartName}line${i}`)
+    //     .attr("x1", xScale(-1))
+    //     .attr("y1", (d) => yScale(d.y))
+    //     .attr("x2", (d) => xScale(d.x))
+    //     .attr("y2", (d) => yScale(d.y))
+    //     .attr("stroke", "black")
+    //     .attr("stroke-width", 0.5)
+    //     .attr("stroke-dasharray", "5,5")
+    //     .attr("display", "none");
       
-      // Peak text value
-      svg.selectAll(`text.${this.props.chartName}text${i}`)
-        .data(peak.points)
-        .enter()
-        .append("text")
-        .attr("class", `${this.props.chartName}text${i}`)
-        .attr("x", (d) => xScale(d.x))
-        .attr("y", (d) => {
-          if (d.y >= 0) {
-            return yScale(d.y) - 10;
-          } else {
-            return yScale(d.y) + 20;
-          }
-        })
-        .attr("text-anchor", "middle")
-        .attr("font-size", "12px")
-        .text((d) => d.y)
-        .attr("display", "none");
-    });
+    //   // Peak text value
+    //   svg.selectAll(`text.${this.props.chartName}text${i}`)
+    //     .data(peak.points)
+    //     .enter()
+    //     .append("text")
+    //     .attr("class", `${this.props.chartName}text${i}`)
+    //     .attr("x", (d) => xScale(d.x))
+    //     .attr("y", (d) => {
+    //       if (d.y >= 0) {
+    //         return yScale(d.y) - 10;
+    //       } else {
+    //         return yScale(d.y) + 20;
+    //       }
+    //     })
+    //     .attr("text-anchor", "middle")
+    //     .attr("font-size", "12px")
+    //     .text((d) => d.y)
+    //     .attr("display", "none");
+    // });
   }
 
   // Render "please waiting" when no data is retrieved from Stock API

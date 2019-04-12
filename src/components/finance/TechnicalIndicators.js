@@ -47,7 +47,7 @@ export default class TechnicalIndicators extends Component {
         </div>
         <div className="row">
           <div className="board-title ml-3 d-flex justify-content-between">
-            <h5 className="pt-3 pl-3 bold">Stock Times Series</h5>
+            <h5 className="pl-3 bold">Stock Times Series</h5>
           </div>
           <LineStockSeries
             chartName={"SS"}
