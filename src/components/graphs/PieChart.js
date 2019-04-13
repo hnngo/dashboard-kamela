@@ -281,7 +281,7 @@ export default class PieChart extends Component {
 
   render() {
     return (
-      <div className="">
+      <div className="pie-container">
         <div id={"pieChart" + this.props.chartName}/>
       </div>
     );

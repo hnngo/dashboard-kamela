@@ -256,6 +256,7 @@ No media query for `xs` since this is the default in Bootstrap */
   div.PieTooltip {
     display: block;
     position: absolute;
+    top: 0;
     text-align: left;
     width: 200px;
     height: 40px;
@@ -293,6 +294,7 @@ No media query for `xs` since this is the default in Bootstrap */
   div.STSTooltip {
     display: block;
     position: absolute;
+    top: 0;
     text-align: left;
     width: 170px;
     height: 140px;

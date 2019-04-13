@@ -6,6 +6,7 @@
  body {
   font-family: 'Poppins', sans-serif;
   overflow-x: hidden;
+  background-image: linear-gradient(to right, #134e5e, #71b280);
  }
 
 /* ------- REUSE COMPONENT ------- */
@@ -58,8 +59,7 @@
 /* ------- OUTSIDE SIDEBAR ------- */
 .outside-sidebar {
   min-height: 100%;
-  background-image: -webkit-gradient(linear, left top, right top, from(#134e5e), to(#71b280));
-  background-image: linear-gradient(to right, #134e5e, #71b280);
+
 }
 
 /* ------- DASH BOARD ------- */
@@ -70,6 +70,7 @@
 }
 
 .board-container {
+  overflow: hidden;
   margin: 10px 10px;
   background-color: white;
   width: 100%;
@@ -152,6 +153,7 @@
 
 /* ----- LINE-CHART ----- */
 .line-container {
+  overflow: hidden;
   position: relative;
 }
 
@@ -240,6 +242,10 @@
   -webkit-box-shadow: none !important;
           box-shadow: none !important;
   outline: none !important;
+}
+
+.pie-container {
+  overflow: hidden;
 }
 
 /* ----- SEARCH ENDPOINT ----- */
@@ -369,8 +375,9 @@
   color: #195e28;
 }
 
-.ti-container,
+.li-container,
 .lss-container {
+  overflow: hidden;
   margin: 10px 10px;
   padding: 0px 30px;
   width: 100%;

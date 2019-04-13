@@ -26,7 +26,7 @@ export default class TechnicalIndicators extends Component {
 
   render() {
     return (
-      <div>
+      <div className="ti-container">
         <select
           className="custom-select"
           id="selectTI"

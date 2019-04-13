@@ -16,16 +16,16 @@ export default class LineStockSeries extends Component {
     this.state = {
       svgInfo: undefined,
       data: undefined,
-      loaded: false, // Temporarily
+      loaded: false,
       margin: {
         top: 10,
-        left: 45,
+        left: 35,
         right: 20,
         bottom: 45,
       },
       totalWidth: 800,
       totalHeight: 330,
-      number: 40,
+      number: undefined,
       resizeEvent: undefined
     }
   }
@@ -44,7 +44,7 @@ export default class LineStockSeries extends Component {
         const currentWidth = $lssContainer.clientWidth;
 
         if (this.state.totalWidth !== currentWidth) {
-          let number = currentWidth > 576 ? this.state.number : 20;
+          let number = currentWidth > 576 ? 40 : 20;
 
           this.setState({ 
             totalWidth: $lssContainer.clientWidth,
@@ -60,14 +60,6 @@ export default class LineStockSeries extends Component {
 
   componentWillUnmount() {
     clearInterval(this.state.resizeEvent);
-  }
-
-  componentWillReceiveProps(newProps) {
-    // if (newProps.tiType !== this.props.tiType) {
-    //   this.setState({ loaded: false }, () => {
-    //     this.getData(newProps.tiType, () => this.drawChart());
-    //   })
-    // }
   }
 
   getData = async (APILink, callback) => {
@@ -163,14 +155,8 @@ export default class LineStockSeries extends Component {
        .call(yAxis)
        .style("stroke-width", 0.2);
 
-    // Tooltip
-    const tip = d3.select('body')
-                  .append('div')
-                  .attr('class', 'STSTooltip')
-                  .style('opacity', 0);
-
     // Store important svg info in state
-    const svgInfo = { svg, yScale, xScale, xData, yData, tip };  
+    const svgInfo = { svg, yScale, xScale, xData, yData };  
 
     // Set state then trigger draw data 
     this.setState({ svgInfo }, () => this.drawData());
@@ -180,8 +166,21 @@ export default class LineStockSeries extends Component {
     // Get svg info from state
     const {
       svg, yScale, xScale, 
-      tip, xData, yData
+      xData, yData
     } = this.state.svgInfo;
+
+    // Init line for trending
+    const line = d3.line()
+                   .x((d, i) => xScale(xData[i]))
+                   .y((d) => yScale(+d[DATA_HIGH]))
+                   .curve(d3.curveBasis);
+                  
+    svg.append("path")
+       .attr("d", line(yData))
+       .attr("stroke",  "#000")
+       .attr("stroke-width", "2px")
+       .attr("stroke-dasharray", "5,5")
+       .attr("fill", "none");
 
     // Draw the line for High and Low value
     svg.selectAll("line.stsHighLow")
@@ -216,6 +215,14 @@ export default class LineStockSeries extends Component {
          return (+d[DATA_OPEN] >= +d[DATA_CLOSE]) ? "red" : "green";
        });
 
+       
+    // Tooltip
+    d3.select("div.STSTooltip").remove();
+    const tip = d3.select('body')
+                  .append('div')
+                  .attr('class', 'STSTooltip')
+                  .style('opacity', 0);
+
     // Draw the rect to overlay and set mouse event
     svg.selectAll("rect.stsOpenClose")
        .data(yData)
@@ -231,6 +238,10 @@ export default class LineStockSeries extends Component {
        .attr("fill", "#333")
        .attr("opacity", 0)
        .on("mouseenter", (d, i) => {
+         if (window.screen.width <= 576) {
+           return;
+         }
+
          // Tips showing
          tip.transition().duration(200).style("opacity", 1);
 
@@ -261,6 +272,10 @@ export default class LineStockSeries extends Component {
            .style("top", (d, i) => (d3.event.pageY - 200) + "px");
        })
        .on("mouseout", () => {
+         if (window.screen.width <= 576) {
+           return;
+         }
+
          // Tips dimming
          tip.transition().duration(200).style("opacity", 0);
        });

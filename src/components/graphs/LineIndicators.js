@@ -32,7 +32,7 @@ export default class LineIndicators extends Component {
   componentDidMount() {
     // Loop interval for resize checking
     const resizeEvent = setInterval(() => {
-      const $tiContainer = document.querySelector(".ti-container");
+      const $tiContainer = document.querySelector(".li-container");
 
       if ($tiContainer) {
         const currentWidth = $tiContainer.clientWidth;
@@ -354,7 +354,7 @@ export default class LineIndicators extends Component {
   render() {
     if (this.state.loaded) {
       return (
-        <div className="ti-container">
+        <div className="li-container">
           <div id={"lineChart" + this.props.chartName}/>
         </div>
       );
