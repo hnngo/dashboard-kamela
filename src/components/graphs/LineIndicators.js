@@ -10,7 +10,7 @@ export default class LineIndicators extends Component {
     this.state = {
       svgInfo: undefined,
       data: undefined,
-      loaded: false, // Temporarily
+      loaded: false,
       margin: {
         top: 10,
         left: 30,
@@ -226,11 +226,11 @@ export default class LineIndicators extends Component {
     });
 
     // Erase old data
-    svg.selectAll("path.ti").remove();
-    svg.selectAll("path.tiArea").remove();
-    svg.selectAll("circle").remove();
-    svg.selectAll("line").remove();
-    svg.selectAll(`text[class^="${this.props.chartName}"]`).remove();
+    // svg.selectAll("path.ti").remove();
+    // svg.selectAll("path.tiArea").remove();
+    // svg.selectAll("circle").remove();
+    // svg.selectAll("line").remove();
+    // svg.selectAll(`text[class^="${this.props.chartName}"]`).remove();
 
     // Draw lines
     svg.selectAll("path.ti")

@@ -369,7 +369,8 @@
   color: #195e28;
 }
 
-.ti-container {
+.ti-container,
+.lss-container {
   margin: 10px 10px;
   padding: 0px 30px;
   width: 100%;

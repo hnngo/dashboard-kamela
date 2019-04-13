@@ -52,7 +52,6 @@ export default class TechnicalIndicators extends Component {
           <LineStockSeries
             chartName={"SS"}
             stSeries={STS_MSFT}
-            tiType={this.state.selectTI}
           />
         </div>
       </div>

@@ -37,29 +37,29 @@ export default class LineStockSeries extends Component {
 
   componentDidMount() {
     // Loop interval for resize checking
-    // const resizeEvent = setInterval(() => {
-    //   const $tiContainer = document.querySelector(".ti-container");
+    const resizeEvent = setInterval(() => {
+      const $lssContainer = document.querySelector(".lss-container");
 
-    //   if ($tiContainer) {
-    //     const currentWidth = $tiContainer.clientWidth;
+      if ($lssContainer) {
+        const currentWidth = $lssContainer.clientWidth;
 
-    //     if (this.state.totalWidth !== currentWidth) {
-    //       let number = currentWidth > 576 ? this.state.number : 50;
+        if (this.state.totalWidth !== currentWidth) {
+          let number = currentWidth > 576 ? this.state.number : 20;
 
-    //       this.setState({ 
-    //         totalWidth: $tiContainer.clientWidth,
-    //         loaded: false,
-    //         number
-    //       }, () => this.getData(this.props.tiType, () => this.drawChart()));
-    //     }
-    //   }
-    // }, 200);
+          this.setState({ 
+            totalWidth: $lssContainer.clientWidth,
+            loaded: false,
+            number
+          }, () => this.getData(this.props.stSeries, () => this.drawChart()));
+        }
+      }
+    }, 200);
 
-    // this.setState({ resizeEvent });
+    this.setState({ resizeEvent });
   }
 
   componentWillUnmount() {
-    // clearInterval(this.state.resizeEvent);
+    clearInterval(this.state.resizeEvent);
   }
 
   componentWillReceiveProps(newProps) {
@@ -92,8 +92,6 @@ export default class LineStockSeries extends Component {
   }
 
   drawChart() {
-    console.log(this.state.data);
-
     // If re-draw from old data then remove before re-draw
     if (this.state.svgInfo) {
       d3.select("#lineChart" + this.props.chartName + " svg").remove();
@@ -120,9 +118,6 @@ export default class LineStockSeries extends Component {
                     .attr("transform", `translate(${margin.left},${margin.top})`);
 
     // X scale
-    
-    console.log("xData", xData)
-    const timeParse = d3.timeParse("%Y-%m-%d %H:%M:%S");
     const xScale = d3.scaleBand()
                      .domain(xData)
                      .range([0, wSvg])
@@ -175,7 +170,7 @@ export default class LineStockSeries extends Component {
                   .style('opacity', 0);
 
     // Store important svg info in state
-    const svgInfo = { svg, yScale, xScale, timeParse, xData, dataSeries, yData, tip };  
+    const svgInfo = { svg, yScale, xScale, xData, yData, tip };  
 
     // Set state then trigger draw data 
     this.setState({ svgInfo }, () => this.drawData());
@@ -184,13 +179,9 @@ export default class LineStockSeries extends Component {
   drawData() {
     // Get svg info from state
     const {
-      svg, yScale, xScale, tip,
-      timeParse, xData, dataSeries,
-      yData
+      svg, yScale, xScale, 
+      tip, xData, yData
     } = this.state.svgInfo;
-
-
-    console.log(yData);
 
     // Draw the line for High and Low value
     svg.selectAll("line.stsHighLow")
@@ -243,7 +234,7 @@ export default class LineStockSeries extends Component {
          // Tips showing
          tip.transition().duration(200).style("opacity", 1);
 
-         if (+d[DATA_OPEN] >= +d[DATA_CLOSE]) {
+         if (+d[DATA_OPEN] > +d[DATA_CLOSE]) {
            tip.style("border", "2px dashed red");
            tip.style("background-color", "#fcc");
          } else {
@@ -262,7 +253,7 @@ export default class LineStockSeries extends Component {
            res += `<p>Low&nbsp;&nbsp;: <span>${d[DATA_LOW]}</span></p>`;
            res += `<p>Close: <span>${d[DATA_CLOSE]}</span></p>`;
            res += `<p>Change: <span style="color:${
-            +d[DATA_OPEN] >= +d[DATA_CLOSE] ? "red" : "green"
+            +d[DATA_OPEN] > +d[DATA_CLOSE] ? "red" : "green"
            }">${change}%</span></p>`;
 
            return res;
@@ -273,113 +264,6 @@ export default class LineStockSeries extends Component {
          // Tips dimming
          tip.transition().duration(200).style("opacity", 0);
        });
-
-    // Init area below line
-    // const area = d3.area()
-    //               .x((d) => xScale(d.x))
-    //               .y0(hSvg/2)
-    //               .y1((d) => yScale(d.y))
-    //               // .curve(d3.curveBasis);
-
-    // Calculate the peak values of each range
-    // const peaks = lines.map((item) => {
-    //   let maxVal, peakVal, res;
-
-    //   if (item.pattern === "positive") {
-    //     maxVal = d3.max(Object.values(item.points).map((p) => p.y))
-    //   } else if (item.pattern === "negative") {
-    //     maxVal = d3.min(Object.values(item.points).map((p) => p.y))
-    //   }
-
-    //   peakVal = item.points.filter((d) => d.y === maxVal);
-    //   res = { ...item };
-    //   res.points = peakVal;
-    //   return res;
-    // });
-
-    // Erase old data
-    // svg.selectAll("path.sts").remove();
-
-
-    // Draw area
-    // svg.selectAll("path.tiArea")
-    //    .data(lines)
-    //    .enter()
-    //    .append("path")
-    //    .attr("class", "tiArea")
-    //    .attr("id", (d, i) => `${this.props.chartName}area${i}`)
-    //    .attr("fill", "white")
-    //    .attr("d", (d) => area(d.points))
-    //    .style("opacity", 0.4)
-    //    .on("mousemove", (d, i) => {
-    //      d3.select(`#${this.props.chartName}area${i}`).attr("fill", d.pattern === "positive" ? "green" : "red");
-
-    //      // Show peak value info
-    //      ["circle", "line", "text"].forEach(item => {
-    //        d3.select(`${item}.${this.props.chartName}${item}${i}`).attr("display", "block");
-    //      });
-    //    })
-    //    .on("mouseout", (d, i) => {
-    //      d3.select(`#${this.props.chartName}area${i}`).attr("fill", "white");
-         
-    //      // Hide peak value info
-    //      ["circle", "line", "text"].forEach(item => {
-    //        d3.select(`${item}.${this.props.chartName}${item}${i}`).attr("display", "none");
-    //      });
-    //    })
-
-    // // Draw peak value information
-    // peaks.forEach((peak, i) => {
-    //   // Peak circle
-    //   svg.selectAll(`circle.${this.props.chartName}circle${i}`)
-    //     .data(peak.points)
-    //     .enter()
-    //     .append("circle")
-    //     .attr("class", `${this.props.chartName}circle${i}`)
-    //     .attr("cx", (d) => xScale(d.x))
-    //     .attr("cy", (d) => yScale(d.y))
-    //     .attr("r", (d) => d.y !== 0 ? 4 : 0)
-    //     .attr("fill", "none")
-    //     .attr("display", "none")
-    //     .attr("stroke", (d) => {
-    //       return d.y >= 0 ? "green" : "red";
-    //     })
-    //     .attr("stroke-width", 3);
-      
-    //   // Peak line to y-Axis
-    //   svg.selectAll(`line.${this.props.chartName}line${i}`)
-    //     .data(peak.points)
-    //     .enter()
-    //     .append("line")
-    //     .attr("class", `${this.props.chartName}line${i}`)
-    //     .attr("x1", xScale(-1))
-    //     .attr("y1", (d) => yScale(d.y))
-    //     .attr("x2", (d) => xScale(d.x))
-    //     .attr("y2", (d) => yScale(d.y))
-    //     .attr("stroke", "black")
-    //     .attr("stroke-width", 0.5)
-    //     .attr("stroke-dasharray", "5,5")
-    //     .attr("display", "none");
-      
-    //   // Peak text value
-    //   svg.selectAll(`text.${this.props.chartName}text${i}`)
-    //     .data(peak.points)
-    //     .enter()
-    //     .append("text")
-    //     .attr("class", `${this.props.chartName}text${i}`)
-    //     .attr("x", (d) => xScale(d.x))
-    //     .attr("y", (d) => {
-    //       if (d.y >= 0) {
-    //         return yScale(d.y) - 10;
-    //       } else {
-    //         return yScale(d.y) + 20;
-    //       }
-    //     })
-    //     .attr("text-anchor", "middle")
-    //     .attr("font-size", "12px")
-    //     .text((d) => d.y)
-    //     .attr("display", "none");
-    // });
   }
 
   // Render "please waiting" when no data is retrieved from Stock API
@@ -406,23 +290,20 @@ export default class LineStockSeries extends Component {
   render() {
     if (this.state.loaded) {
       return (
-        <div className="ti-container">
+        <div className="lss-container">
           <div id={"lineChart" + this.props.chartName}/>
         </div>
       );
     } else {
-      return <div />
       return this.renderWaitingForData();
     }
   }
 }
 
-// LineIndicators.propTypes = {
-//   chartName: PropTypes.string.isRequired,
-//   tiType: PropTypes.string.isRequired
-// };
+LineStockSeries.propTypes = {
+  chartName: PropTypes.string.isRequired,
+  stSeries: PropTypes.string.isRequired
+};
 
 //TODO: Small screen
-//TODO: Responsive
-//TODO: Render no res
 //TODO: Add changing data dynamically
