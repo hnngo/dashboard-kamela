@@ -294,15 +294,34 @@ No media query for `xs` since this is the default in Bootstrap */
     display: block;
     position: absolute;
     text-align: left;
-    width: 200px;
-    height: 40px;
+    width: 170px;
+    height: 140px;
     padding: 2px;
     font: 12px sans-serif;
-    background: rgb(0, 0, 0);
-    border: 0px;
     border-radius: 8px;
     pointer-events: none;
-    color: white;
+    color: black;
+    /* background-image: linear-gradient(to right, #ECE9E6, #FFFFFF); */
+  }
+
+  .STSTooltip h6 {
+    font-family: 'Poppins', sans-serif;
+    margin-top: 5px;
+    margin-left: 5px;
+    font-size: 14px;
+    font-weight: bold;
+    letter-spacing: 1px;
+  }
+
+  .STSTooltip p {
+    margin: 0;
+    margin-left: 10px;
+    padding-bottom: 5px;
+    font-size: 13px;
+  }
+
+  .STSTooltip span {
+    font-weight: bold;
   }
 }
 

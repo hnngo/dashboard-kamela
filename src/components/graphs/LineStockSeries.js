@@ -175,7 +175,7 @@ export default class LineStockSeries extends Component {
                   .style('opacity', 0);
 
     // Store important svg info in state
-    const svgInfo = { svg, yScale, xScale, timeParse, xData, dataSeries, yData };  
+    const svgInfo = { svg, yScale, xScale, timeParse, xData, dataSeries, yData, tip };  
 
     // Set state then trigger draw data 
     this.setState({ svgInfo }, () => this.drawData());
@@ -192,6 +192,7 @@ export default class LineStockSeries extends Component {
 
     console.log(yData);
 
+    // Draw the line for High and Low value
     svg.selectAll("line.stsHighLow")
        .data(yData)
        .enter()
@@ -203,6 +204,7 @@ export default class LineStockSeries extends Component {
        .attr("stroke", "black")
        .attr("stroke-width", 1);
 
+    // Draw the rect for Open and Close value
     svg.selectAll("rect.stsOpenClose")
        .data(yData)
        .enter()
@@ -223,7 +225,54 @@ export default class LineStockSeries extends Component {
          return (+d[DATA_OPEN] >= +d[DATA_CLOSE]) ? "red" : "green";
        });
 
+    // Draw the rect to overlay and set mouse event
+    svg.selectAll("rect.stsOpenClose")
+       .data(yData)
+       .enter()
+       .append("rect")
+       .attr("id", (d, i) => `rectOverlay${i}`)
+       .attr("x", (d, i) => xScale(xData[i]))
+       .attr("y", (d, i) => yScale(+d[DATA_HIGH]))
+       .attr("width", xScale.bandwidth)
+       .attr("height", (d, i) => {
+         return Math.abs(yScale(+d[DATA_HIGH]) - yScale(+d[DATA_LOW]));
+       })
+       .attr("fill", "#333")
+       .attr("opacity", 0)
+       .on("mouseenter", (d, i) => {
+         // Tips showing
+         tip.transition().duration(200).style("opacity", 1);
 
+         if (+d[DATA_OPEN] >= +d[DATA_CLOSE]) {
+           tip.style("border", "2px dashed red");
+           tip.style("background-color", "#fcc");
+         } else {
+           tip.style("border", "2px dashed green");
+           tip.style("background-color", "#dafbe4");
+         }
+
+         // Tips content
+         tip.html(() => {
+           let change = (100 * ((+d[DATA_CLOSE]) - (+d[DATA_OPEN]))/(+d[DATA_OPEN])).toFixed(2);
+
+           let res = "";
+           res += `<h6>${xData[i]}</h6>`;
+           res += `<p>Open: <span>${d[DATA_OPEN]}</span></p>`;
+           res += `<p>High&nbsp;: <span>${d[DATA_HIGH]}</span></p>`;
+           res += `<p>Low&nbsp;&nbsp;: <span>${d[DATA_LOW]}</span></p>`;
+           res += `<p>Close: <span>${d[DATA_CLOSE]}</span></p>`;
+           res += `<p>Change: <span style="color:${
+            +d[DATA_OPEN] >= +d[DATA_CLOSE] ? "red" : "green"
+           }">${change}%</span></p>`;
+
+           return res;
+         }).style("left", (d3.event.pageX - 90) + "px")
+           .style("top", (d, i) => (d3.event.pageY - 200) + "px");
+       })
+       .on("mouseout", () => {
+         // Tips dimming
+         tip.transition().duration(200).style("opacity", 0);
+       });
 
     // Init area below line
     // const area = d3.area()
