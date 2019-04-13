@@ -21,10 +21,10 @@ export default class LineStockSeries extends Component {
         top: 10,
         left: 45,
         right: 20,
-        bottom: 30,
+        bottom: 45,
       },
       totalWidth: 800,
-      totalHeight: 320,
+      totalHeight: 330,
       number: 40,
       resizeEvent: undefined
     }
@@ -123,9 +123,6 @@ export default class LineStockSeries extends Component {
     
     console.log("xData", xData)
     const timeParse = d3.timeParse("%Y-%m-%d %H:%M:%S");
-    // const xScale = d3.scaleTime()
-    //                  .domain([timeParse(xData[0]), timeParse(xData[xData.length - 1])])
-    //                  .range([0, wSvg]);
     const xScale = d3.scaleBand()
                      .domain(xData)
                      .range([0, wSvg])
@@ -145,22 +142,37 @@ export default class LineStockSeries extends Component {
                      .range([hSvg, 0]);
 
     // X Axis
-    const xAxis = d3.axisBottom(xScale).tickValues([]);
+    const xAxis = d3.axisBottom(xScale)
+                    .tickFormat((d, i) => {
+                      // Only show a few axis values
+                      if (i % 3 === 0) {
+                        return d.slice(11);
+                      } else {
+                        return "";
+                      }
+                    })
+                    
     svg.append("g")
        .call(xAxis)
        .attr("transform", `translate(0, ${hSvg})`)
        .style("stroke-width", 0.2)
        .selectAll("text")
-          .attr("x", -5)
-          .attr("y", 10)
+          .attr("x", -8)
+          .attr("y", 8)
           .attr("text-anchor", "end")
-          .attr("transform", "rotate(-50)");
+          .attr("transform", "rotate(-50)")
 
     // Y Axis
     const yAxis = d3.axisLeft(yScale);
     svg.append("g")
        .call(yAxis)
        .style("stroke-width", 0.2);
+
+    // Tooltip
+    const tip = d3.select('body')
+                  .append('div')
+                  .attr('class', 'STSTooltip')
+                  .style('opacity', 0);
 
     // Store important svg info in state
     const svgInfo = { svg, yScale, xScale, timeParse, xData, dataSeries, yData };  
@@ -172,7 +184,7 @@ export default class LineStockSeries extends Component {
   drawData() {
     // Get svg info from state
     const {
-      svg, yScale, xScale,
+      svg, yScale, xScale, tip,
       timeParse, xData, dataSeries,
       yData
     } = this.state.svgInfo;
@@ -198,7 +210,6 @@ export default class LineStockSeries extends Component {
        .attr("x", (d, i) => xScale(xData[i]))
        .attr("y", (d, i) => {
          let res = (+d[DATA_OPEN] >= +d[DATA_CLOSE]) ? +d[DATA_OPEN] : +d[DATA_CLOSE];
-
 
          return yScale(res);
        })

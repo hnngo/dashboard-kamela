@@ -97,7 +97,7 @@ export default class PieChart extends Component {
     // Tooltip
     const tip = d3.select('body')
                   .append('div')
-                  .attr('class', 'tooltip')
+                  .attr('class', 'PieTooltip')
                   .style('opacity', 0);
 
     // Init number

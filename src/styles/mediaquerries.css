@@ -106,7 +106,7 @@ No media query for `xs` since this is the default in Bootstrap */
   }
 
   /* ------- FINANCE SUMMARY ------- */
-  div.tooltip {
+  div.PieTooltip {
     display: none;
   }
 
@@ -253,7 +253,7 @@ No media query for `xs` since this is the default in Bootstrap */
   }
 
   /* ------- FINANCE SUMMARY ------- */
-  div.tooltip {
+  div.PieTooltip {
     display: block;
     position: absolute;
     text-align: left;
@@ -287,6 +287,22 @@ No media query for `xs` since this is the default in Bootstrap */
     margin: 10px 0;
     padding: 0;
     cursor: pointer;
+  }
+
+  /* ------- STOCK TIMES SERIES ------- */
+  div.STSTooltip {
+    display: block;
+    position: absolute;
+    text-align: left;
+    width: 200px;
+    height: 40px;
+    padding: 2px;
+    font: 12px sans-serif;
+    background: rgb(0, 0, 0);
+    border: 0px;
+    border-radius: 8px;
+    pointer-events: none;
+    color: white;
   }
 }
 
