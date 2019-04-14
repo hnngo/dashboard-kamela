@@ -121,6 +121,11 @@ No media query for `xs` since this is the default in Bootstrap */
     margin: 0;
     padding-left: 95%;
   }
+
+  .li-container,
+  .lss-container {
+    margin: 15px 10px;
+  }
   
 }
 
@@ -250,6 +255,7 @@ No media query for `xs` since this is the default in Bootstrap */
   /* ------- Line Chart ------- */
   .line-nodata-container {
     min-height: 276px;
+    max-height: calc(314px - 38px);
   }
 
   /* ------- FINANCE SUMMARY ------- */
@@ -291,6 +297,10 @@ No media query for `xs` since this is the default in Bootstrap */
   }
 
   /* ------- STOCK TIMES SERIES ------- */
+  .li-container {
+    margin: 0px 10px;
+  }
+
   div.STSTooltip {
     display: block;
     position: absolute;

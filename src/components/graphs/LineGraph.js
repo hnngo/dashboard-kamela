@@ -134,16 +134,6 @@ export default class LineGraph extends Component {
        .attr("class", "lineChart")
        .attr("fill", this.props.areaColor)
        .attr("d", area(yData));
-
-    // Draw data dot circle
-    // svg.selectAll("circle")
-    //    .data(yDataVolume)
-    //    .enter()
-    //    .append("circle")
-    //    .attr("cx", (d, i) => xScale(timeParse(xData[i])))
-    //    .attr("cy", (d, i) => yScale(d))
-    //    .attr("r", 3)
-    //    .attr("fill", "red")
   }
 
   // Render "please waiting" when no data is retrieved from Stock API

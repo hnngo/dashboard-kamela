@@ -26,13 +26,15 @@ export default class LineStockSeries extends Component {
       totalWidth: 800,
       totalHeight: 330,
       number: undefined,
-      resizeEvent: undefined
+      resizeEvent: undefined,
+      cooldownTime: 60,
+      cooldownInterval: undefined
     }
   }
 
   componentWillMount() {
     // Getting data and draw when data is loaded fully
-    this.getData(this.props.stSeries, () => this.drawChart());
+    this.getData(() => this.drawChart());
   }
 
   componentDidMount() {
@@ -50,7 +52,7 @@ export default class LineStockSeries extends Component {
             totalWidth: $lssContainer.clientWidth,
             loaded: false,
             number
-          }, () => this.getData(this.props.stSeries, () => this.drawChart()));
+          }, () => this.getData(() => this.drawChart()));
         }
       }
     }, 200);
@@ -58,20 +60,28 @@ export default class LineStockSeries extends Component {
     this.setState({ resizeEvent });
   }
 
+  componentWillReceiveProps(newProps) {
+    if (newProps.stSeries !== this.props.stSeries) {
+      this.setState({ loaded: false }, () => this.getData(() => this.drawChart(), newProps));
+    }
+  }
+
   componentWillUnmount() {
     clearInterval(this.state.resizeEvent);
   }
 
-  getData = async (APILink, callback) => {
+  getData = async (callback, newProps=undefined) => {
+    let stsSymbol = newProps ? newProps.stSeries : this.props.stSeries;
+
     // Get data from stock API
-    let res = await axios.get(APILink);
+    let res = await axios.get(`https://www.alphavantage.co/query?function=TIME_SERIES_INTRADAY&symbol=${stsSymbol}&interval=5min&apikey=KJO1VD3QQ2D7BDOV`);
 
     // Check if result is valid data or error
     // If fail, then re-attempt to get the data after 1 mins, free API maximum 5 calls per min
     if ((Object.keys(res.data).includes("Error Message")) || (Object.keys(res.data).includes("Note"))) {
       // Set time out for the next attempt
       setTimeout(() => {
-        this.getData(this.props.tiType, () => this.drawChart());
+        this.getData(() => this.drawChart());
       }, 5000);
 
       this.setState({ loaded: false });
