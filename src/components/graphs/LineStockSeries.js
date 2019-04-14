@@ -84,8 +84,16 @@ export default class LineStockSeries extends Component {
         this.getData(() => this.drawChart());
       }, 5000);
 
-      this.setState({ loaded: false });
+      if (this.state.cooldownTime < 60) {
+        return;
+      }
+
+      // Set interval for counting down for every second
+      const cooldownInterval = setInterval(() => this.setState({ cooldownTime: this.state.cooldownTime - 1 }), 1000);
+      
+      this.setState({ loaded: false, cooldownInterval });
     } else {
+      clearInterval(this.state.cooldownInterval);
       this.setState({
         data: res.data,
         loaded: true
@@ -279,7 +287,7 @@ export default class LineStockSeries extends Component {
 
            return res;
          }).style("left", (d3.event.pageX - 90) + "px")
-           .style("top", (d, i) => (d3.event.pageY - 200) + "px");
+           .style("top", (d, i) => (d3.event.pageY - 180) + "px");
        })
        .on("mouseout", () => {
          if (window.screen.width <= 576) {
@@ -307,6 +315,7 @@ export default class LineStockSeries extends Component {
             <span className="sr-only" />
           </div>
         </div>
+        <h3 className="pt-3 pb-2">{this.state.cooldownTime}<span className="p">s</span></h3>
         <p className="px-5 pt-3 pb-5 text-muted">Due to limitation of 5 times getting stock data per minute, please patiently wait, thank you!</p>
       </div>
     );
@@ -330,5 +339,4 @@ LineStockSeries.propTypes = {
   stSeries: PropTypes.string.isRequired
 };
 
-//TODO: Small screen
-//TODO: Add changing data dynamically
+//TODO: Adding type to search and connect with search symbol

@@ -31,8 +31,10 @@ export default class LineGraph extends Component {
 
   getData = async (callbackFunc) => {
     // Get data
-    let res = await axios.get(`https://www.alphavantage.co/query?function=TIME_SERIES_INTRADAY&symbol=${this.props.stockSymbol}&interval=60min&apikey=KJO1VD3QQ2D7BDOV`);
-    
+    // let res = await axios.get(`https://www.alphavantage.co/query?function=TIME_SERIES_INTRADAY&symbol=${this.props.stockSymbol}&interval=60min&apikey=KJO1VD3QQ2D7BDOV`);
+
+    let res = await axios.get(`https://www.alphavantage.co/query?function=TIME_SERIES_INTRADAY&symbol=MSFT&interval=5min&apikey=demo`);
+
     // Check if result is valid data or error
     // If fail, then re-attempt to get the data after 1 mins, free API maximum 5 calls per min
     if ((Object.keys(res.data).includes("Error Message")) || (Object.keys(res.data).includes("Note"))) {

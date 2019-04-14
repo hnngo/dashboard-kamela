@@ -90,7 +90,7 @@ export default class DashBoard extends Component {
                       chartName={"PLXS-volume"}
                       stockSymbol={"PLXS"}
                       dataType={DATA_VOLUME}
-                      maxNumberOfData={15}
+                      maxNumberOfData={50}
                       offsetTop={120}
                       showAxis={false}
                       lineColor={"#008bf2"}
