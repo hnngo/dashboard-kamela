@@ -54,18 +54,25 @@ export default class TechnicalIndicators extends Component {
           <div className="board-title ml-3 d-flex justify-content-between">
             <h5 className="bold">Stock Times Series</h5>
           </div>
-          <select
-            className="custom-select"
-            id="selectSTS"
-            onChange={(e) => this.handleSelectSTS(e)}
-          >
-            <option value={"INS"}>(INS) Intelligent Systems Corp</option>
-            <option value={"NVTA"}>(NVTA) Invitae Corp</option>
-            <option value={"CHMA"}>(CHMA) Chiasma Inc</option>
-            <option value={"EHTH"}>(EHTH) Ehealth Inc</option>
-            <option value={"TNDM"}>(TNDM) Tandem Diabetes Care</option>
-            <option value={"VCYT"}>(VCYT) Veracyte Inc</option>
-          </select>
+          <div className="input-group">
+            <input 
+              className="form-control"
+              placeholder={`Enter a symbol. Ex: "AAPL" or select one beside`}
+            />
+            <select
+              className="custom-select"
+              id="selectSTS"
+              onChange={(e) => this.handleSelectSTS(e)}
+            >
+              <option value={"INS"}>(INS) Intelligent Systems Corp</option>
+              <option value={"NVTA"}>(NVTA) Invitae Corp</option>
+              <option value={"CHMA"}>(CHMA) Chiasma Inc</option>
+              <option value={"EHTH"}>(EHTH) Ehealth Inc</option>
+              <option value={"TNDM"}>(TNDM) Tandem Diabetes Care</option>
+              <option value={"VCYT"}>(VCYT) Veracyte Inc</option>
+              <option value={"VCYT"}>(VCYT) Veracyte Inc</option>
+            </select>
+          </div>
           <LineStockSeries
             chartName={"SS"}
             stSeries={this.state.selectSTS}

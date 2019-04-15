@@ -85,7 +85,6 @@ export default class SearchEndPoints extends Component {
     // Let all the data fly left
     const $rowData = document.querySelector(".se-row .animated");
     const $rowDetail = document.querySelector(".se-detail");
-    console.log($rowData, $rowDetail)
 
     if ($rowData && $rowDetail) {
       $rowDetail.classList.remove("fadeInRight");
@@ -202,6 +201,7 @@ export default class SearchEndPoints extends Component {
       return (
         <div className="se-no-res">
           <p>Are you looking for <span>symbols</span> or <span>companies</span> ?</p>
+          <p className="text-muted mt-3">Just enter a symbol on the top left corner <i className="fas fa-search" /> and let us help you find the best match</p>
         </div>
       )
     }

@@ -189,7 +189,7 @@ export default class LineStockSeries extends Component {
 
     // Init line for trending
     const line = d3.line()
-                   .x((d, i) => xScale(xData[i]))
+                   .x((d, i) => xScale(xData[i]) + xScale.bandwidth() / 2)
                    .y((d) => yScale(+d[DATA_HIGH]))
                    .curve(d3.curveBasis);
                   
@@ -205,9 +205,9 @@ export default class LineStockSeries extends Component {
        .data(yData)
        .enter()
        .append("line")
-       .attr("x1", (d, i) => xScale(xData[i]) + xScale.bandwidth()/2)
+       .attr("x1", (d, i) => xScale(xData[i]) + xScale.bandwidth() / 2)
        .attr("y1", (d, i) => yScale(+d[DATA_HIGH]))
-       .attr("x2", (d, i) => xScale(xData[i]) + xScale.bandwidth()/2)
+       .attr("x2", (d, i) => xScale(xData[i]) + xScale.bandwidth() / 2)
        .attr("y2", (d, i) => yScale(+d[DATA_LOW]))
        .attr("stroke", "black")
        .attr("stroke-width", 1);

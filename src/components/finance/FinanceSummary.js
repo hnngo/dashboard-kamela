@@ -99,7 +99,7 @@ export default class FinanceSummary extends Component {
     const $hoveredItem = e.target.id ? document.querySelector(`#${e.target.id} p`) : "";
 
     if ($hoveredItem) {
-      $hoveredItem.classList.add("animated", "pulse", "infinite");
+      $hoveredItem.classList.add("animated", "pulse");
     }
   }
 
@@ -112,7 +112,7 @@ export default class FinanceSummary extends Component {
     const $hoveredItem = e.target.id ? document.querySelector(`#${e.target.id} p`) : "";
 
     if ($hoveredItem) {
-      $hoveredItem.classList.remove("animated", "pulse", "infinite");
+      $hoveredItem.classList.remove("animated", "pulse");
     }
   }
 

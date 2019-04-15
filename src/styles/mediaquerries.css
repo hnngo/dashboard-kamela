@@ -294,6 +294,7 @@ No media query for `xs` since this is the default in Bootstrap */
     margin: 10px 0;
     padding: 0;
     cursor: pointer;
+    z-index: 100;
   }
 
   /* ------- STOCK TIMES SERIES ------- */
@@ -313,6 +314,7 @@ No media query for `xs` since this is the default in Bootstrap */
     border-radius: 8px;
     pointer-events: none;
     color: black;
+    z-index: 50;
     /* background-image: linear-gradient(to right, #ECE9E6, #FFFFFF); */
   }
 
