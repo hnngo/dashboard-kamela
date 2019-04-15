@@ -302,6 +302,10 @@ No media query for `xs` since this is the default in Bootstrap */
     margin: 0px 10px;
   }
 
+  .ti-sr-dataRow:hover {
+    background-image: linear-gradient(to right, #1D976C, #93F9B9);
+  }
+
   div.STSTooltip {
     display: block;
     position: absolute;

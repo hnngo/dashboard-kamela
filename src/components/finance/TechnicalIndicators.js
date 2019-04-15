@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import LineIndicators from '../graphs/LineIndicators';
+import axios from 'axios';
 import {
   TI_APO,
   TI_CMO,
@@ -17,7 +18,10 @@ export default class TechnicalIndicators extends Component {
 
     this.state = {
       selectTI: TI_CCI,
-      selectSTS: "INS"
+      selectSTS: "INS",
+      searchInput: undefined,
+      searchTimeout: undefined,
+      searchResult: undefined,
     }
   }
 
@@ -27,6 +31,83 @@ export default class TechnicalIndicators extends Component {
 
   handleSelectSTS(e) {
     this.setState({ selectSTS: e.target.value });
+  }
+
+  handleOnInput(e) {
+    // Clear time out for previous active
+    clearTimeout(this.state.searchTimeout)
+
+    // Active new timeout
+    const searchTimeout = setTimeout(() => {
+      this.activeSearch();
+    }, 1000);
+
+    // Save input and timeout ref
+    this.setState({
+      searchInput: e.target.value,
+      searchTimeout
+    });
+  }
+
+  async activeSearch() {
+    // Check if input nothing then do nothing
+    if (!this.state.searchInput) {
+      return;
+    }
+
+    const res = await axios.get(`https://www.alphavantage.co/query?function=SYMBOL_SEARCH&keywords=${this.state.searchInput}&apikey=KJO1VD3QQ2D7BDOV`);
+
+    // Check if return data is okay
+    if (Object.keys(res.data).includes("bestMatches")) {
+      console.log(res.data);
+      this.setState({
+        searchResult: res.data["bestMatches"].slice(0, 10)
+      });
+    }
+  }
+
+  renderSearchResult() {
+    if (!this.state.searchInput) {
+      return <div />
+    }
+
+    let style = {
+      left: 1,
+      width: document.querySelector('#inputTI').clientWidth,
+      top: document.querySelector('#inputTI').clientHeight
+    };
+
+    return (
+      <div
+        className="ti-sr-container"
+        style={style}
+      >
+        {
+          (this.state.searchResult) ?
+            <div>
+              {this.state.searchResult.map((item, i) => {
+                return (
+                  <div key={i} className="ti-sr-dataRow">
+                    <h6>{item["1. symbol"]}</h6>
+                    <p>{item["2. name"]}</p>
+                  </div>
+                );
+              })}
+            </div> :
+            <div>
+              <div className="spinner-grow text-success" role="status">
+                <span className="sr-only" />
+              </div>
+              <div className="spinner-grow text-success" role="status">
+                <span className="sr-only" />
+              </div>
+              <div className="spinner-grow text-success" role="status">
+                <span className="sr-only" />
+              </div>
+            </div>
+        }
+      </div>
+    );
   }
 
   render() {
@@ -55,11 +136,16 @@ export default class TechnicalIndicators extends Component {
             <h5 className="bold">Stock Times Series</h5>
           </div>
           <div className="input-group">
-            <input 
+            <input
+              id="inputTI"
               className="form-control"
               placeholder={`Enter a symbol. Ex: "AAPL" or select one beside`}
+              onChange={(e) => this.handleOnInput(e)}
             />
-            <select
+            <div>
+              {this.renderSearchResult()}
+            </div>
+            {/* <select
               className="custom-select"
               id="selectSTS"
               onChange={(e) => this.handleSelectSTS(e)}
@@ -71,7 +157,7 @@ export default class TechnicalIndicators extends Component {
               <option value={"TNDM"}>(TNDM) Tandem Diabetes Care</option>
               <option value={"VCYT"}>(VCYT) Veracyte Inc</option>
               <option value={"VCYT"}>(VCYT) Veracyte Inc</option>
-            </select>
+            </select> */}
           </div>
           <LineStockSeries
             chartName={"SS"}

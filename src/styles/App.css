@@ -379,6 +379,48 @@
   color: #195e28;
 }
 
+/* ----- SEARCH ENDPOINT ----- */
+.ti-sr-container {
+  position: absolute;
+  top: 38px;
+  left: 0px;
+  border: 1px solid #ced4da;
+  border-radius: 5px;
+  background-color: white;
+  padding: 0px 10px;
+  max-height: 180px;
+  overflow-x: auto;
+  box-shadow: 0px 0px 13px 0px rgb(85, 85, 85);
+}
+
+#inputTI {
+  z-index: 50;
+  outline: none !important;
+  box-shadow: none !important;
+}
+
+.ti-sr-dataRow {
+  border-bottom: 1px solid #ced4da; 
+  margin: 0;
+  padding: 5px 0;
+  border-radius: 10px;
+  cursor: pointer;
+}
+
+.ti-sr-dataRow h6, p {
+  padding: 0 10px;
+  margin: 0;
+}
+
+.ti-sr-dataRow h6 {
+  font-weight: bold;
+}
+
+.ti-sr-dataRow p {
+  font-size: 13px;
+}
+
+
 .li-container,
 .lss-container {
   overflow: hidden;
@@ -387,4 +429,3 @@
   width: 100%;
   height: 276px;
 }
-
