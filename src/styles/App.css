@@ -420,6 +420,13 @@
   font-size: 13px;
 }
 
+.ti-sr-nores {
+  padding-top: 8px;
+}
+
+.ti-sr-nores h6 {
+  font-size: 14px;
+}
 
 .li-container,
 .lss-container {

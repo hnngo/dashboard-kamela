@@ -7,8 +7,7 @@ import {
   TI_AROONOS,
   TI_CCI,
   TI_EMA,
-  TI_ROC,
-  STS_MSFT
+  TI_ROC
 } from '../../constants';
 import LineStockSeries from '../graphs/LineStockSeries';
 
@@ -22,7 +21,41 @@ export default class TechnicalIndicators extends Component {
       searchInput: undefined,
       searchTimeout: undefined,
       searchResult: undefined,
+      isInputFocused: false,
+      focusEvent: undefined
     }
+  }
+
+  componentDidMount() {
+    // Loop interval for resize checking
+    const focusEvent = setInterval(() => {
+      const $tiInput = document.querySelector("#inputTI");
+
+      if ($tiInput) {
+        let isInputFocused = $tiInput === document.activeElement;
+
+        if ((isInputFocused && !this.state.isInputFocused) || (!isInputFocused && this.state.isInputFocused)) {
+          const $searchRes = document.querySelector(".ti-sr-container");
+
+          if ($searchRes) {
+            if (isInputFocused) {
+              $searchRes.style["max-height"] = "180px";
+            } else {
+              $searchRes.style["max-height"] = 0;
+            }
+          }
+
+          this.setState({ isInputFocused })
+        }
+
+      }
+    }, 200);
+
+    this.setState({ focusEvent });
+  }
+
+  componentWillUnmount() {
+    clearInterval(this.state.focusEvent);
   }
 
   handleSelectTI(e) {
@@ -85,23 +118,47 @@ export default class TechnicalIndicators extends Component {
   }
 
   renderSearchResult() {
-    console.log("hjer")
     if (!this.state.searchInput) {
       return <div />
     }
 
-    // const $searchRes = document.querySelector(".ti-sr-container");
-
-    // if ($searchRes) {
-    //   console.log($searchRes.style["max-height"])
-    //   $searchRes.style["max-height"] = "";
-    // }
-
-    // let style = {
-    //   left: 1,
-    //   width: document.querySelector('#inputTI').clientWidth,
-    //   top: document.querySelector('#inputTI').clientHeight
-    // };
+    let content = undefined;
+    if (this.state.searchResult) {
+      if (this.state.searchResult.length > 0) {
+        content =
+          <div>
+            {this.state.searchResult.map((item, i) => {
+              return (
+                <div 
+                  key={i} className="ti-sr-dataRow"
+                  onClick={() => this.handleClickSR(i)}
+                >
+                  <h6>{item["1. symbol"]}</h6>
+                  <p>{item["2. name"]}</p>
+                </div>
+              );
+            })}
+          </div>;
+      } else {
+        content = 
+          <div className="ti-sr-nores">
+            <h6>There is no results for "{this.state.searchInput}"</h6>
+          </div>
+      }
+    } else {
+      content =
+        <div>
+          <div className="spinner-grow text-success" role="status">
+            <span className="sr-only" />
+          </div>
+          <div className="spinner-grow text-success" role="status">
+            <span className="sr-only" />
+          </div>
+          <div className="spinner-grow text-success" role="status">
+            <span className="sr-only" />
+          </div>
+        </div>;
+    }
 
     return (
       <div
@@ -113,33 +170,7 @@ export default class TechnicalIndicators extends Component {
           maxHeight: this.state.searchResult ? 180 : "auto"
         }}
       >
-        {
-          (this.state.searchResult) ?
-            <div>
-              {this.state.searchResult.map((item, i) => {
-                return (
-                  <div 
-                    key={i} className="ti-sr-dataRow"
-                    onClick={() => this.handleClickSR(i)}
-                  >
-                    <h6>{item["1. symbol"]}</h6>
-                    <p>{item["2. name"]}</p>
-                  </div>
-                );
-              })}
-            </div> :
-            <div>
-              <div className="spinner-grow text-success" role="status">
-                <span className="sr-only" />
-              </div>
-              <div className="spinner-grow text-success" role="status">
-                <span className="sr-only" />
-              </div>
-              <div className="spinner-grow text-success" role="status">
-                <span className="sr-only" />
-              </div>
-            </div>
-        }
+        {content}
       </div>
     );
   }
@@ -180,19 +211,6 @@ export default class TechnicalIndicators extends Component {
             <div>
               {this.renderSearchResult()}
             </div>
-            {/* <select
-              className="custom-select"
-              id="selectSTS"
-              onChange={(e) => this.handleSelectSTS(e)}
-            >
-              <option value={"INS"}>(INS) Intelligent Systems Corp</option>
-              <option value={"NVTA"}>(NVTA) Invitae Corp</option>
-              <option value={"CHMA"}>(CHMA) Chiasma Inc</option>
-              <option value={"EHTH"}>(EHTH) Ehealth Inc</option>
-              <option value={"TNDM"}>(TNDM) Tandem Diabetes Care</option>
-              <option value={"VCYT"}>(VCYT) Veracyte Inc</option>
-              <option value={"VCYT"}>(VCYT) Veracyte Inc</option>
-            </select> */}
           </div>
           <LineStockSeries
             chartName={"SS"}
@@ -204,5 +222,5 @@ export default class TechnicalIndicators extends Component {
   }
 }
 
-//TODO: No search result render
 //TODO: CLick nowhere to collapse searhc and keep old res
+//TODO: Adding label for chart to indicate company name

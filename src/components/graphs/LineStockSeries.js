@@ -99,7 +99,8 @@ export default class LineStockSeries extends Component {
       clearInterval(this.state.cooldownInterval);
       this.setState({
         data: res.data,
-        loaded: true
+        loaded: true,
+        cooldownTime: 60
       }, () => callback());
     }
   }
@@ -289,7 +290,13 @@ export default class LineStockSeries extends Component {
            }">${change}%</span></p>`;
 
            return res;
-         }).style("left", (d3.event.pageX - 90) + "px")
+         }).style("left", () => {
+           if (i >= yData.length - 8) {
+            return (d3.event.pageX - 150) + "px"; 
+           }
+
+           return (d3.event.pageX - 90) + "px";
+          })
            .style("top", (d, i) => (d3.event.pageY - 180) + "px");
        })
        .on("mouseout", () => {
