@@ -48,7 +48,7 @@ export default class LineStockSeries extends Component {
         if (this.state.totalWidth !== currentWidth) {
           let number = currentWidth > 576 ? 40 : 20;
 
-          this.setState({ 
+          this.setState({
             totalWidth: $lssContainer.clientWidth,
             number
           }, () => this.drawChart());
@@ -69,7 +69,7 @@ export default class LineStockSeries extends Component {
     clearInterval(this.state.resizeEvent);
   }
 
-  getData = async (callback, newProps=undefined, newData=true) => {
+  getData = async (callback, newProps=undefined) => {
     let stsSymbol = newProps ? newProps.stSeries : this.props.stSeries;
 
     // Get data from stock API
@@ -88,8 +88,12 @@ export default class LineStockSeries extends Component {
       }
 
       // Set interval for counting down for every second
-      const cooldownInterval = setInterval(() => this.setState({ cooldownTime: this.state.cooldownTime - 1 }), 1000);
-      
+      const cooldownInterval = setInterval(() => {
+        this.setState({
+          cooldownTime: this.state.cooldownTime - 1
+        });
+      }, 1000);
+
       this.setState({ loaded: false, cooldownInterval });
     } else {
       clearInterval(this.state.cooldownInterval);
@@ -155,7 +159,7 @@ export default class LineStockSeries extends Component {
                         return "";
                       }
                     })
-                    
+
     svg.append("g")
        .call(xAxis)
        .attr("transform", `translate(0, ${hSvg})`)
@@ -173,16 +177,16 @@ export default class LineStockSeries extends Component {
        .style("stroke-width", 0.2);
 
     // Store important svg info in state
-    const svgInfo = { svg, yScale, xScale, xData, yData };  
+    const svgInfo = { svg, yScale, xScale, xData, yData };
 
-    // Set state then trigger draw data 
+    // Set state then trigger draw data
     this.setState({ svgInfo }, () => this.drawData());
   }
 
   drawData() {
     // Get svg info from state
     const {
-      svg, yScale, xScale, 
+      svg, yScale, xScale,
       xData, yData
     } = this.state.svgInfo;
 
@@ -191,7 +195,7 @@ export default class LineStockSeries extends Component {
                    .x((d, i) => xScale(xData[i]) + xScale.bandwidth() / 2)
                    .y((d) => yScale(+d[DATA_HIGH]))
                    .curve(d3.curveBasis);
-                  
+
     svg.append("path")
        .attr("d", line(yData))
        .attr("stroke",  "#000")
@@ -232,7 +236,7 @@ export default class LineStockSeries extends Component {
          return (+d[DATA_OPEN] >= +d[DATA_CLOSE]) ? "red" : "green";
        });
 
-       
+
     // Tooltip
     d3.select("div.STSTooltip").remove();
     const tip = d3.select('body')

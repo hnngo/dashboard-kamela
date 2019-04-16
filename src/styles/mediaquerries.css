@@ -122,9 +122,10 @@ No media query for `xs` since this is the default in Bootstrap */
     padding-left: 95%;
   }
 
-  .li-container,
+.li-container,
   .lss-container {
-    margin: 15px 10px;
+    padding: 0px 10px;
+    margin: 15px 0px;
   }
   
 }
@@ -298,7 +299,9 @@ No media query for `xs` since this is the default in Bootstrap */
   }
 
   /* ------- STOCK TIMES SERIES ------- */
-  .li-container {
+  .li-container,
+  .lss-container {
+    padding: 0px 10px;
     margin: 0px 10px;
   }
 

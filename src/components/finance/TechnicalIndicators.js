@@ -40,10 +40,11 @@ export default class TechnicalIndicators extends Component {
     // Active new timeout
     const searchTimeout = setTimeout(() => {
       this.activeSearch();
-    }, 1000);
+    }, 800);
 
     // Save input and timeout ref
     this.setState({
+      searchResult: undefined,
       searchInput: e.target.value,
       searchTimeout
     });
@@ -66,28 +67,61 @@ export default class TechnicalIndicators extends Component {
     }
   }
 
+  handleClickSR(index) {
+    const symbolSelect = this.state.searchResult[index];
+
+    // When click on result, collapsing the search div
+    // and query the selected symbol
+    const $searchRes = document.querySelector(".ti-sr-container");
+
+    if ($searchRes) {
+      $searchRes.style["max-height"] = 0;
+      this.setState({
+        searchResult: undefined,
+        searchInput: symbolSelect["1. symbol"],
+        selectSTS: symbolSelect["1. symbol"]
+      })
+    }
+  }
+
   renderSearchResult() {
+    console.log("hjer")
     if (!this.state.searchInput) {
       return <div />
     }
 
-    let style = {
-      left: 1,
-      width: document.querySelector('#inputTI').clientWidth,
-      top: document.querySelector('#inputTI').clientHeight
-    };
+    // const $searchRes = document.querySelector(".ti-sr-container");
+
+    // if ($searchRes) {
+    //   console.log($searchRes.style["max-height"])
+    //   $searchRes.style["max-height"] = "";
+    // }
+
+    // let style = {
+    //   left: 1,
+    //   width: document.querySelector('#inputTI').clientWidth,
+    //   top: document.querySelector('#inputTI').clientHeight
+    // };
 
     return (
       <div
         className="ti-sr-container"
-        style={style}
+        style={{
+          left: 1,
+          width: document.querySelector('#inputTI').clientWidth,
+          top: document.querySelector('#inputTI').clientHeight,
+          maxHeight: this.state.searchResult ? 180 : "auto"
+        }}
       >
         {
           (this.state.searchResult) ?
             <div>
               {this.state.searchResult.map((item, i) => {
                 return (
-                  <div key={i} className="ti-sr-dataRow">
+                  <div 
+                    key={i} className="ti-sr-dataRow"
+                    onClick={() => this.handleClickSR(i)}
+                  >
                     <h6>{item["1. symbol"]}</h6>
                     <p>{item["2. name"]}</p>
                   </div>
@@ -140,6 +174,7 @@ export default class TechnicalIndicators extends Component {
               id="inputTI"
               className="form-control"
               placeholder={`Enter a symbol. Ex: "AAPL" or select one beside`}
+              value={this.state.searchInput}
               onChange={(e) => this.handleOnInput(e)}
             />
             <div>
@@ -168,3 +203,6 @@ export default class TechnicalIndicators extends Component {
     );
   }
 }
+
+//TODO: No search result render
+//TODO: CLick nowhere to collapse searhc and keep old res
