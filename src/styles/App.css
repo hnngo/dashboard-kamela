@@ -245,7 +245,7 @@
 }
 
 .pie-container {
-  overflow: hidden;
+  z-index: 50;
 }
 
 /* ----- SEARCH ENDPOINT ----- */

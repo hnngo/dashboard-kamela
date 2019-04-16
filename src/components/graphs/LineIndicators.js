@@ -42,9 +42,8 @@ export default class LineIndicators extends Component {
 
           this.setState({ 
             totalWidth: $tiContainer.clientWidth,
-            loaded: false,
             number
-          }, () => this.getData(this.props.tiType, () => this.drawChart()));
+          }, () => this.drawChart());
         }
       }
     }, 200);

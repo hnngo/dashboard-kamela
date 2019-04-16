@@ -50,9 +50,8 @@ export default class LineStockSeries extends Component {
 
           this.setState({ 
             totalWidth: $lssContainer.clientWidth,
-            loaded: false,
             number
-          }, () => this.getData(() => this.drawChart()));
+          }, () => this.drawChart());
         }
       }
     }, 200);
@@ -70,7 +69,7 @@ export default class LineStockSeries extends Component {
     clearInterval(this.state.resizeEvent);
   }
 
-  getData = async (callback, newProps=undefined) => {
+  getData = async (callback, newProps=undefined, newData=true) => {
     let stsSymbol = newProps ? newProps.stSeries : this.props.stSeries;
 
     // Get data from stock API

@@ -292,5 +292,5 @@ PieChart.propTypes = {
   chartName: PropTypes.string.isRequired
 };
 
-//TODO: Show tooltips inside pie chart
 //TODO: Find way to show percentage on small screen
+//TODO: Fixing switch button responsive immediately
