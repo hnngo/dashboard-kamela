@@ -218,13 +218,10 @@ export default class TechnicalIndicators extends Component {
             stSeries={this.state.selectSTS}
           />
           <div className="text-center">
-            <h6>{this.state.selectName}</h6>
+            <h6 className="pb-2">{this.state.selectName}</h6>
           </div>
         </div>
       </div>
     );
   }
 }
-
-//TODO: CLick nowhere to collapse searhc and keep old res
-//TODO: Adding label for chart to indicate company name

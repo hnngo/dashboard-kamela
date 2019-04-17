@@ -231,6 +231,3 @@ export default class SearchEndPoints extends Component {
     );
   }
 }
-
-//TODO: Enter to get results
-//TODO: Handle input "" can click search

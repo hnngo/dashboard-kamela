@@ -5,6 +5,7 @@ import FinanceSummary from './finance/FinanceSummary';
 import LineGraph from './graphs/LineGraph';
 import SearchEndPoints from './finance/SearchEndPoints';
 import TechnicalIndicators from './finance/TechnicalIndicators';
+import FXExchange from './finance/FXExchange';
 import data from '../company_data_500.json';
 import {
   // DATA_CLOSE,
@@ -13,8 +14,11 @@ import {
   // DATA_OPEN,
   DATA_VOLUME,
   DOUBLE_HEIGHT,
-  SINGLE_HEIGHT
+  SINGLE_HEIGHT,
+  FX_DIGITAL_CUR,
+  FX_PHYSICAL_CUR
 } from '../constants';
+
 
 export default class DashBoard extends Component {
   constructor(props) {
@@ -134,6 +138,13 @@ export default class DashBoard extends Component {
               <div className="col-12">
                 <Board
                   height={SINGLE_HEIGHT}
+                  component={
+                    <FXExchange
+                      currencySource={[FX_DIGITAL_CUR, FX_PHYSICAL_CUR]}
+                      convertTable={true}
+                      convertGraph={true}
+                    />
+                  }
                 />
               </div>
             </div>
@@ -141,6 +152,13 @@ export default class DashBoard extends Component {
               <div className="col-12">
                 <Board
                   height={SINGLE_HEIGHT}
+                  component={
+                    <FXExchange
+                      currencySource={[FX_DIGITAL_CUR, FX_PHYSICAL_CUR]}
+                      convertTable={true}
+                      convertGraph={true}
+                    />
+                  }
                 />
               </div>
             </div>

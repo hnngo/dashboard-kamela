@@ -156,5 +156,3 @@ export default class CompanyOverview extends Component {
     );
   }
 }
-
-//TODO: Move to non-graph folder

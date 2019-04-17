@@ -35,3 +35,7 @@ export const TI_AROONOS = "https://www.alphavantage.co/query?function=AROONOSC&s
 
 /* ------------- Stock Times Series ------------- */
 export const STS_MSFT = "https://www.alphavantage.co/query?function=TIME_SERIES_INTRADAY&symbol=MSFT&interval=5min&apikey=demo"
+
+/* ------------- Forex Exchange ------------- */
+export const FX_PHYSICAL_CUR = "physicalCurrencyList";
+export const FX_DIGITAL_CUR = "digitalCurrencyList";

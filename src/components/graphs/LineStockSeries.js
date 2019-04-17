@@ -348,5 +348,3 @@ LineStockSeries.propTypes = {
   chartName: PropTypes.string.isRequired,
   stSeries: PropTypes.string.isRequired
 };
-
-//TODO: Adding type to search and connect with search symbol
