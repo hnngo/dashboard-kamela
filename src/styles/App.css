@@ -432,13 +432,14 @@
 
 /* ----- FOREX EXCHANGE ----- */
 .fxe-table-container {
-  overflow: hidden;
+  position: relative;
+  margin-top: 15px;
 }
 
 .fxe-table-container div.d-flex {
   margin: 0 auto;
   width: 280px;
-  height: 40px;
+  height: 60px;
 }
 
 .fxe-table-container input {
@@ -453,14 +454,24 @@
 .fxe-table-country {
   background-color: #28a745;
   border: 2px solid #1a5a28;
-  padding: 5px 12px;
+  padding: 10px 0px;
+  padding-left: 15px;
+  cursor: pointer;
 }
 
 .fxe-table-country h6 {
   color: white;
   margin: 0;
-  padding: 6px 5px;
+  padding: 10px 5px;
   font-size: 14px;
+}
+
+.fxe-table-country i {
+  font-weight: bold;
+  color: white;
+  font-size: 18px;
+  padding: 9px 0px;
+  padding-left: 20px;
 }
 
 .fxe-ex-rate {
@@ -489,7 +500,6 @@
   color: #8b8b8b;
 }
 
-
 .fxe-ex-rate li::after {
   content: "";
   position: absolute;
@@ -499,5 +509,12 @@
   width: 2px;
   background-color: #d3d5d8;
   border-width: 0;
+}
+
+.fxe-cs-container {
+  position: absolute;
+  height: 200px;
+  background-color: white;
+  border: 0.5px solid rgba(170, 170, 170, 0.637);
 }
 

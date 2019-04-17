@@ -346,6 +346,10 @@ No media query for `xs` since this is the default in Bootstrap */
   .STSTooltip span {
     font-weight: bold;
   }
+
+  .fxe-table-country:hover {
+    background-color: #065828;
+  }
 }
 
 /* Extra large devices (large desktops, 1200px and up) */
