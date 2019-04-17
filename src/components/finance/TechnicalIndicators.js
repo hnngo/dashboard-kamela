@@ -18,6 +18,7 @@ export default class TechnicalIndicators extends Component {
     this.state = {
       selectTI: TI_CCI,
       selectSTS: "INS",
+      selectName: "Intelligent Systems Corporation",
       searchInput: undefined,
       searchTimeout: undefined,
       searchResult: undefined,
@@ -27,7 +28,7 @@ export default class TechnicalIndicators extends Component {
   }
 
   componentDidMount() {
-    // Loop interval for resize checking
+    // Loop interval for focus event checking
     const focusEvent = setInterval(() => {
       const $tiInput = document.querySelector("#inputTI");
 
@@ -37,6 +38,7 @@ export default class TechnicalIndicators extends Component {
         if ((isInputFocused && !this.state.isInputFocused) || (!isInputFocused && this.state.isInputFocused)) {
           const $searchRes = document.querySelector(".ti-sr-container");
 
+          // Collapsing and Opening
           if ($searchRes) {
             if (isInputFocused) {
               $searchRes.style["max-height"] = "180px";
@@ -45,7 +47,7 @@ export default class TechnicalIndicators extends Component {
             }
           }
 
-          this.setState({ isInputFocused })
+          this.setState({ isInputFocused });
         }
 
       }
@@ -108,11 +110,11 @@ export default class TechnicalIndicators extends Component {
     const $searchRes = document.querySelector(".ti-sr-container");
 
     if ($searchRes) {
-      $searchRes.style["max-height"] = 0;
       this.setState({
         searchResult: undefined,
         searchInput: symbolSelect["1. symbol"],
-        selectSTS: symbolSelect["1. symbol"]
+        selectSTS: symbolSelect["1. symbol"],
+        selectName: symbolSelect["2. name"]
       })
     }
   }
@@ -147,14 +149,14 @@ export default class TechnicalIndicators extends Component {
       }
     } else {
       content =
-        <div>
-          <div className="spinner-grow text-success" role="status">
+        <div className="py-2">
+          <div className="spinner-border spinner-border-sm text-success">
             <span className="sr-only" />
           </div>
-          <div className="spinner-grow text-success" role="status">
+          <div className="spinner-border spinner-border-sm text-success">
             <span className="sr-only" />
           </div>
-          <div className="spinner-grow text-success" role="status">
+          <div className="spinner-border spinner-border-sm text-success">
             <span className="sr-only" />
           </div>
         </div>;
@@ -166,8 +168,7 @@ export default class TechnicalIndicators extends Component {
         style={{
           left: 1,
           width: document.querySelector('#inputTI').clientWidth,
-          top: document.querySelector('#inputTI').clientHeight,
-          maxHeight: this.state.searchResult ? 180 : "auto"
+          top: document.querySelector('#inputTI').clientHeight
         }}
       >
         {content}
@@ -177,8 +178,8 @@ export default class TechnicalIndicators extends Component {
 
   render() {
     return (
-      <div className="ti-container">
-        <div>
+      <div>
+        <div className="ti-container">
           <select
             className="custom-select"
             id="selectTI"
@@ -204,7 +205,7 @@ export default class TechnicalIndicators extends Component {
             <input
               id="inputTI"
               className="form-control"
-              placeholder={`Enter a symbol. Ex: "AAPL" or select one beside`}
+              placeholder={`Enter a symbol (example: "AAPL")`}
               value={this.state.searchInput}
               onChange={(e) => this.handleOnInput(e)}
             />
@@ -216,6 +217,9 @@ export default class TechnicalIndicators extends Component {
             chartName={"SS"}
             stSeries={this.state.selectSTS}
           />
+          <div className="text-center">
+            <h6>{this.state.selectName}</h6>
+          </div>
         </div>
       </div>
     );

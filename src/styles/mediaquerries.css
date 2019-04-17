@@ -256,7 +256,8 @@ No media query for `xs` since this is the default in Bootstrap */
   /* ------- Line Chart ------- */
   .line-nodata-container {
     min-height: 276px;
-    max-height: calc(314px - 38px);
+    height: 276px;
+    /* max-height: calc(314px - 38px); */
   }
 
   /* ------- FINANCE SUMMARY ------- */

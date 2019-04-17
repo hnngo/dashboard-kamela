@@ -47,6 +47,7 @@ export default class SearchEndPoints extends Component {
   }
 
   handleInputSearch(inputSearch) {
+    console.log(inputSearch.charAt(inputSearch.length - 1))
     // Set timeout for collapsing input width if user input then erase all input
     if (window.screen.width > 576) {
       const $searchbar = document.querySelector(".se-searchbar");
@@ -109,7 +110,7 @@ export default class SearchEndPoints extends Component {
     // Check if return data is okay
     if (Object.keys(res.data).includes("bestMatches")) {
       this.setState({
-        result: res.data["bestMatches"].slice(0, 10)
+        result: res.data["bestMatches"]
       });
     }
   }

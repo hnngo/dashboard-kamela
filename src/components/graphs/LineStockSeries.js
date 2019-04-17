@@ -24,7 +24,7 @@ export default class LineStockSeries extends Component {
         bottom: 45,
       },
       totalWidth: 800,
-      totalHeight: 330,
+      totalHeight: 315,
       number: 40,
       resizeEvent: undefined,
       cooldownTime: 60,

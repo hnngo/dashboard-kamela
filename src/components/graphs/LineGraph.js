@@ -18,7 +18,7 @@ export default class LineGraph extends Component {
         bottom: 10,
       },
       totalWidth: 500,
-      totalHeight: +SINGLE_HEIGHT + 62,
+      totalHeight: +SINGLE_HEIGHT + 70,
       cooldownTime: 60,
       cooldownInterval: undefined,
     }
