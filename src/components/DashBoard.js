@@ -135,9 +135,13 @@ export default class DashBoard extends Component {
           </div>
           <div className="col-xl-4">
             <div className="row">
-              <div className="col-12">
+              <div
+                id="CCE"
+                className="col-12"
+              >
                 <Board
                   height={SINGLE_HEIGHT}
+                  title={"Crypto Currencies Exchange"}
                   component={
                     <FXExchange
                       currencySource={[FX_DIGITAL_CUR, FX_PHYSICAL_CUR]}
@@ -149,12 +153,16 @@ export default class DashBoard extends Component {
               </div>
             </div>
             <div className="row">
-              <div className="col-12">
+              <div
+                id="FE"
+                className="col-12"
+              >
                 <Board
                   height={SINGLE_HEIGHT}
+                  title={"Forex Exchange"}
                   component={
                     <FXExchange
-                      currencySource={[FX_DIGITAL_CUR, FX_PHYSICAL_CUR]}
+                      currencySource={[ FX_PHYSICAL_CUR]}
                       convertTable={true}
                       convertGraph={true}
                     />

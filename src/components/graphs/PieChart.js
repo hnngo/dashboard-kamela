@@ -294,3 +294,4 @@ PieChart.propTypes = {
 
 //TODO: Find way to show percentage on small screen
 //TODO: Fixing switch button responsive immediately
+//TODO: Use slide detect to render instead of observing width pixel

@@ -122,7 +122,8 @@ No media query for `xs` since this is the default in Bootstrap */
     padding-left: 95%;
   }
 
-.li-container,
+  /* ------- STOCK TIMES SERIES ------- */
+  .li-container,
   .lss-container {
     padding: 0px 10px;
     margin: 15px 0px;
