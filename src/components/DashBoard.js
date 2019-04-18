@@ -147,16 +147,15 @@ export default class DashBoard extends Component {
                       currencySource={[FX_DIGITAL_CUR, FX_PHYSICAL_CUR]}
                       convertTable={true}
                       convertGraph={true}
+                      defaultFromCur={"BTC"}
+                      defaultToCur={"USD"}
                     />
                   }
                 />
               </div>
             </div>
             <div className="row">
-              <div
-                id="FE"
-                className="col-12"
-              >
+              <div className="col-12">
                 <Board
                   height={SINGLE_HEIGHT}
                   title={"Forex Exchange"}
@@ -165,6 +164,8 @@ export default class DashBoard extends Component {
                       currencySource={[ FX_PHYSICAL_CUR]}
                       convertTable={true}
                       convertGraph={true}
+                      defaultFromCur={"EUR"}
+                      defaultToCur={"USD"}
                     />
                   }
                 />

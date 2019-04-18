@@ -19,7 +19,7 @@ export default class TechnicalIndicators extends Component {
       selectTI: TI_CCI,
       selectSTS: "INS",
       selectName: "Intelligent Systems Corporation",
-      searchInput: undefined,
+      searchInput: "",
       searchTimeout: undefined,
       searchResult: undefined,
       isInputFocused: false,
@@ -87,7 +87,7 @@ export default class TechnicalIndicators extends Component {
 
   async activeSearch() {
     // Check if input nothing then do nothing
-    if (!this.state.searchInput) {
+    if (this.state.searchInput.length === 0) {
       return;
     }
 
@@ -120,7 +120,7 @@ export default class TechnicalIndicators extends Component {
   }
 
   renderSearchResult() {
-    if (!this.state.searchInput) {
+    if (this.state.searchInput.length === 0) {
       return <div />
     }
 

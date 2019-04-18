@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import axios from 'axios';
 import data from '../../data.json';
 
 export default class FXExchange extends Component {
@@ -9,7 +10,8 @@ export default class FXExchange extends Component {
       widthThreshold: 640,
       slideShow: undefined,
       resizeEvent: undefined,
-      showCurrencySelection: false
+      showCurrencySelection: false,
+      data: undefined
     };
   }
 
@@ -20,7 +22,9 @@ export default class FXExchange extends Component {
       const $CCE = document.querySelector("#CCE");
 
       if ($CCE) {
-        if ($CCE.clientWidth >= widthThreshold && slideShow) {
+        if (slideShow === undefined) {
+          this.setState({ slideShow: !($CCE.clientWidth >= widthThreshold) })
+        } else if ($CCE.clientWidth >= widthThreshold && slideShow) {
           this.setState({ slideShow: false });
         } else if ($CCE.clientWidth < widthThreshold && !slideShow) {
           this.setState({ slideShow: true });
@@ -28,7 +32,7 @@ export default class FXExchange extends Component {
       }
     }, 1000);
 
-    this.setState({ resizeEvent });
+    this.setState({ resizeEvent }, () => this.getData());
   }
 
   componentDidMount() {
@@ -37,6 +41,41 @@ export default class FXExchange extends Component {
 
   componentWillUnmount() {
     clearInterval(this.state.resizeEvent);
+  }
+
+  async getData(fromCur=null, toCur=null) {
+    let from = fromCur ? fromCur : this.props.defaultFromCur;
+    let to = toCur ? toCur : this.props.defaultToCur;
+
+    let res = await axios.get(`https://www.alphavantage.co/query?function=DIGITAL_CURRENCY_DAILY&symbol=${from}&market=${to}&apikey=KJO1VD3QQ2D7BDOV`);
+
+    if ((Object.keys(res.data).includes("Error Message")) || (Object.keys(res.data).includes("Note"))) {
+      // Set time out for the next attempt
+      setTimeout(() => {
+        this.getData();
+      }, 5000);
+
+      // if (this.state.cooldownTime < 60) {
+      //   return;
+      // }
+
+      // // Set interval for counting down for every second
+      // const cooldownInterval = setInterval(() => {
+      //   this.setState({
+      //     cooldownTime: this.state.cooldownTime - 1
+      //   });
+      // }, 1000);
+
+      // this.setState({ loaded: false, cooldownInterval });
+    } else {
+      console.log(res.data)
+      // clearInterval(this.state.cooldownInterval);
+      // this.setState({
+      //   data: res.data,
+      //   loaded: true,
+      //   cooldownTime: 60
+      // }, () => callback());
+    }
   }
 
   handClickChangeCurrency(position) {
@@ -98,15 +137,15 @@ export default class FXExchange extends Component {
       return <div />;
     }
 
-    const $curInput = document.querySelector("#FXInputFrom");
-    const $CCE = document.querySelector("#CCE");
-
     // Assign the right style for selection from or to
+    const $curInput = document.querySelector("#FXInputFrom");
+    const $fxeCon = document.querySelector(".fxe-table-container");
     let style = {};
-    if ($curInput && $CCE) {
+    
+    if ($curInput && $fxeCon) {
       style = {
-        left: ($CCE.clientWidth - 300) / 2 + "px",
-        right: ($CCE.clientWidth - 300) / 2 + "px"
+        left: ($fxeCon.clientWidth - 280) / 2 + "px",
+        right: ($fxeCon.clientWidth - 280) / 2 + "px"
       };
 
       if (this.state.showCurrencySelection === "from") {

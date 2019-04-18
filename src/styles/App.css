@@ -431,6 +431,10 @@
 }
 
 /* ----- FOREX EXCHANGE ----- */
+.fxe2-container {
+  position: relative;
+}
+
 .fxe-table-container {
   position: relative;
   margin-top: 15px;
@@ -485,7 +489,7 @@
 }
 
 .fxe-ex-rate li {
-  margin: 0px 5px;
+  margin: 0px 6px;
   padding: 10px 0;
   color: #d3d5d8
 }
@@ -516,5 +520,6 @@
   height: 200px;
   background-color: white;
   border: 0.5px solid rgba(170, 170, 170, 0.637);
+  display: none;
 }
 
