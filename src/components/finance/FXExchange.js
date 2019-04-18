@@ -40,9 +40,8 @@ export default class FXExchange extends Component {
   }
 
   handClickChangeCurrency(position) {
-    console.log(position);
     this.setState({
-      showCurrencySelection: position
+      showCurrencySelection: this.state.showCurrencySelection ? false : position
     })
   }
 
@@ -106,17 +105,16 @@ export default class FXExchange extends Component {
     let style = {};
     if ($curInput && $CCE) {
       style = {
-        top: $curInput.clientHeight + "px",
         left: ($CCE.clientWidth - 300) / 2 + "px",
         right: ($CCE.clientWidth - 300) / 2 + "px"
       };
 
       if (this.state.showCurrencySelection === "from") {
-        style.top = $curInput.clientHeight + "px";
+        style.top = ($curInput.clientHeight + 2) + "px";
         style.bottom = "";
       } else {
         style.top = "";
-        style.bottom = ($curInput.clientHeight + 1) + "px";
+        style.bottom = ($curInput.clientHeight + 2) + "px";
       }
     }
 
