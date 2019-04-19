@@ -47,7 +47,6 @@ export default class SearchEndPoints extends Component {
   }
 
   handleInputSearch(inputSearch) {
-    console.log(inputSearch.charAt(inputSearch.length - 1))
     // Set timeout for collapsing input width if user input then erase all input
     if (window.screen.width > 576) {
       const $searchbar = document.querySelector(".se-searchbar");
@@ -97,6 +96,12 @@ export default class SearchEndPoints extends Component {
     }
 
     this.setState({ choice: undefined })
+  }
+
+  handleKeyPress(e) {
+    if (e.key === "Enter") {
+      this.handleClickSearch();
+    }
   }
 
   async handleClickSearch() {
@@ -218,6 +223,7 @@ export default class SearchEndPoints extends Component {
             placeholder="Enter a symbol"
             value={this.state.inputSearch}
             onChange={(e) => this.handleInputSearch(e.target.value)}
+            onKeyPress={(e) => this.handleKeyPress(e)}
           />
           <button
             onMouseEnter={() => this.handleMouseEnter()}

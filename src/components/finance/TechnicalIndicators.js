@@ -95,7 +95,6 @@ export default class TechnicalIndicators extends Component {
 
     // Check if return data is okay
     if (Object.keys(res.data).includes("bestMatches")) {
-      console.log(res.data);
       this.setState({
         searchResult: res.data["bestMatches"].slice(0, 10)
       });

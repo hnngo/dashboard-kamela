@@ -87,7 +87,10 @@ export default class FXExchange extends Component {
 
       if ($fxeCon && $fxeBtn) {
         if (!$fxeCon.contains(event.target) && !$fxeBtn.contains(event.target) && showCurrencySelection) {
-          this.setState({ showCurrencySelection: false })
+          this.setState({
+            showCurrencySelection: false,
+            searchCurrency: ""
+          })
         }
       }
     });
@@ -146,21 +149,28 @@ export default class FXExchange extends Component {
 
   handleClickCurrencyBtn(position) {
     // Handle click open currency selection
-    this.setState({
-      showCurrencySelection: this.state.showCurrencySelection ? false : position
-    });
+    if (this.state.showCurrencySelection) {
+      this.setState({
+        showCurrencySelection: false,
+        searchCurrency: ""
+      });
+    } else {
+      this.setState({ showCurrencySelection: position });
+    }
   }
 
   handleSelectCurrency(curCode) {
     if (this.state.showCurrencySelection === "from") {
       this.setState({
         showCurrencySelection: false,
-        selectFromCurrency: curCode
+        selectFromCurrency: curCode,
+        searchCurrency: ""
       });
     } else {
       this.setState({
         showCurrencySelection: false,
-        selectToCurrency: curCode
+        selectToCurrency: curCode,
+        searchCurrency: ""
       });
     }
   }
@@ -351,32 +361,34 @@ export default class FXExchange extends Component {
             }
           </ul>
         </div>
-        <h6 className="fxe-cs-category">
-          All Currencies
-        </h6>
-        <ul>
-          {
-            Object.keys(selectionsCurrency).map((item, i) => {
-              return (
-                <li
-                  key={i}
-                  onClick={() => this.handleSelectCurrency(item)}
-                >
-                  <h6>
-                    <span>
-                      <img
-                        src={logoCurrency[item]}
-                        alt="curLogo"
-                      />
-                    </span>
-                    {item}&nbsp;&nbsp;
+        <div className="fxe-cs-all">
+          <h6 className="fxe-cs-category">
+            All Currencies
+          </h6>
+          <ul>
+            {
+              Object.keys(selectionsCurrency).map((item, i) => {
+                return (
+                  <li
+                    key={i}
+                    onClick={() => this.handleSelectCurrency(item)}
+                  >
+                    <h6>
+                      <span>
+                        <img
+                          src={logoCurrency[item]}
+                          alt="curLogo"
+                        />
+                      </span>
+                      {item}&nbsp;&nbsp;
                 <span>{selectionsCurrency[item]}</span>
-                  </h6>
-                </li>
-              );
-            })
-          }
-        </ul>
+                    </h6>
+                  </li>
+                );
+              })
+            }
+          </ul>
+        </div>
       </div>
     );
   }
@@ -412,9 +424,6 @@ export default class FXExchange extends Component {
   }
 
   render() {
-    // console.log(this.props.currencySource)
-    // console.log(data[this.props.currencySource[1]])
-
     if (this.state.slideShow === undefined) {
       return <div />;
     }

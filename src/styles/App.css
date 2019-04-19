@@ -560,27 +560,27 @@
   color: black;
 }
 
-.fxe-cs-container ul,
+.fxe-cs-all ul,
 .fxe-cs-popular ul {
   padding: 0;
   margin: 0;
 }
 
-.fxe-cs-container li,
+.fxe-cs-all li,
 .fxe-cs-popular li {
   list-style: none;
   padding: 10px 15px;
   cursor: pointer;
 }
 
-.fxe-cs-container li h6,
+.fxe-cs-all li h6,
 .fxe-cs-popular li h6 {
   margin: 0;
   font-size: 13px;
   font-weight: bold;
 }
 
-.fxe-cs-container li h6 img,
+.fxe-cs-all li h6 img,
 .fxe-cs-popular li h6 img,
 .fxe-table-country img {
   width: 32px;
@@ -588,7 +588,7 @@
   margin-right: 10px;
 }
 
-.fxe-cs-container li span,
+.fxe-cs-all li span,
 .fxe-cs-popular li span {
   font-weight: 100;
 }
