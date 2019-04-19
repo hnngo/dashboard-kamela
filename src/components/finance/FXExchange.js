@@ -7,28 +7,48 @@ export default class FXExchange extends Component {
     super(props);
 
     // Setup the selection from and to currency
-    let selectFromCurreny, selectToCurrency;
-    selectFromCurreny = data[this.props.currencySource[0]];
+    let dataFromCurrency, dataToCurrency;
+    dataFromCurrency = data[this.props.currencySource[0]];
     switch (this.props.currencySource.length) {
       case 1:
-        selectToCurrency = data[this.props.currencySource[0]];
+        dataToCurrency = data[this.props.currencySource[0]];
+
         break;
       case 2:
-        selectToCurrency = data[this.props.currencySource[1]];
+        dataToCurrency = data[this.props.currencySource[1]];
         break;
       default:
         break;
     }
 
+    // Setup the logos currency
+    let [logoFromCurrency, logoToCurrency] = [dataFromCurrency, dataToCurrency].map((type) => {
+      let newType = { ...type };
+
+      if (Object.keys(newType).includes("BTC")) {
+        Object.keys(newType).forEach((item) => {
+          newType[item] = require(`../../img/${item}.png`);
+        });
+      } else {
+        Object.keys(newType).forEach((item) => {
+          newType[item] = `https://www.countryflags.io/${item.slice(0, 2).toLowerCase()}/flat/32.png`;
+        });
+      }
+
+      return newType;
+    })
+
     this.state = {
-      widthThreshold: 640,
-      slideShow: undefined,
-      resizeEvent: undefined,
-      showCurrencySelection: false,
       data: undefined,
-      clickFromTarget: undefined,
-      selectFromCurreny,
-      selectToCurrency
+      widthThreshold: 640,
+      resizeEvent: undefined,
+      slideShow: undefined,
+      showCurrencySelection: false,
+      dataFromCurrency,
+      dataToCurrency,
+      selectFromCurrency: this.props.defaultFromCur,
+      selectToCurrency: this.props.defaultToCur,
+      logoCurrency: { ...logoFromCurrency, ...logoToCurrency }
     };
   }
 
@@ -113,10 +133,25 @@ export default class FXExchange extends Component {
     }
   }
 
-  handClickChangeCurrency(position) {
+  handleClickCurrencyBtn(position) {
+    // Handle click open currency selection
     this.setState({
       showCurrencySelection: this.state.showCurrencySelection ? false : position
-    })
+    });
+  }
+
+  handleSelectCurrency(curCode) {
+    if (this.state.showCurrencySelection === "from") {
+      this.setState({
+        showCurrencySelection: false,
+        selectFromCurrency: curCode
+      });
+    } else {
+      this.setState({
+        showCurrencySelection: false,
+        selectToCurrency: curCode
+      });
+    }
   }
 
   renderConvertTable() {
@@ -130,10 +165,13 @@ export default class FXExchange extends Component {
           <div
             id={"from" + this.props.chartKey}
             className="fxe-table-country d-flex"
-            onClick={() => this.handClickChangeCurrency("from")}
+            onClick={() => this.handleClickCurrencyBtn("from")}
           >
-            <img src="https://www.countryflags.io/be/shiny/32.png" alt="country-flag" />
-            <h6>USD</h6>
+            <img
+              src={this.state.logoCurrency[this.state.selectFromCurrency]}
+              alt="country-flag"
+            />
+            <h6>{this.state.selectFromCurrency}</h6>
             <i className="fas fa-chevron-down"></i>
           </div>
         </div>
@@ -156,10 +194,13 @@ export default class FXExchange extends Component {
           <div
             id={"to" + this.props.chartKey}
             className="fxe-table-country d-flex"
-            onClick={() => this.handClickChangeCurrency("to")}
+            onClick={() => this.handleClickCurrencyBtn("to")}
           >
-            <img src="https://www.countryflags.io/be/shiny/32.png" alt="country-flag" />
-            <h6>USD</h6>
+            <img
+              src={this.state.logoCurrency[this.state.selectToCurrency]}
+              alt="country-flag"
+            />
+            <h6>{this.state.selectToCurrency}</h6>
             <i className="fas fa-chevron-down"></i>
           </div>
         </div>
@@ -176,8 +217,9 @@ export default class FXExchange extends Component {
 
     const {
       showCurrencySelection,
-      selectFromCurreny,
-      selectToCurrency
+      dataFromCurrency,
+      dataToCurrency,
+      logoCurrency,
     } = this.state;
 
     // Assign the right style for selection from or to
@@ -200,11 +242,8 @@ export default class FXExchange extends Component {
       }
     }
 
-    console.log(selectFromCurreny)
-    console.log(selectToCurrency)
-
-    let selections = showCurrencySelection === "from" ? selectFromCurreny : selectToCurrency;
-    let typeSelection = Object.keys(selections)[0] === "AED";
+    // Select the proper currency selection
+    let selectionsCurrency = showCurrencySelection === "from" ? dataFromCurrency : dataToCurrency;
 
     return (
       <div
@@ -214,17 +253,21 @@ export default class FXExchange extends Component {
       >
         <ul>
           {
-            Object.keys(selections).map((item, i) => {
+            Object.keys(selectionsCurrency).map((item, i) => {
               return (
-                <li key={i}>
+                <li
+                  key={i}
+                  onClick={() => this.handleSelectCurrency(item)}
+                >
                   <h6>
                     <span>
-                      {
-                        (Object.keys(selections)[0] === "BTC") ? <img src={require(`../../img/${item}.png`)} alt="curLogo"/> : <img src={`https://www.countryflags.io/${item.slice(0, 2).toLowerCase()}/flat/32.png`} alt="curLogo"/>
-                      }
+                      <img
+                        src={logoCurrency[item]}
+                        alt="curLogo"
+                      />
                     </span>
                     {item}&nbsp;&nbsp;
-                    <span>{selections[item]}</span>
+                    <span>{selectionsCurrency[item]}</span>
                   </h6>
                 </li>
               );

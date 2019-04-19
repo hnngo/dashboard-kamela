@@ -456,7 +456,7 @@
 }
 
 .fxe-table-country {
-  background-color: #28a745;
+  background-color: #23943d;
   border: 2px solid #1a5a28;
   padding: 10px 0px;
   padding-left: 15px;
@@ -475,7 +475,7 @@
   color: white;
   font-size: 18px;
   padding: 9px 0px;
-  padding-left: 20px;
+  padding-left: 15px;
 }
 
 .fxe-ex-rate {
@@ -531,6 +531,7 @@
 .fxe-cs-container li {
   list-style: none;
   padding: 10px 15px;
+  cursor: pointer;
 }
 
 .fxe-cs-container li h6 {
@@ -539,15 +540,16 @@
   font-weight: bold;
 }
 
-.fxe-cs-container li h6 img {
+.fxe-cs-container li h6 img,
+.fxe-table-country img {
   width: 32px;
+  height: 32px;
   margin-right: 10px;
 }
 
 .fxe-cs-container li span {
   font-weight: 100;
 }
-
 
 .fxe-cs-container li:hover {
   background-color: #1a5a28;
