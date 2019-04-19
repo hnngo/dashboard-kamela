@@ -129,6 +129,11 @@ No media query for `xs` since this is the default in Bootstrap */
     margin: 15px 0px;
   }
   
+  /* ----- FOREX EXCHANGE ----- */
+  .fxe1-container,
+  .fxe2-container {
+    padding-bottom: 20px;
+  }
 }
 
 @media (min-width: 576px) {
@@ -345,6 +350,12 @@ No media query for `xs` since this is the default in Bootstrap */
 
   .STSTooltip span {
     font-weight: bold;
+  }
+
+  /* ----- FOREX EXCHANGE ----- */
+  .fxe1-container,
+  .fxe2-container {
+    padding-bottom: 0px;
   }
 
   .fxe-table-country:hover {

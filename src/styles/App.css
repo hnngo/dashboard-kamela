@@ -431,6 +431,7 @@
 }
 
 /* ----- FOREX EXCHANGE ----- */
+.fxe1-container,
 .fxe2-container {
   position: relative;
 }

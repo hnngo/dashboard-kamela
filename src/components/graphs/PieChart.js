@@ -30,11 +30,11 @@ export default class PieChart extends Component {
       let smallScreen, prevWidth = undefined, setState = false;
 
       // Checking for show Top company info
-      if ((currentWidth <= 576) && (currentWidth !== this.state.prevWidth)) {
+      if ((currentWidth < 576) && (currentWidth !== this.state.prevWidth)) {
         setState = true;
         smallScreen = true;
         prevWidth = currentWidth;
-      } else if ((currentWidth > 576) && (this.state.smallScreen)) {
+      } else if ((currentWidth >= 576) && (this.state.smallScreen)) {
         setState = true;
         smallScreen = false;
       }
@@ -48,7 +48,7 @@ export default class PieChart extends Component {
     this.setState({
       resizeEvent,
       prevWidth: window.screen.width,
-      smallScreen: window.screen.width <= 576 ? true : false,
+      smallScreen: window.screen.width < 576 ? true : false,
       pieData: _.countBy(this.props.data, (d) => d[this.props.sortType]) 
     }, () => this.drawChart());
   }

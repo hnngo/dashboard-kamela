@@ -38,6 +38,7 @@ export default class FXExchange extends Component {
     })
 
     this.state = {
+      loaded: false,
       data: undefined,
       widthThreshold: 640,
       resizeEvent: undefined,
@@ -48,7 +49,9 @@ export default class FXExchange extends Component {
       dataToCurrency,
       selectFromCurrency: this.props.defaultFromCur,
       selectToCurrency: this.props.defaultToCur,
-      logoCurrency: { ...logoFromCurrency, ...logoToCurrency }
+      logoCurrency: { ...logoFromCurrency, ...logoToCurrency },
+      cooldownInterval: undefined,
+      cooldownTime: 60
     };
   }
 
@@ -118,32 +121,40 @@ export default class FXExchange extends Component {
 
     let res = await axios.get(`https://www.alphavantage.co/query?function=DIGITAL_CURRENCY_DAILY&symbol=${from}&market=${to}&apikey=JDXSSIOOFMWY42SP`);
 
+    // Check if result is valid data or error
+    // If fail, then re-attempt to get the data after 1 mins, free API maximum 5 calls per min
     if ((Object.keys(res.data).includes("Error Message")) || (Object.keys(res.data).includes("Note"))) {
       // Set time out for the next attempt
       setTimeout(() => {
-        this.getData();
+        this.getData(() => this.drawChart());
       }, 5000);
 
-      // if (this.state.cooldownTime < 60) {
-      //   return;
-      // }
+      if (this.state.cooldownTime < 60) {
+        return;
+      }
 
-      // // Set interval for counting down for every second
-      // const cooldownInterval = setInterval(() => {
-      //   this.setState({
-      //     cooldownTime: this.state.cooldownTime - 1
-      //   });
-      // }, 1000);
+      // Set interval for counting down for every second
+      const cooldownInterval = setInterval(() => {
+        let cooldownTime;
 
-      // this.setState({ loaded: false, cooldownInterval });
+        if (this.state.cooldownTime > 1) {
+          cooldownTime = this.state.cooldownTime - 1;
+        } else {
+          clearInterval(this.state.cooldownInterval);
+          cooldownTime = 60;
+        }
+        this.setState({ cooldownTime });
+      }, 1000);
+
+      this.setState({ loaded: false, cooldownInterval });
     } else {
       console.log(res.data)
-      // clearInterval(this.state.cooldownInterval);
-      // this.setState({
-      //   data: res.data,
-      //   loaded: true,
-      //   cooldownTime: 60
-      // }, () => callback());
+      clearInterval(this.state.cooldownInterval);
+      this.setState({
+        data: res.data,
+        loaded: true,
+        cooldownTime: 60
+      });
     }
   }
 

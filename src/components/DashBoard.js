@@ -108,7 +108,10 @@ export default class DashBoard extends Component {
           </div>
         </div>
         <div className="row py-1">
-          <div className="col-xl-8">
+          <div
+            id="fsBoard"
+            className="col-xl-8"
+          >
             <Board
               height={SINGLE_HEIGHT}
               title={"Finance Summary"}
