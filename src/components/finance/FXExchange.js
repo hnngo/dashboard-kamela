@@ -42,6 +42,7 @@ export default class FXExchange extends Component {
       widthThreshold: 640,
       resizeEvent: undefined,
       slideShow: undefined,
+      searchCurrency: "",
       showCurrencySelection: false,
       dataFromCurrency,
       dataToCurrency,
@@ -164,6 +165,10 @@ export default class FXExchange extends Component {
     }
   }
 
+  handleInputSearchCurrency(e) {
+    this.setState({ searchCurrency: e.target.value });
+  }
+
   renderConvertTable() {
     return (
       <div className="fxe-table-container">
@@ -225,12 +230,7 @@ export default class FXExchange extends Component {
       return <div />;
     }
 
-    const {
-      showCurrencySelection,
-      dataFromCurrency,
-      dataToCurrency,
-      logoCurrency,
-    } = this.state;
+    const { showCurrencySelection } = this.state;
 
     // Assign the right style for selection from or to
     const $curInput = document.querySelector("#FXInputFrom");
@@ -252,9 +252,6 @@ export default class FXExchange extends Component {
       }
     }
 
-    // Select the proper currency selection
-    let selectionsCurrency = showCurrencySelection === "from" ? dataFromCurrency : dataToCurrency;
-
     return (
       <div
         id={"fxeCs" + this.props.chartKey}
@@ -266,53 +263,91 @@ export default class FXExchange extends Component {
           <input
             className="form-control"
             placeholder="Type a currency/country"
+            value={this.state.searchCurrency}
+            onChange={(e) => this.handleInputSearchCurrency(e)}
           />
         </div>
+        {this.renderSearchResult()}
+      </div>
+    );
+  }
+
+  renderSearchResult() {
+    const {
+      showCurrencySelection,
+      dataFromCurrency,
+      dataToCurrency,
+      logoCurrency,
+      searchCurrency
+    } = this.state;
+
+    // Select the proper currency selection
+    let selectionsCurrency = showCurrencySelection === "from" ? dataFromCurrency : dataToCurrency;
+    let popularCurrency = Object.keys(selectionsCurrency).includes("BTC") ? ["BTC", "ETH", "LTC"] : ["USD", "EUR", "GBP"];
+
+    let filteredSelections = {};
+    // Render search result if have
+    if (searchCurrency.length >= 1) {
+      Object.keys(selectionsCurrency).forEach((item) => {
+        if (item.toLowerCase().includes(searchCurrency.toLowerCase()) || selectionsCurrency[item].toLowerCase().includes(searchCurrency.toLowerCase())) {
+          filteredSelections[item] = selectionsCurrency[item];
+        }
+      });
+
+      return (
+        <ul>
+          {
+            Object.keys(filteredSelections).map((item, i) => {
+              return (
+                <li
+                  key={i}
+                  onClick={() => this.handleSelectCurrency(item)}
+                >
+                  <h6>
+                    <span>
+                      <img
+                        src={logoCurrency[item]}
+                        alt="curLogo"
+                      />
+                    </span>
+                    {item}&nbsp;&nbsp;
+                    <span>{filteredSelections[item]}</span>
+                  </h6>
+                </li>
+              );
+            })
+          }
+        </ul>
+      );
+    }
+
+    return (
+      <div>
         <div className="fxe-cs-popular">
           <h6 className="fxe-cs-category">
             Popular Currencies
           </h6>
           <ul>
             {
-              Object.keys(selectionsCurrency).includes("BTC") ?
-                ["BTC", "ETH", "LTC"].map((item, i) => {
-                  return (
-                    <li
-                      key={i}
-                      onClick={() => this.handleSelectCurrency(item)}
-                    >
-                      <h6>
-                        <span>
-                          <img
-                            src={logoCurrency[item]}
-                            alt="curLogo"
-                          />
-                        </span>
-                        {item}&nbsp;&nbsp;
-                        <span>{selectionsCurrency[item]}</span>
-                      </h6>
-                    </li>
-                  );
-                }) :
-                ["USD", "EUR", "GBP"].map((item, i) => {
-                  return (
-                    <li
-                      key={i}
-                      onClick={() => this.handleSelectCurrency(item)}
-                    >
-                      <h6>
-                        <span>
-                          <img
-                            src={logoCurrency[item]}
-                            alt="curLogo"
-                          />
-                        </span>
-                        {item}&nbsp;&nbsp;
-                      <span>{selectionsCurrency[item]}</span>
-                      </h6>
-                    </li>
-                  );
-                })
+              popularCurrency.map((item, i) => {
+                return (
+                  <li
+                    key={i}
+                    onClick={() => this.handleSelectCurrency(item)}
+                  >
+                    <h6>
+                      <span>
+                        <img
+                          src={logoCurrency[item]}
+                          alt="curLogo"
+                        />
+                      </span>
+                      {item}&nbsp;&nbsp;
+                    <span>{selectionsCurrency[item]}</span>
+                    </h6>
+                  </li>
+                );
+              })
             }
           </ul>
         </div>
@@ -335,7 +370,7 @@ export default class FXExchange extends Component {
                       />
                     </span>
                     {item}&nbsp;&nbsp;
-                    <span>{selectionsCurrency[item]}</span>
+                <span>{selectionsCurrency[item]}</span>
                   </h6>
                 </li>
               );
