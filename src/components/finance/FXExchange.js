@@ -11,7 +11,8 @@ export default class FXExchange extends Component {
       slideShow: undefined,
       resizeEvent: undefined,
       showCurrencySelection: false,
-      data: undefined
+      data: undefined,
+      clickFromTarget: undefined,
     };
   }
 
@@ -20,7 +21,8 @@ export default class FXExchange extends Component {
     const resizeEvent = setInterval(() => {
       const { widthThreshold, slideShow } = this.state;
       const $CCE = document.querySelector("#CCE");
-
+      
+      // Resize checking
       if ($CCE) {
         if (slideShow === undefined) {
           this.setState({ slideShow: !($CCE.clientWidth >= widthThreshold) })
@@ -36,7 +38,23 @@ export default class FXExchange extends Component {
   }
 
   componentDidMount() {
+    // Add click event to trigger collapse currency selection
+    document.addEventListener("click", (event) => {
+      if (!this.state.showCurrencySelection) {
+        return;
+      }
 
+      const { showCurrencySelection } = this.state;
+
+      const $fxeBtn = document.querySelector(`#${showCurrencySelection}${this.props.chartKey}`);
+      const $fxeCon = document.querySelector("#fxeCs" + this.props.chartKey);
+      
+      if ($fxeCon && $fxeBtn) {
+        if (!$fxeCon.contains(event.target) && !$fxeBtn.contains(event.target) && showCurrencySelection) {
+          this.setState({ showCurrencySelection: false })
+        }
+      }
+    });
   }
 
   componentWillUnmount() {
@@ -47,7 +65,7 @@ export default class FXExchange extends Component {
     let from = fromCur ? fromCur : this.props.defaultFromCur;
     let to = toCur ? toCur : this.props.defaultToCur;
 
-    let res = await axios.get(`https://www.alphavantage.co/query?function=DIGITAL_CURRENCY_DAILY&symbol=${from}&market=${to}&apikey=KJO1VD3QQ2D7BDOV`);
+    let res = await axios.get(`https://www.alphavantage.co/query?function=DIGITAL_CURRENCY_DAILY&symbol=${from}&market=${to}&apikey=JDXSSIOOFMWY42SP`);
 
     if ((Object.keys(res.data).includes("Error Message")) || (Object.keys(res.data).includes("Note"))) {
       // Set time out for the next attempt
@@ -93,6 +111,7 @@ export default class FXExchange extends Component {
             placeholder="1"
           />
           <div
+            id={"from" + this.props.chartKey}
             className="fxe-table-country d-flex"
             onClick={() => this.handClickChangeCurrency("from")}
           >
@@ -118,6 +137,7 @@ export default class FXExchange extends Component {
             placeholder="1"
           />
           <div
+            id={"to" + this.props.chartKey}
             className="fxe-table-country d-flex"
             onClick={() => this.handClickChangeCurrency("to")}
           >
@@ -158,7 +178,11 @@ export default class FXExchange extends Component {
     }
 
     return (
-      <div className="fxe-cs-container" style={style}>
+      <div
+        id={"fxeCs" + this.props.chartKey}
+        className="fxe-cs-container"
+        style={style}
+      >
         <h5>Selection</h5>
       </div>
     );
@@ -195,8 +219,8 @@ export default class FXExchange extends Component {
   }
 
   render() {
-    console.log(this.props.currencySource)
-    console.log(data[this.props.currencySource[1]])
+    // console.log(this.props.currencySource)
+    // console.log(data[this.props.currencySource[1]])
 
     if (this.state.slideShow === undefined) {
       return <div />;

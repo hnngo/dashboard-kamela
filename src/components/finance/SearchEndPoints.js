@@ -105,7 +105,7 @@ export default class SearchEndPoints extends Component {
       return;
     }
 
-    const res = await axios.get(`https://www.alphavantage.co/query?function=SYMBOL_SEARCH&keywords=${this.state.inputSearch}&apikey=KJO1VD3QQ2D7BDOV`);
+    const res = await axios.get(`https://www.alphavantage.co/query?function=SYMBOL_SEARCH&keywords=${this.state.inputSearch}&apikey=JDXSSIOOFMWY42SP`);
 
     // Check if return data is okay
     if (Object.keys(res.data).includes("bestMatches")) {

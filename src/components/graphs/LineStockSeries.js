@@ -73,7 +73,7 @@ export default class LineStockSeries extends Component {
     let stsSymbol = newProps ? newProps.stSeries : this.props.stSeries;
 
     // Get data from stock API
-    let res = await axios.get(`https://www.alphavantage.co/query?function=TIME_SERIES_INTRADAY&symbol=${stsSymbol}&interval=5min&apikey=KJO1VD3QQ2D7BDOV`);
+    let res = await axios.get(`https://www.alphavantage.co/query?function=TIME_SERIES_INTRADAY&symbol=${stsSymbol}&interval=5min&apikey=JDXSSIOOFMWY42SP`);
 
     // Check if result is valid data or error
     // If fail, then re-attempt to get the data after 1 mins, free API maximum 5 calls per min
@@ -90,7 +90,7 @@ export default class LineStockSeries extends Component {
       // Set interval for counting down for every second
       const cooldownInterval = setInterval(() => {
         this.setState({
-          cooldownTime: this.state.cooldownTime - 1
+          cooldownTime: this.state.cooldownTime > 1 ? this.state.cooldownTime - 1 : 60
         });
       }, 1000);
 

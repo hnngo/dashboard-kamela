@@ -144,6 +144,7 @@ export default class DashBoard extends Component {
                   title={"Crypto Currencies Exchange"}
                   component={
                     <FXExchange
+                      chartKey="CCE"
                       currencySource={[FX_DIGITAL_CUR, FX_PHYSICAL_CUR]}
                       convertTable={true}
                       convertGraph={true}
@@ -161,6 +162,7 @@ export default class DashBoard extends Component {
                   title={"Forex Exchange"}
                   component={
                     <FXExchange
+                      chartKey="FE"
                       currencySource={[ FX_PHYSICAL_CUR]}
                       convertTable={true}
                       convertGraph={true}

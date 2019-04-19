@@ -91,7 +91,7 @@ export default class TechnicalIndicators extends Component {
       return;
     }
 
-    const res = await axios.get(`https://www.alphavantage.co/query?function=SYMBOL_SEARCH&keywords=${this.state.searchInput}&apikey=KJO1VD3QQ2D7BDOV`);
+    const res = await axios.get(`https://www.alphavantage.co/query?function=SYMBOL_SEARCH&keywords=${this.state.searchInput}&apikey=JDXSSIOOFMWY42SP`);
 
     // Check if return data is okay
     if (Object.keys(res.data).includes("bestMatches")) {
