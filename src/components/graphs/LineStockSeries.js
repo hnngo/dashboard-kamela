@@ -89,9 +89,15 @@ export default class LineStockSeries extends Component {
 
       // Set interval for counting down for every second
       const cooldownInterval = setInterval(() => {
-        this.setState({
-          cooldownTime: this.state.cooldownTime > 1 ? this.state.cooldownTime - 1 : 60
-        });
+        let cooldownTime;
+        
+        if (this.state.cooldownTime > 1) {
+          cooldownTime = this.state.cooldownTime - 1;
+        } else {
+          clearInterval(this.state.cooldownInterval);
+          cooldownTime = 60;
+        }
+        this.setState({ cooldownTime });
       }, 1000);
 
       this.setState({ loaded: false, cooldownInterval });

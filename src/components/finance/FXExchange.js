@@ -12,7 +12,6 @@ export default class FXExchange extends Component {
     switch (this.props.currencySource.length) {
       case 1:
         dataToCurrency = data[this.props.currencySource[0]];
-
         break;
       case 2:
         dataToCurrency = data[this.props.currencySource[1]];
@@ -91,6 +90,17 @@ export default class FXExchange extends Component {
         }
       }
     });
+  }
+
+  componentDidUpdate() {
+    const $csSearch = document.querySelector("#fxeCs" + this.props.chartKey);
+
+    if ($csSearch) {
+      $csSearch.scrollTo({
+        'behavior': 'smooth',
+        'top': 0
+      })
+    }
   }
 
   componentWillUnmount() {
@@ -251,6 +261,64 @@ export default class FXExchange extends Component {
         className="fxe-cs-container"
         style={style}
       >
+        <div className="fxe-cs-search d-flex">
+          <i className="fas fa-search"></i>
+          <input
+            className="form-control"
+            placeholder="Type a currency/country"
+          />
+        </div>
+        <div className="fxe-cs-popular">
+          <h6 className="fxe-cs-category">
+            Popular Currencies
+          </h6>
+          <ul>
+            {
+              Object.keys(selectionsCurrency).includes("BTC") ?
+                ["BTC", "ETH", "LTC"].map((item, i) => {
+                  return (
+                    <li
+                      key={i}
+                      onClick={() => this.handleSelectCurrency(item)}
+                    >
+                      <h6>
+                        <span>
+                          <img
+                            src={logoCurrency[item]}
+                            alt="curLogo"
+                          />
+                        </span>
+                        {item}&nbsp;&nbsp;
+                        <span>{selectionsCurrency[item]}</span>
+                      </h6>
+                    </li>
+                  );
+                }) :
+                ["USD", "EUR", "GBP"].map((item, i) => {
+                  return (
+                    <li
+                      key={i}
+                      onClick={() => this.handleSelectCurrency(item)}
+                    >
+                      <h6>
+                        <span>
+                          <img
+                            src={logoCurrency[item]}
+                            alt="curLogo"
+                          />
+                        </span>
+                        {item}&nbsp;&nbsp;
+                      <span>{selectionsCurrency[item]}</span>
+                      </h6>
+                    </li>
+                  );
+                })
+            }
+          </ul>
+        </div>
+        <h6 className="fxe-cs-category">
+          All Currencies
+        </h6>
         <ul>
           {
             Object.keys(selectionsCurrency).map((item, i) => {

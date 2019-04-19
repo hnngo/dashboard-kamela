@@ -443,7 +443,7 @@
 .fxe-table-container div.d-flex {
   margin: 0 auto;
   width: 280px;
-  height: 60px;
+  height: 50px;
 }
 
 .fxe-table-container input {
@@ -458,7 +458,7 @@
 .fxe-table-country {
   background-color: #23943d;
   border: 2px solid #1a5a28;
-  padding: 10px 0px;
+  padding: 7px 0px;
   padding-left: 15px;
   cursor: pointer;
 }
@@ -466,7 +466,7 @@
 .fxe-table-country h6 {
   color: white;
   margin: 0;
-  padding: 10px 5px;
+  padding: 6.5px 5px;
   font-size: 14px;
 }
 
@@ -474,7 +474,7 @@
   font-weight: bold;
   color: white;
   font-size: 18px;
-  padding: 9px 0px;
+  padding: 6px 0px;
   padding-left: 15px;
 }
 
@@ -520,34 +520,76 @@
   height: 260px;
   background-color: white;
   border: 0.5px solid rgba(170, 170, 170, 0.637);
-  overflow-x: auto;
+  border-top-left-radius: 9px;
+  border-bottom-left-radius: 9px;
+  overflow-x: hidden;
+  overflow-y: auto
 }
 
-.fxe-cs-container ul {
+.fxe-cs-search {
+  border-bottom: 1px solid rgba(236, 234, 234, 0.637);
+  height: auto !important;
+}
+
+.fxe-cs-search i {
+  width: 30px;
+  padding-top: 12px;
+  padding-left: 12px;
+  color: #8b8b8b
+}
+
+.fxe-cs-search input {
+  width: calc(280px - 30px - 12px);
+  outline: none !important;
+  box-shadow: none !important;
+  border: none;
+}
+
+.fxe-cs-search input::placeholder {
+  font-size: 13px;
+}
+
+.fxe-cs-category {
+  padding: 8px 8px;
+  font-size: 14px;
+  color: #8b8b8b;
+}
+
+.fxe-cs-popular ul li h6 {
+  font-size: 13px;
+  color: black;
+}
+
+.fxe-cs-container ul,
+.fxe-cs-popular ul {
   padding: 0;
   margin: 0;
 }
 
-.fxe-cs-container li {
+.fxe-cs-container li,
+.fxe-cs-popular li {
   list-style: none;
   padding: 10px 15px;
   cursor: pointer;
 }
 
-.fxe-cs-container li h6 {
+.fxe-cs-container li h6,
+.fxe-cs-popular li h6 {
   margin: 0;
   font-size: 13px;
   font-weight: bold;
 }
 
 .fxe-cs-container li h6 img,
+.fxe-cs-popular li h6 img,
 .fxe-table-country img {
   width: 32px;
   height: 32px;
   margin-right: 10px;
 }
 
-.fxe-cs-container li span {
+.fxe-cs-container li span,
+.fxe-cs-popular li span {
   font-weight: 100;
 }
 
