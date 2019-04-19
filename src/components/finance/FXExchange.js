@@ -6,6 +6,20 @@ export default class FXExchange extends Component {
   constructor(props) {
     super(props);
 
+    // Setup the selection from and to currency
+    let selectFromCurreny, selectToCurrency;
+    selectFromCurreny = data[this.props.currencySource[0]];
+    switch (this.props.currencySource.length) {
+      case 1:
+        selectToCurrency = data[this.props.currencySource[0]];
+        break;
+      case 2:
+        selectToCurrency = data[this.props.currencySource[1]];
+        break;
+      default:
+        break;
+    }
+
     this.state = {
       widthThreshold: 640,
       slideShow: undefined,
@@ -13,6 +27,8 @@ export default class FXExchange extends Component {
       showCurrencySelection: false,
       data: undefined,
       clickFromTarget: undefined,
+      selectFromCurreny,
+      selectToCurrency
     };
   }
 
@@ -21,7 +37,7 @@ export default class FXExchange extends Component {
     const resizeEvent = setInterval(() => {
       const { widthThreshold, slideShow } = this.state;
       const $CCE = document.querySelector("#CCE");
-      
+
       // Resize checking
       if ($CCE) {
         if (slideShow === undefined) {
@@ -48,7 +64,7 @@ export default class FXExchange extends Component {
 
       const $fxeBtn = document.querySelector(`#${showCurrencySelection}${this.props.chartKey}`);
       const $fxeCon = document.querySelector("#fxeCs" + this.props.chartKey);
-      
+
       if ($fxeCon && $fxeBtn) {
         if (!$fxeCon.contains(event.target) && !$fxeBtn.contains(event.target) && showCurrencySelection) {
           this.setState({ showCurrencySelection: false })
@@ -58,10 +74,11 @@ export default class FXExchange extends Component {
   }
 
   componentWillUnmount() {
+    // Clear Resize event after unmout
     clearInterval(this.state.resizeEvent);
   }
 
-  async getData(fromCur=null, toCur=null) {
+  async getData(fromCur = null, toCur = null) {
     let from = fromCur ? fromCur : this.props.defaultFromCur;
     let to = toCur ? toCur : this.props.defaultToCur;
 
@@ -157,18 +174,24 @@ export default class FXExchange extends Component {
       return <div />;
     }
 
+    const {
+      showCurrencySelection,
+      selectFromCurreny,
+      selectToCurrency
+    } = this.state;
+
     // Assign the right style for selection from or to
     const $curInput = document.querySelector("#FXInputFrom");
     const $fxeCon = document.querySelector(".fxe-table-container");
     let style = {};
-    
+
     if ($curInput && $fxeCon) {
       style = {
         left: ($fxeCon.clientWidth - 280) / 2 + "px",
         right: ($fxeCon.clientWidth - 280) / 2 + "px"
       };
 
-      if (this.state.showCurrencySelection === "from") {
+      if (showCurrencySelection === "from") {
         style.top = ($curInput.clientHeight + 2) + "px";
         style.bottom = "";
       } else {
@@ -177,13 +200,37 @@ export default class FXExchange extends Component {
       }
     }
 
+    console.log(selectFromCurreny)
+    console.log(selectToCurrency)
+
+    let selections = showCurrencySelection === "from" ? selectFromCurreny : selectToCurrency;
+    let typeSelection = Object.keys(selections)[0] === "AED";
+
     return (
       <div
         id={"fxeCs" + this.props.chartKey}
         className="fxe-cs-container"
         style={style}
       >
-        <h5>Selection</h5>
+        <ul>
+          {
+            Object.keys(selections).map((item, i) => {
+              return (
+                <li key={i}>
+                  <h6>
+                    <span>
+                      {
+                        (Object.keys(selections)[0] === "BTC") ? <img src={require(`../../img/${item}.png`)} alt="curLogo"/> : <img src={`https://www.countryflags.io/${item.slice(0, 2).toLowerCase()}/flat/32.png`} alt="curLogo"/>
+                      }
+                    </span>
+                    {item}&nbsp;&nbsp;
+                    <span>{selections[item]}</span>
+                  </h6>
+                </li>
+              );
+            })
+          }
+        </ul>
       </div>
     );
   }

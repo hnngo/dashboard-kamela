@@ -517,8 +517,40 @@
 
 .fxe-cs-container {
   position: absolute;
-  height: 200px;
+  height: 260px;
   background-color: white;
   border: 0.5px solid rgba(170, 170, 170, 0.637);
+  overflow-x: auto;
+}
+
+.fxe-cs-container ul {
+  padding: 0;
+  margin: 0;
+}
+
+.fxe-cs-container li {
+  list-style: none;
+  padding: 10px 15px;
+}
+
+.fxe-cs-container li h6 {
+  margin: 0;
+  font-size: 13px;
+  font-weight: bold;
+}
+
+.fxe-cs-container li h6 img {
+  width: 32px;
+  margin-right: 10px;
+}
+
+.fxe-cs-container li span {
+  font-weight: 100;
+}
+
+
+.fxe-cs-container li:hover {
+  background-color: #1a5a28;
+  color: white
 }
 
