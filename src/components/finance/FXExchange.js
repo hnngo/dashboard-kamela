@@ -40,6 +40,9 @@ export default class FXExchange extends Component {
     this.state = {
       loaded: false,
       data: undefined,
+      lastRefresh: "Loading...",
+      lateExchangeRate: "Loading...",
+      inputExchangeAmount: 1,
       widthThreshold: 640,
       resizeEvent: undefined,
       slideShow: undefined,
@@ -118,9 +121,13 @@ export default class FXExchange extends Component {
   async getData(fromCur = null, toCur = null) {
     let from = fromCur ? fromCur : this.props.defaultFromCur;
     let to = toCur ? toCur : this.props.defaultToCur;
-
-    let res = await axios.get(`https://www.alphavantage.co/query?function=DIGITAL_CURRENCY_DAILY&symbol=${from}&market=${to}&apikey=JDXSSIOOFMWY42SP`);
-
+    let res;
+    if (this.props.currencySource.length > 1) {
+      res = await axios.get(`https://www.alphavantage.co/query?function=DIGITAL_CURRENCY_DAILY&symbol=${from}&market=${to}&apikey=JDXSSIOOFMWY42SP`);
+    } else {
+      res = await axios.get(`https://www.alphavantage.co/query?function=FX_DAILY&from_symbol=${from}&to_symbol=${to}&apikey=JDXSSIOOFMWY42SP`);
+    }
+    
     // Check if result is valid data or error
     // If fail, then re-attempt to get the data after 1 mins, free API maximum 5 calls per min
     if ((Object.keys(res.data).includes("Error Message")) || (Object.keys(res.data).includes("Note"))) {
@@ -129,6 +136,7 @@ export default class FXExchange extends Component {
         this.getData(() => this.drawChart());
       }, 5000);
 
+      // Check if cooldown is counting down then stop setting new timeout
       if (this.state.cooldownTime < 60) {
         return;
       }
@@ -137,7 +145,7 @@ export default class FXExchange extends Component {
       const cooldownInterval = setInterval(() => {
         let cooldownTime;
 
-        if (this.state.cooldownTime > 1) {
+        if (this.state.cooldownTime >= 1) {
           cooldownTime = this.state.cooldownTime - 1;
         } else {
           clearInterval(this.state.cooldownInterval);
@@ -149,9 +157,27 @@ export default class FXExchange extends Component {
       this.setState({ loaded: false, cooldownInterval });
     } else {
       console.log(res.data)
+      // Clear interval of re-try
       clearInterval(this.state.cooldownInterval);
+
+      // Retrieve the last refresh and data series
+      let lastRefresh, data;
+      if (this.props.currencySource.length > 1) {
+        lastRefresh = res.data["Meta Data"]["6. Last Refreshed"].slice(0, 10);
+        data = res.data["Time Series (Digital Currency Daily)"];
+      } else {
+        lastRefresh = res.data["Meta Data"]["5. Last Refreshed"].slice(0, 10);
+        data = res.data["Time Series FX (Daily)"];
+      }
+
+      // Retrieve the last exchange rate
+      let latestRate = data[Object.keys(data)[0]];
+      let lateExchangeRate = this.props.currencySource.length > 1 ? latestRate[Object.keys(latestRate)[6]] : latestRate[Object.keys(latestRate)[3]];
+
       this.setState({
-        data: res.data,
+        data,
+        lastRefresh,
+        lateExchangeRate,
         loaded: true,
         cooldownTime: 60
       });
@@ -190,13 +216,18 @@ export default class FXExchange extends Component {
     this.setState({ searchCurrency: e.target.value });
   }
 
+  handleInputExchangeAmount(e) {
+    this.setState({ inputExchangeAmount: e.target.value });
+  }
+
   renderConvertTable() {
     return (
       <div className="fxe-table-container">
         <div className="d-flex">
           <input
             id="FXInputFrom"
-            placeholder="1"
+            value={this.state.inputExchangeAmount}
+            onChange={(e) => this.handleInputExchangeAmount(e)}
           />
           <div
             id={"from" + this.props.chartKey}
@@ -215,17 +246,20 @@ export default class FXExchange extends Component {
           <ul>
             <li>
               <h6>Last Refresh:</h6>
-              <p>12 PM</p>
+              <p>{this.state.lastRefresh}</p>
             </li>
             <li>
               <h6>Exchange Rate:</h6>
-              <p>1.2323</p>
+              <p>{this.state.lateExchangeRate}</p>
             </li>
           </ul>
         </div>
         <div className="d-flex">
           <input
-            placeholder="1"
+            value={
+              (isNaN(this.state.inputExchangeAmount) || isNaN(this.state.lateExchangeRate)) ? 0 : (+this.state.inputExchangeAmount * +this.state.lateExchangeRate).toFixed(4)
+            }
+            disabled
           />
           <div
             id={"to" + this.props.chartKey}
@@ -364,7 +398,7 @@ export default class FXExchange extends Component {
                         />
                       </span>
                       {item}&nbsp;&nbsp;
-                    <span>{selectionsCurrency[item]}</span>
+                      <span>{selectionsCurrency[item]}</span>
                     </h6>
                   </li>
                 );
@@ -392,7 +426,7 @@ export default class FXExchange extends Component {
                         />
                       </span>
                       {item}&nbsp;&nbsp;
-                <span>{selectionsCurrency[item]}</span>
+                      <span>{selectionsCurrency[item]}</span>
                     </h6>
                   </li>
                 );

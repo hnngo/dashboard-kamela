@@ -495,14 +495,16 @@
   color: #d3d5d8
 }
 
-.fxe-ex-rate li h6 {
+.fxe-ex-rate li h6,
+.fxe-ex-rate li p {
+  font-size: 13px;
   margin: 0;
   color: #8b8b8b;
 }
 
-.fxe-ex-rate li p {
-  margin: 0;
-  color: #8b8b8b;
+.fxe-ex-rate li p  {
+  letter-spacing: 1px;
+  font-weight: bold;
 }
 
 .fxe-ex-rate li::after {
