@@ -42,6 +42,7 @@ export default class FXExchange extends Component {
       data: undefined,
       lastRefresh: "Loading...",
       lateExchangeRate: "Loading...",
+      indexExchangeRate: 6,
       inputExchangeAmount: 1,
       widthThreshold: 640,
       resizeEvent: undefined,
@@ -118,16 +119,30 @@ export default class FXExchange extends Component {
     clearInterval(this.state.resizeEvent);
   }
 
-  async getData(fromCur = null, toCur = null) {
-    let from = fromCur ? fromCur : this.props.defaultFromCur;
-    let to = toCur ? toCur : this.props.defaultToCur;
+  async getData() {
+    // Get the data from stock API
+    // If currency is matched with demo then call the demo for saving the free API call limitation times per day
     let res;
     if (this.props.currencySource.length > 1) {
-      res = await axios.get(`https://www.alphavantage.co/query?function=DIGITAL_CURRENCY_DAILY&symbol=${from}&market=${to}&apikey=JDXSSIOOFMWY42SP`);
+      if (this.state.selectFromCurrency === "BTC" && this.state.selectFromCurrency === "USD") {
+        // Default demo call
+        res = await axios.get(`https://www.alphavantage.co/query?function=DIGITAL_CURRENCY_DAILY&symbol=BTC&market=CNY&apikey=demo`);
+
+        this.setState({ indexExchangeRate: 7 });
+      } else {
+        // Call using key - limitation
+        res = await axios.get(`https://www.alphavantage.co/query?function=DIGITAL_CURRENCY_DAILY&symbol=${this.state.selectFromCurrency}&market=${this.state.selectToCurrency}&apikey=JDXSSIOOFMWY42SP`);
+
+        this.setState({ indexExchangeRate: 6 });
+      }
     } else {
-      res = await axios.get(`https://www.alphavantage.co/query?function=FX_DAILY&from_symbol=${from}&to_symbol=${to}&apikey=JDXSSIOOFMWY42SP`);
+      if (this.state.selectFromCurrency === "EUR" && this.state.selectToCurrency === "USD") {
+        res = await axios.get(`https://www.alphavantage.co/query?function=FX_DAILY&from_symbol=EUR&to_symbol=USD&apikey=demo`);
+      } else {
+        res = await axios.get(`https://www.alphavantage.co/query?function=FX_DAILY&from_symbol=${this.state.selectFromCurrency}&to_symbol=${this.state.selectToCurrency}&apikey=JDXSSIOOFMWY42SP`);
+      }
     }
-    
+
     // Check if result is valid data or error
     // If fail, then re-attempt to get the data after 1 mins, free API maximum 5 calls per min
     if ((Object.keys(res.data).includes("Error Message")) || (Object.keys(res.data).includes("Note"))) {
@@ -172,12 +187,12 @@ export default class FXExchange extends Component {
 
       // Retrieve the last exchange rate
       let latestRate = data[Object.keys(data)[0]];
-      let lateExchangeRate = this.props.currencySource.length > 1 ? latestRate[Object.keys(latestRate)[6]] : latestRate[Object.keys(latestRate)[3]];
+      let lateExchangeRate = this.props.currencySource.length > 1 ? latestRate[Object.keys(latestRate)[this.state.indexExchangeRate]]: latestRate[Object.keys(latestRate)[3]];
 
       this.setState({
         data,
         lastRefresh,
-        lateExchangeRate,
+        lateExchangeRate: (+lateExchangeRate).toFixed(4),
         loaded: true,
         cooldownTime: 60
       });
@@ -197,17 +212,25 @@ export default class FXExchange extends Component {
   }
 
   handleSelectCurrency(curCode) {
-    if (this.state.showCurrencySelection === "from") {
+    if (this.state.showCurrencySelection === "from" && curCode !== this.state.selectFromCurrency) {
       this.setState({
         showCurrencySelection: false,
         selectFromCurrency: curCode,
-        searchCurrency: ""
+        searchCurrency: "",
+        lastRefresh: "Please press refresh button",
+        lateExchangeRate: 0
       });
-    } else {
+    } else if (this.state.showCurrencySelection === "to" && curCode !== this.state.selectToCurrency) {
       this.setState({
         showCurrencySelection: false,
         selectToCurrency: curCode,
-        searchCurrency: ""
+        searchCurrency: "",
+        lastRefresh: "Please press refresh button",
+        lateExchangeRate: 0
+      });
+    } else {
+      this.setState({
+        showCurrencySelection: false
       });
     }
   }
@@ -218,6 +241,10 @@ export default class FXExchange extends Component {
 
   handleInputExchangeAmount(e) {
     this.setState({ inputExchangeAmount: e.target.value });
+  }
+
+  handleClickGetLatestData() {
+    this.getData();
   }
 
   renderConvertTable() {
@@ -274,6 +301,10 @@ export default class FXExchange extends Component {
             <i className="fas fa-chevron-down"></i>
           </div>
         </div>
+        <div
+          className="fxe-cs-btn"
+          onClick={() => this.handleClickGetLatestData()}
+        />
         {this.renderCurrencySelection()}
       </div>
     );
@@ -350,29 +381,31 @@ export default class FXExchange extends Component {
       });
 
       return (
-        <ul>
-          {
-            Object.keys(filteredSelections).map((item, i) => {
-              return (
-                <li
-                  key={i}
-                  onClick={() => this.handleSelectCurrency(item)}
-                >
-                  <h6>
-                    <span>
-                      <img
-                        src={logoCurrency[item]}
-                        alt="curLogo"
-                      />
-                    </span>
-                    {item}&nbsp;&nbsp;
+        <div className="fxe-cs-sr">
+          <ul>
+            {
+              Object.keys(filteredSelections).map((item, i) => {
+                return (
+                  <li
+                    key={i}
+                    onClick={() => this.handleSelectCurrency(item)}
+                  >
+                    <h6>
+                      <span>
+                        <img
+                          src={logoCurrency[item]}
+                          alt="curLogo"
+                        />
+                      </span>
+                      {item}&nbsp;&nbsp;
                     <span>{filteredSelections[item]}</span>
-                  </h6>
-                </li>
-              );
-            })
-          }
-        </ul>
+                    </h6>
+                  </li>
+                );
+              })
+            }
+          </ul>
+        </div>
       );
     }
 
