@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import * as d3 from 'd3';
+import SlideChoice from '../SlideChoice';
 
 export default class LineExchangeGraph extends Component {
   constructor(props) {
@@ -15,7 +16,7 @@ export default class LineExchangeGraph extends Component {
         right: 20
       },
       totalWidth: 500,
-      totalHeight: 340,
+      totalHeight: 300,
       number: 100
     }
   }
@@ -52,6 +53,10 @@ export default class LineExchangeGraph extends Component {
         callback();
       }
     });
+  }
+
+  handleSelectSector() {
+
   }
 
   drawChart() {
@@ -100,7 +105,6 @@ export default class LineExchangeGraph extends Component {
     let xAxisVal = [];
     xData.forEach((item, i) => {
       if (i % divide === 0 || i === yData.length - 1) {
-        // xAxisVal.push(timeParse(item).toDateString().slice(4, 10))
         xAxisVal.push(timeParse(item))
       }
     })
@@ -114,12 +118,7 @@ export default class LineExchangeGraph extends Component {
     svg.append("g")
       .call(xAxis)
       .attr("transform", `translate(0, ${hSvg})`)
-      .style("stroke-width", 0.2)
-      // .selectAll("text")
-      //     .attr("x", -8)
-      //     .attr("y", 8)
-      //     .attr("text-anchor", "end")
-      //     .attr("transform", "rotate(-50)")
+      .style("stroke-width", 0.2);
 
     // Y Axis
     const yAxis = d3.axisLeft(yScale)       
@@ -255,6 +254,14 @@ export default class LineExchangeGraph extends Component {
   render() {
     return (
       <div className="pr-3 pb-3">
+        <div className="le-slidechoice">
+          <SlideChoice
+            slideKey={this.props.chartKey}
+            onSelect={(item) => this.handleSelectSector(item)}
+            smallSlide={false}
+            selections={["1W", "1M", "3M", "1Y", "Max"]}
+          />
+        </div>
         <div id={"lineChart" + this.props.chartKey} />
       </div>
     );

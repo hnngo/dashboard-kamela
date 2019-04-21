@@ -14,20 +14,20 @@ export default class SlideChoice extends Component {
   componentDidMount() {
     // Calculate the first init width of selected div
     this.setState({
-      selectedWidth: document.querySelector("div.sel0").clientWidth,
+      selectedWidth: document.querySelector(`.${this.props.slideKey}.sel0`).clientWidth,
     });
   }
 
-  handleClickChoice(e) {
+  handleClickChoice(id) {
     // Get the choice id
-    const id = e.target.classList[e.target.classList.length - 1].slice(3);
+    // const id = e.target.classList[e.target.classList.length - 1].slice(3);
 
-    const $selected = document.querySelector("div.sel" + id);
+    const $selected = document.querySelector(`.${this.props.slideKey}.sel${id}`);
     if ($selected) {
       // Get the selected position and width
       let pos = 0;
       for (let x = 0; x < +id; x++) {
-        pos += document.querySelector("div.sel" + x).clientWidth;
+        pos += document.querySelector(`.${this.props.slideKey}.sel${x}`).clientWidth;
       }
 
       const width = $selected.clientWidth;
@@ -59,8 +59,12 @@ export default class SlideChoice extends Component {
       }
 
       return (
-        <div key={i} className={divClass + " sel" + i} onClick={(e) => this.handleClickChoice(e)}>
-          <p className={"m-0 sel" + i}>{selection}</p>
+        <div
+          key={i}
+          className={`${divClass} ${this.props.slideKey} sel${i}`}
+          onClick={() => this.handleClickChoice(i)}
+        >
+          <p className="m-0">{selection}</p>
         </div>
       );
     })
@@ -69,7 +73,13 @@ export default class SlideChoice extends Component {
   render() {
     return (
       <div className="sc-container">
-        <div className="sc-bg-selected" style={{ left: this.state.selectedPos, width: this.state.selectedWidth }} />
+        <div
+          className="sc-bg-selected"
+          style={{
+            left: this.state.selectedPos,
+            width: this.state.selectedWidth
+          }}
+        />
         <div className="sc-choices">
           {this.renderSlideChoices()}
         </div>
