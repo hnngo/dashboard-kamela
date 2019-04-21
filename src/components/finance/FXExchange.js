@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import axios from 'axios';
 import data from '../../data.json';
+import LineExchangeGraph from '../graphs/LineExchangeGraph.js';
 
 export default class FXExchange extends Component {
   constructor(props) {
@@ -244,6 +245,7 @@ export default class FXExchange extends Component {
   }
 
   handleClickGetLatestData() {
+    clearInterval(this.state.cooldownInterval);
     this.getData();
   }
 
@@ -474,7 +476,10 @@ export default class FXExchange extends Component {
   renderConvertGraph() {
     return (
       <div className="fxe-graph-container">
-        graph
+        <LineExchangeGraph
+          data={this.state.data}
+          chartKey={this.props.chartKey}
+        />
       </div>
     );
   }
@@ -490,10 +495,10 @@ export default class FXExchange extends Component {
     } else {
       return (
         <div className="row">
-          <div className="col-6">
+          <div className="col-5">
             {this.renderConvertTable()}
           </div>
-          <div className="col-6">
+          <div className="col-7">
             {this.renderConvertGraph()}
           </div>
         </div>

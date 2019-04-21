@@ -609,6 +609,11 @@
 .fxe-cs-all ul li:hover,
 .fxe-cs-popular ul li:hover {
   background-color: #1a5a28;
+}
+
+.fxe-cs-sr ul li:hover h6,
+.fxe-cs-all ul li:hover h6,
+.fxe-cs-popular ul li:hover h6 {
   color: white;
 }
 
