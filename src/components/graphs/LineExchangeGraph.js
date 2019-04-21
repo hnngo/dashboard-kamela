@@ -69,9 +69,6 @@ export default class LineExchangeGraph extends Component {
     const xData = Object.keys(this.state.data).slice(0, this.state.number).reverse();
     const yData = xData.map((item) => this.state.data[item]);
 
-    console.log(xData);
-    console.log(yData);
-
     // Setup margin
     const { margin, totalWidth, totalHeight } = this.state;
     let wSvg = totalWidth - margin.left - margin.right;
@@ -99,15 +96,20 @@ export default class LineExchangeGraph extends Component {
                     .range([hSvg, 0]);
 
     // X Axis
+    let divide = Math.floor(yData.length / 5);
+    let xAxisVal = [];
+    xData.forEach((item, i) => {
+      if (i % divide === 0 || i === yData.length - 1) {
+        // xAxisVal.push(timeParse(item).toDateString().slice(4, 10))
+        xAxisVal.push(timeParse(item))
+      }
+    })
+
+    console.log(xAxisVal)
     const xAxis = d3.axisBottom(xScale)
-                    .tickFormat((d, i) => {
-                      // Only show a few axis values
-                      if (i % 10 === 0) {
-                        return d.toDateString().slice(4, 30);
-                      } else {
-                        return "";
-                      }
-                    })
+                    .tickValues(xAxisVal)
+                    .tickFormat((d) => d.toDateString().slice(4, 10))
+                    
 
     svg.append("g")
       .call(xAxis)
@@ -149,15 +151,18 @@ export default class LineExchangeGraph extends Component {
     const line = d3.line()
                    .x((d, i) => xScale(timeParse(xData[i])))
                    .y((d) => yScale(d))
-                   .curve(d3.curveMonotoneX);
+                  //  .curve(d3.curveMonotoneX);
 
     // Create area below line
     const area = d3.area()
                    .x((d, i) => xScale(timeParse(xData[i])))
                    .y0(hSvg)
                    .y1((d) => yScale(d))
-                   .curve(d3.curveMonotoneX);
+                  //  .curve(d3.curveMonotoneX);
  
+    console.log(xData);
+    console.log(yData);
+
     // Init path
     svg.append("path")
        .attr("class", "lineChart")
@@ -166,10 +171,85 @@ export default class LineExchangeGraph extends Component {
        .attr("stroke-width", "2px")
        .attr("d", line(yData))
        
-    // svg.append("path")
-    //    .attr("class", "lineChart")
-    //    .attr("fill", this.props.areaColor)
-    //    .attr("d", area(yData));
+    svg.append("path")
+       .attr("class", "lineChart")
+       .attr("fill", "#a3a3a3")
+       .attr("opacity", 0.5)
+       .attr("d", area(yData));
+
+    svg.selectAll("rect.rectArea")
+       .data(yData)
+       .enter()
+       .append("rect")
+       .attr("class", "rectArea")
+       .attr("x", (d, i) => {
+         if (i === 0) {
+           return xScale(timeParse(xData[i]));
+         } else {
+           return xScale(timeParse(xData[i - 1])) + (xScale(timeParse(xData[i])) - xScale(timeParse(xData[i - 1]))) / 2;
+         }
+        })
+       .attr("y", 0)
+       .attr("width", (d, i) => {
+        if (i === 0) {
+          return (xScale(timeParse(xData[1])) - xScale(timeParse(xData[0]))) / 2;
+        } else if (i === yData.length - 1) {
+          return (xScale(timeParse(xData[i])) - xScale(timeParse(xData[i - 1]))) / 2;
+        } else {
+          return (xScale(timeParse(xData[i + 1])) - xScale(timeParse(xData[i - 1]))) / 2;
+        }
+       })
+       .attr("height", hSvg)
+       .attr("stroke", "#c2c3c4")
+       .attr("stroke-width", "0.1px")
+       .attr("fill", "grey")
+       .attr("opacity", 0)
+       .on("mouseenter", (d, i) => {
+         // Show lines
+        d3.select(".rectLine" + this.props.chartKey + i).attr("opacity", 1);
+
+        // Show circles
+        d3.select(".circle" + this.props.chartKey + i).attr("opacity", 1);
+       })
+       .on("mouseleave", (d, i) => {
+         // Hide lines
+        d3.select(".rectLine" + this.props.chartKey + i).attr("opacity", 0);
+
+        // Hide circles
+        d3.select(".circle" + this.props.chartKey + i).attr("opacity", 0);
+       })
+
+    svg.selectAll(`rect[class^="rectLine${this.props.chartKey}"]`)
+        .data(yData)
+        .enter()
+        .append("rect")
+        .attr("class", (d, i) => "rectLine" + this.props.chartKey + i)
+        .attr("x", (d, i) => xScale(timeParse(xData[i])))
+        .attr("y", (d) => yScale(d))
+        .attr("width", 1)
+        .attr("height", (d) => hSvg - yScale(d))
+        .attr("stroke", "#333")
+        .attr("stroke-width", "0.3px")
+        .attr("opacity", 0);
+     //  .on("mouseenter", function(d, i) {
+     //   d3.select(this).attr("opacity", 1)
+     //  })
+     //  .on("mouseleave", function(d, i) {
+     //   d3.select(this).attr("opacity", 0)
+     //  })
+
+
+   svg.selectAll("circle")
+       .data(yData)
+       .enter()
+       .append("circle")
+       .attr("class", (d, i) => "circle" + this.props.chartKey + i)
+       .attr("cx", (d, i) => xScale(timeParse(xData[i])))
+       .attr("cy", (d, i) => yScale(d))
+       .attr("r", 4)
+       .attr("stroke", "#333")
+       .attr("opacity", 0)
+      //  .attr("stroke-width", "1px")
   }
 
   render() {
