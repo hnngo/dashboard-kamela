@@ -17,7 +17,7 @@ export default class LineExchangeGraph extends Component {
       },
       totalWidth: 500,
       totalHeight: 340,
-      number: 7
+      number: 90
     }
   }
 
@@ -142,8 +142,12 @@ export default class LineExchangeGraph extends Component {
     // Y Axis
     const yAxis = d3.axisLeft(yScale)       
                     .tickFormat((d, i) => {
-                        // Only show a few axis values
-                        if (d > 1000) {
+                        // Format the right value
+                        if (d > 10000000) {
+                          return d.toString().slice(0, -6) + "M"
+                        } else if (d > 10000) {
+                          return d.toString().slice(0, -3) + "K"
+                        } else if (d > 1000) {
                           return d.toFixed(0);
                         } else {
                           return d;
@@ -266,6 +270,7 @@ export default class LineExchangeGraph extends Component {
             onSelect={(item) => this.handleSelectSector(item)}
             smallSlide={false}
             selections={["1W", "1M", "3M", "1Y", "Max"]}
+            optionChoice={2}
           />
         </div>
         <div id={"lineChart" + this.props.chartKey} />

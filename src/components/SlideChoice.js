@@ -5,7 +5,7 @@ export default class SlideChoice extends Component {
     super(props);
 
     this.state = {
-      choice: 0,
+      choice: this.props.optionChoice || 0,
       selectedPos: 0,
       selectedWidth: 0,
     };
@@ -13,15 +13,15 @@ export default class SlideChoice extends Component {
 
   componentDidMount() {
     // Calculate the first init width of selected div
-    this.setState({
-      selectedWidth: document.querySelector(`.${this.props.slideKey}.sel0`).clientWidth,
-    });
+    // this.setState({
+    //   selectedWidth: document.querySelector(`.${this.props.slideKey}.sel0`).clientWidth,
+    // });
+
+    this.handleClickChoice(this.state.choice);
   }
 
   handleClickChoice(id) {
     // Get the choice id
-    // const id = e.target.classList[e.target.classList.length - 1].slice(3);
-
     const $selected = document.querySelector(`.${this.props.slideKey}.sel${id}`);
     if ($selected) {
       // Get the selected position and width

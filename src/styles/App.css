@@ -657,6 +657,21 @@
   animation: none;
 }
 
+.fxe-loading {
+  position: absolute;
+  top: -5px;
+  bottom: -5px;
+  left: 50%;
+  width: 320px;
+  transform: translateX(-50%);
+  background-color: #f5f5f5c2;
+}
+
+.fxe-loading-content {
+  text-align: center;
+  margin: 110px 0;
+}
+
 .le-slidechoice {
   position: absolute;
   left: 50%;

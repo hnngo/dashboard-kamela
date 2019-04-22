@@ -188,7 +188,7 @@ export default class FXExchange extends Component {
 
       // Retrieve the last exchange rate
       let latestRate = data[Object.keys(data)[0]];
-      let lateExchangeRate = this.props.currencySource.length > 1 ? latestRate[Object.keys(latestRate)[this.state.indexExchangeRate]]: latestRate[Object.keys(latestRate)[3]];
+      let lateExchangeRate = this.props.currencySource.length > 1 ? latestRate[Object.keys(latestRate)[this.state.indexExchangeRate]] : latestRate[Object.keys(latestRate)[3]];
 
       this.setState({
         data,
@@ -246,7 +246,7 @@ export default class FXExchange extends Component {
 
   handleClickGetLatestData() {
     clearInterval(this.state.cooldownInterval);
-    this.getData();
+    this.setState({ loaded: false }, () => this.getData());
   }
 
   renderConvertTable() {
@@ -308,6 +308,7 @@ export default class FXExchange extends Component {
           onClick={() => this.handleClickGetLatestData()}
         />
         {this.renderCurrencySelection()}
+        {this.renderLoadingSpinner()}
       </div>
     );
   }
@@ -473,6 +474,27 @@ export default class FXExchange extends Component {
     );
   }
 
+  renderLoadingSpinner() {
+    if (!this.state.loaded) {
+      return (
+        <div className="fxe-loading">
+          <div className="fxe-loading-content">
+            <h6>Please wait for latest exchange rate</h6>
+            <div className="spinner-grow text-success" role="status">
+              <span className="sr-only" />
+            </div>
+            <div className="spinner-grow text-success" role="status">
+              <span className="sr-only" />
+            </div>
+            <div className="spinner-grow text-success" role="status">
+              <span className="sr-only" />
+            </div>
+          </div>
+        </div>
+      );
+    }
+  }
+
   renderConvertGraph() {
     return (
       <div className="fxe-graph-container">
@@ -518,7 +540,7 @@ export default class FXExchange extends Component {
           {this.renderFXE2()}
         </div>
       );
-    } else {
+    } else if (this.props.convertTable || this.props.convertGraph) {
       return (
         <div className="fxe1-container">
           {this.renderFXE1()}
