@@ -10,14 +10,14 @@ export default class LineExchangeGraph extends Component {
       svgInfo: undefined,
       data: this.props.data,
       margin: {
-        top: 10,
+        top: 30,
         bottom: 20,
         left: 50,
         right: 20
       },
       totalWidth: 500,
-      totalHeight: 300,
-      number: 100
+      totalHeight: 340,
+      number: 7
     }
   }
 
@@ -29,7 +29,7 @@ export default class LineExchangeGraph extends Component {
     // Filter data
     if (newProps.data !== this.state.data) {
       this.filterData(newProps.data, () => this.drawChart());
-    }   
+    }
   }
 
   filterData(objectData, callback=undefined) {
@@ -47,7 +47,6 @@ export default class LineExchangeGraph extends Component {
       }
     });
 
-    console.log(data)
     this.setState({ data }, () => {
       if (callback) {
         callback();
@@ -55,8 +54,29 @@ export default class LineExchangeGraph extends Component {
     });
   }
 
-  handleSelectSector() {
+  handleSelectSector(select) {
+    let numberOfData = 0;
+    switch(select) {
+      case "1W":
+        numberOfData = 7;
+        break;
+      case "1M":
+        numberOfData = 30;
+        break;
+      case "3M":
+        numberOfData = 90;
+        break;
+      case "1Y":
+        numberOfData = 365;
+        break;
+      default:
+        numberOfData = undefined;
+        break;
+    }
 
+    if (this.state.number !== numberOfData) {
+      this.setState({ number: numberOfData }, () => this.drawChart());
+    }
   }
 
   drawChart() {
@@ -109,7 +129,6 @@ export default class LineExchangeGraph extends Component {
       }
     })
 
-    console.log(xAxisVal)
     const xAxis = d3.axisBottom(xScale)
                     .tickValues(xAxisVal)
                     .tickFormat((d) => d.toDateString().slice(4, 10))
@@ -124,7 +143,6 @@ export default class LineExchangeGraph extends Component {
     const yAxis = d3.axisLeft(yScale)       
                     .tickFormat((d, i) => {
                         // Only show a few axis values
-                        // let dotIndex = d.indexOf(".") === -1 ? 20 : d.indexOf(".");
                         if (d > 1000) {
                           return d.toFixed(0);
                         } else {
@@ -136,31 +154,26 @@ export default class LineExchangeGraph extends Component {
       .call(yAxis)
       .style("stroke-width", 0);
 
+    // Line's generator
+    const line = d3.line()
+                   .x((d, i) => xScale(timeParse(xData[i])))
+                   .y((d) => yScale(d));
+
+    // Create area below line
+    const area = d3.area()
+                   .x((d, i) => xScale(timeParse(xData[i])))
+                   .y0(hSvg)
+                   .y1((d) => yScale(d));
+
     // Store important svg info in state
-    const svgInfo = { svg, yScale, xScale, xData, yData, timeParse, hSvg };
+    const svgInfo = { svg, yScale, xScale, xData, yData, timeParse, hSvg, line, area };
 
     // Set state then trigger draw data
     this.setState({ svgInfo }, () => this.drawData());
   }
 
   drawData() {
-    const { svg, yScale, xScale, xData, yData, timeParse, hSvg } = this.state.svgInfo;
-
-    // Line's generator
-    const line = d3.line()
-                   .x((d, i) => xScale(timeParse(xData[i])))
-                   .y((d) => yScale(d))
-                  //  .curve(d3.curveMonotoneX);
-
-    // Create area below line
-    const area = d3.area()
-                   .x((d, i) => xScale(timeParse(xData[i])))
-                   .y0(hSvg)
-                   .y1((d) => yScale(d))
-                  //  .curve(d3.curveMonotoneX);
- 
-    console.log(xData);
-    console.log(yData);
+    const { svg, yScale, xScale, xData, yData, timeParse, hSvg, line, area } = this.state.svgInfo;
 
     // Init path
     svg.append("path")
@@ -205,49 +218,42 @@ export default class LineExchangeGraph extends Component {
        .attr("opacity", 0)
        .on("mouseenter", (d, i) => {
          // Show lines
-        d3.select(".rectLine" + this.props.chartKey + i).attr("opacity", 1);
+         d3.select(".rectLine" + this.props.chartKey + i).attr("opacity", 1);
 
-        // Show circles
-        d3.select(".circle" + this.props.chartKey + i).attr("opacity", 1);
+         // Show circles
+         d3.select(".circle" + this.props.chartKey + i).attr("opacity", 1);
        })
        .on("mouseleave", (d, i) => {
          // Hide lines
-        d3.select(".rectLine" + this.props.chartKey + i).attr("opacity", 0);
+         d3.select(".rectLine" + this.props.chartKey + i).attr("opacity", 0);
 
-        // Hide circles
-        d3.select(".circle" + this.props.chartKey + i).attr("opacity", 0);
+         // Hide circles
+         d3.select(".circle" + this.props.chartKey + i).attr("opacity", 0);
        })
 
     svg.selectAll(`rect[class^="rectLine${this.props.chartKey}"]`)
-        .data(yData)
-        .enter()
-        .append("rect")
-        .attr("class", (d, i) => "rectLine" + this.props.chartKey + i)
-        .attr("x", (d, i) => xScale(timeParse(xData[i])))
-        .attr("y", (d) => yScale(d))
-        .attr("width", 1)
-        .attr("height", (d) => hSvg - yScale(d))
-        .attr("stroke", "#333")
-        .attr("stroke-width", "0.3px")
-        .attr("opacity", 0);
-     //  .on("mouseenter", function(d, i) {
-     //   d3.select(this).attr("opacity", 1)
-     //  })
-     //  .on("mouseleave", function(d, i) {
-     //   d3.select(this).attr("opacity", 0)
-     //  })
-
-
-   svg.selectAll("circle")
        .data(yData)
        .enter()
-       .append("circle")
-       .attr("class", (d, i) => "circle" + this.props.chartKey + i)
-       .attr("cx", (d, i) => xScale(timeParse(xData[i])))
-       .attr("cy", (d, i) => yScale(d))
-       .attr("r", 4)
+       .append("rect")
+       .attr("class", (d, i) => "rectLine" + this.props.chartKey + i)
+       .attr("x", (d, i) => xScale(timeParse(xData[i])))
+       .attr("y", (d) => yScale(d))
+       .attr("width", 1)
+       .attr("height", (d) => hSvg - yScale(d))
        .attr("stroke", "#333")
-       .attr("opacity", 0)
+       .attr("stroke-width", "0.3px")
+       .attr("opacity", 0);
+
+   svg.selectAll("circle")
+      .data(yData)
+      .enter()
+      .append("circle")
+      .attr("class", (d, i) => "circle" + this.props.chartKey + i)
+      .attr("cx", (d, i) => xScale(timeParse(xData[i])))
+      .attr("cy", (d, i) => yScale(d))
+      .attr("r", 4)
+      .attr("stroke", "#333")
+      .attr("opacity", 0)
       //  .attr("stroke-width", "1px")
   }
 
