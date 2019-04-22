@@ -13,10 +13,6 @@ export default class SlideChoice extends Component {
 
   componentDidMount() {
     // Calculate the first init width of selected div
-    // this.setState({
-    //   selectedWidth: document.querySelector(`.${this.props.slideKey}.sel0`).clientWidth,
-    // });
-
     this.handleClickChoice(this.state.choice);
   }
 

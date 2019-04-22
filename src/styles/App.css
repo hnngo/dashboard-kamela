@@ -678,3 +678,28 @@
   transform: translateX(-50%);
   top: -30px;
 }
+
+.fxe-sb-container {
+  position: absolute;
+  top: 0px;
+  width: 320px;
+  left: 50%;
+  transform: translateX(-50%);
+  font-size: 40px;
+}
+
+.fxe-sb-container .fa-caret-left,
+.fxe-sb-container .fa-caret-right {
+  position: absolute;
+  top: 90px;
+  cursor: pointer;
+  color: #a3a3a3
+}
+
+.fxe-sb-container .fa-caret-right {
+  right: 0px;
+}
+
+.fxe-btn-clickable {
+  color: #065828 !important;
+}

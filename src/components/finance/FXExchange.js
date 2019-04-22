@@ -48,6 +48,7 @@ export default class FXExchange extends Component {
       widthThreshold: 640,
       resizeEvent: undefined,
       slideShow: undefined,
+      slideDir: "right",
       searchCurrency: "",
       showCurrencySelection: false,
       dataFromCurrency,
@@ -172,7 +173,6 @@ export default class FXExchange extends Component {
 
       this.setState({ loaded: false, cooldownInterval });
     } else {
-      console.log(res.data)
       // Clear interval of re-try
       clearInterval(this.state.cooldownInterval);
 
@@ -247,6 +247,31 @@ export default class FXExchange extends Component {
   handleClickGetLatestData() {
     clearInterval(this.state.cooldownInterval);
     this.setState({ loaded: false }, () => this.getData());
+  }
+
+  handleClickSlide(dir) {
+    const $slideLeft = document.querySelector("#fxe-left" + this.props.chartKey);
+    const $slideRight = document.querySelector("#fxe-right" + this.props.chartKey);
+
+    if ($slideLeft && $slideRight) {
+      console.log("a")
+      if (dir === "left" && this.state.slideDir === "left") {
+        // Change the color of direction
+        $slideLeft.classList.remove("fxe-btn-clickable");
+        $slideRight.classList.add("fxe-btn-clickable");
+  
+        // Change the graph display animation
+        
+        this.setState({ slideDir: "right" })
+  
+      } else if (dir === "right" && this.state.slideDir === "right")  {
+        // Change the color of direction
+        $slideLeft.classList.add("fxe-btn-clickable");
+        $slideRight.classList.remove("fxe-btn-clickable");
+  
+        this.setState({ slideDir: "left" })
+      }
+    }
   }
 
   renderConvertTable() {
@@ -495,6 +520,23 @@ export default class FXExchange extends Component {
     }
   }
 
+  renderSliderBtn() {
+    return (
+      <div className="fxe-sb-container">
+        <i
+          id={"fxe-left" + this.props.chartKey}
+          className="fas fa-caret-left"
+          onClick={() => this.handleClickSlide("left")}
+        />
+        <i
+          id={"fxe-right" + this.props.chartKey}
+          className="fas fa-caret-right fxe-btn-clickable"
+          onClick={() => this.handleClickSlide("right")}
+        />
+      </div>
+    );
+  }
+
   renderConvertGraph() {
     return (
       <div className="fxe-graph-container">
@@ -507,13 +549,29 @@ export default class FXExchange extends Component {
   }
 
   renderFXE1() {
-    return <div />;
+    if (this.props.convertTable) {
+      return this.renderConvertTable();
+    } else {
+      return this.renderConvertGraph();
+    }
   }
 
   renderFXE2() {
     // Checking if slideshow needed for rendering
     if (this.state.slideShow) {
-      return this.renderConvertTable();
+      return (
+        <div>
+          <div className="fxe-slide-table">
+           {this.renderConvertTable()}
+          </div>
+          <div className="fxe-slide-graph d-none">
+           {this.renderConvertGraph()}
+          </div>
+          {
+            this.state.loaded ? this.renderSliderBtn() : <div />
+          }        
+        </div>
+      );
     } else {
       return (
         <div className="row">
