@@ -216,7 +216,7 @@ export default class FinanceSummary extends Component {
           <SlideChoice
             slideKey={"fs"}
             onSelect={(item) => this.handleSelectSector(item)}
-            smallSlide={this.state.smallSlide}
+            smallSlide={true}
             selections={["Industry", "Sector"]}
           />
         </div>

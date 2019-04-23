@@ -10,13 +10,13 @@ export default class LineExchangeGraph extends Component {
       svgInfo: undefined,
       data: this.props.data,
       margin: {
-        top: 30,
+        top: 50,
         bottom: 20,
         left: 60,
         right: 20
       },
       totalWidth: 500,
-      totalHeight: 340,
+      totalHeight: 370,
       number: 90,
       resizeEvent: undefined
     }
@@ -291,7 +291,7 @@ export default class LineExchangeGraph extends Component {
             slideKey={this.props.chartKey}
             onSelect={(item) => this.handleSelectSector(item)}
             smallSlide={false}
-            selections={["1W", "1M", "3M", "1Y", "Max"]}
+            selections={["1W", "3M", "1Y", "Max"]}
             optionChoice={2}
           />
         </div>

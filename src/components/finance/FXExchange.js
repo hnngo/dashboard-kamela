@@ -252,30 +252,20 @@ export default class FXExchange extends Component {
   handleClickSlide(dir) {
     const $slideLeft = document.querySelector("#fxe-left" + this.props.chartKey);
     const $slideRight = document.querySelector("#fxe-right" + this.props.chartKey);
-    const $slideTable = document.querySelector("#fxe-slide-table" + this.props.chartKey);
-    const $slideGraph = document.querySelector("#fxe-slide-graph" + this.props.chartKey);
 
-    if ($slideLeft && $slideRight && $slideGraph && $slideTable) {
+    if ($slideLeft && $slideRight) {
       if (dir === "left" && this.state.slideDir === "left") {
         // Change the color of direction
         $slideLeft.classList.remove("fxe-btn-clickable");
         $slideRight.classList.add("fxe-btn-clickable");
-  
-        // Change the graph display animation
-        $slideTable.classList.toggle("d-none");
-        $slideGraph.classList.toggle("d-none");
-        
+
         this.setState({ slideDir: "right" })
-  
-      } else if (dir === "right" && this.state.slideDir === "right")  {
+
+      } else if (dir === "right" && this.state.slideDir === "right") {
         // Change the color of direction
         $slideLeft.classList.add("fxe-btn-clickable");
         $slideRight.classList.remove("fxe-btn-clickable");
-  
-        // Change the graph display animation
-        $slideTable.classList.toggle("d-none");
-        $slideGraph.classList.toggle("d-none");
-          
+
         this.setState({ slideDir: "left" })
       }
     }
@@ -568,20 +558,24 @@ export default class FXExchange extends Component {
     if (this.state.slideShow) {
       return (
         <div>
-          <div 
-            id={"fxe-slide-table" + this.props.chartKey}
-          >
-           {this.renderConvertTable()}
-          </div>
-          <div
-            id={"fxe-slide-graph" + this.props.chartKey}
-            className="d-none"
-          >
-           {this.renderConvertGraph()}
-          </div>
+          {
+            this.state.slideDir === "right" ? (
+              <div
+                id={"fxe-slide-table" + this.props.chartKey}
+              >
+                {this.renderConvertTable()}
+              </div>
+            ) : (
+                <div
+                  id={"fxe-slide-graph" + this.props.chartKey}
+                >
+                  {this.renderConvertGraph()}
+                </div>
+              )
+          }
           {
             this.state.loaded ? this.renderSliderBtn() : <div />
-          }        
+          }
         </div>
       );
     } else {

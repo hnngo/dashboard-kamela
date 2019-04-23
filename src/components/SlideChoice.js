@@ -44,7 +44,7 @@ export default class SlideChoice extends Component {
     return this.props.selections.map((selection, i) => {
       let divClass = "d-inline";
 
-      if (this.props.smallSlide || window.screen.width <= 576) {
+      if (this.props.smallSlide && window.screen.width <= 576) {
         selection = selection.charAt(0)
       }
 

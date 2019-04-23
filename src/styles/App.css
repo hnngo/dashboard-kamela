@@ -676,13 +676,13 @@
   position: absolute;
   left: 50%;
   transform: translateX(-50%);
-  top: -30px;
+  /* top: -30px; */
 }
 
 .fxe-sb-container {
   position: absolute;
   top: 0px;
-  width: 320px;
+  width: 350px;
   left: 50%;
   transform: translateX(-50%);
   font-size: 40px;
