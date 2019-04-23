@@ -252,15 +252,18 @@ export default class FXExchange extends Component {
   handleClickSlide(dir) {
     const $slideLeft = document.querySelector("#fxe-left" + this.props.chartKey);
     const $slideRight = document.querySelector("#fxe-right" + this.props.chartKey);
+    const $slideTable = document.querySelector("#fxe-slide-table" + this.props.chartKey);
+    const $slideGraph = document.querySelector("#fxe-slide-graph" + this.props.chartKey);
 
-    if ($slideLeft && $slideRight) {
-      console.log("a")
+    if ($slideLeft && $slideRight && $slideGraph && $slideTable) {
       if (dir === "left" && this.state.slideDir === "left") {
         // Change the color of direction
         $slideLeft.classList.remove("fxe-btn-clickable");
         $slideRight.classList.add("fxe-btn-clickable");
   
         // Change the graph display animation
+        $slideTable.classList.toggle("d-none");
+        $slideGraph.classList.toggle("d-none");
         
         this.setState({ slideDir: "right" })
   
@@ -269,6 +272,10 @@ export default class FXExchange extends Component {
         $slideLeft.classList.add("fxe-btn-clickable");
         $slideRight.classList.remove("fxe-btn-clickable");
   
+        // Change the graph display animation
+        $slideTable.classList.toggle("d-none");
+        $slideGraph.classList.toggle("d-none");
+          
         this.setState({ slideDir: "left" })
       }
     }
@@ -561,10 +568,15 @@ export default class FXExchange extends Component {
     if (this.state.slideShow) {
       return (
         <div>
-          <div className="fxe-slide-table">
+          <div 
+            id={"fxe-slide-table" + this.props.chartKey}
+          >
            {this.renderConvertTable()}
           </div>
-          <div className="fxe-slide-graph d-none">
+          <div
+            id={"fxe-slide-graph" + this.props.chartKey}
+            className="d-none"
+          >
            {this.renderConvertGraph()}
           </div>
           {

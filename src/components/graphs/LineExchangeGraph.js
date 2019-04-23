@@ -12,18 +12,40 @@ export default class LineExchangeGraph extends Component {
       margin: {
         top: 30,
         bottom: 20,
-        left: 50,
+        left: 60,
         right: 20
       },
       totalWidth: 500,
       totalHeight: 340,
-      number: 90
+      number: 90,
+      resizeEvent: undefined
     }
   }
 
   componentWillMount() {
+    // Filter data before drawing
     this.filterData(this.state.data, () => this.drawChart());
   }
+
+  componentDidMount() {
+    // Loop interval for resize checking
+    const resizeEvent = setInterval(() => {
+      const $fxeGraph = document.querySelector(".fxe-graph-container");
+
+      if ($fxeGraph) {
+        const currentWidth = $fxeGraph.clientWidth;
+
+        if (this.state.totalWidth !== currentWidth) {
+          this.setState({ 
+            totalWidth: $fxeGraph.clientWidth
+          }, () => this.drawChart());
+        }
+      }
+    }, 200);
+
+    this.setState({ resizeEvent });
+  }
+
 
   componentWillReceiveProps(newProps) {
     // Filter data
