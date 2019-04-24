@@ -7,7 +7,7 @@ export default class SlideChoice extends Component {
     this.state = {
       choice: this.props.optionChoice || 0,
       selectedPos: 0,
-      selectedWidth: 0,
+      selectedWidth: 0
     };
   }
 

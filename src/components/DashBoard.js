@@ -178,7 +178,7 @@ export default class DashBoard extends Component {
             </div>
           </div>
         </div>
-        <div className="row py-1">
+        {/* <div className="row py-1">
           <div className="col-xl-4">
             <Board height={SINGLE_HEIGHT} />
           </div>
@@ -188,7 +188,7 @@ export default class DashBoard extends Component {
           <div className="col-xl-4">
             <Board height={SINGLE_HEIGHT} />
           </div>
-        </div>
+        </div> */}
       </div>
     );
   }

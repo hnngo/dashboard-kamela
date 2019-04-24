@@ -10,13 +10,13 @@ export default class LineExchangeGraph extends Component {
       svgInfo: undefined,
       data: this.props.data,
       margin: {
-        top: 50,
+        top: 55,
         bottom: 20,
         left: 60,
         right: 20
       },
       totalWidth: 500,
-      totalHeight: 370,
+      totalHeight: 375,
       number: 90,
       resizeEvent: undefined
     }
@@ -46,6 +46,10 @@ export default class LineExchangeGraph extends Component {
     this.setState({ resizeEvent });
   }
 
+  componentWillUnmount() {
+    // Clear interval before unmounting
+    clearInterval(this.state.resizeEvent);
+  }
 
   componentWillReceiveProps(newProps) {
     // Filter data
