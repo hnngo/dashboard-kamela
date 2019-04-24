@@ -10,13 +10,13 @@ export default class LineExchangeGraph extends Component {
       svgInfo: undefined,
       data: this.props.data,
       margin: {
-        top: 45,
+        top: 50,
         bottom: 20,
         left: 60,
         right: 20
       },
       totalWidth: 500,
-      totalHeight: 350,
+      totalHeight: 360,
       number: 90,
       resizeEvent: undefined
     }
@@ -296,7 +296,7 @@ export default class LineExchangeGraph extends Component {
             onSelect={(item) => this.handleSelectSector(item)}
             smallSlide={false}
             selections={["1W", "3M", "1Y", "Max"]}
-            optionChoice={2}
+            optionChoice={0}
           />
         </div>
         <div className="le-chart-container">
@@ -306,3 +306,5 @@ export default class LineExchangeGraph extends Component {
     );
   }
 }
+
+//TODO: Show tooltip info

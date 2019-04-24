@@ -224,6 +224,7 @@ export default class SearchEndPoints extends Component {
             value={this.state.inputSearch}
             onChange={(e) => this.handleInputSearch(e.target.value)}
             onKeyPress={(e) => this.handleKeyPress(e)}
+            autoComplete={"off"}
           />
           <button
             onMouseEnter={() => this.handleMouseEnter()}

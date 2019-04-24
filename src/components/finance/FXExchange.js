@@ -280,6 +280,7 @@ export default class FXExchange extends Component {
             id="FXInputFrom"
             value={this.state.inputExchangeAmount}
             onChange={(e) => this.handleInputExchangeAmount(e)}
+            autoComplete={"off"}
           />
           <div
             id={"from" + this.props.chartKey}
@@ -377,6 +378,7 @@ export default class FXExchange extends Component {
             placeholder="Type a currency/country"
             value={this.state.searchCurrency}
             onChange={(e) => this.handleInputSearchCurrency(e)}
+            autoComplete={"off"}
           />
         </div>
         {this.renderSearchResult()}
@@ -625,3 +627,4 @@ FXExchange.propTypes = {
 }
 
 //TODO: Add animated slide down or up
+//TODO: Adding button refresh change color when need refreshing

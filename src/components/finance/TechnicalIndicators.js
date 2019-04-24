@@ -207,6 +207,7 @@ export default class TechnicalIndicators extends Component {
               placeholder={`Enter a symbol (example: "AAPL")`}
               value={this.state.searchInput}
               onChange={(e) => this.handleOnInput(e)}
+              autoComplete={"off"}
             />
             <div>
               {this.renderSearchResult()}
