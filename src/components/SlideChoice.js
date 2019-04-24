@@ -83,5 +83,3 @@ export default class SlideChoice extends Component {
     );
   }
 }
-
-//TODO: FIXME: change screen width change selected bg

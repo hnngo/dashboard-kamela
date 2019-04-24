@@ -30,9 +30,6 @@ export default class LineGraph extends Component {
   }
 
   getData = async (callbackFunc) => {
-    // Get data
-    // let res = await axios.get(`https://www.alphavantage.co/query?function=TIME_SERIES_INTRADAY&symbol=${this.props.stockSymbol}&interval=60min&apikey=KJO1VD3QQ2D7BDOV`);
-
     let res = await axios.get(`https://www.alphavantage.co/query?function=TIME_SERIES_INTRADAY&symbol=MSFT&interval=5min&apikey=demo`);
 
     // Check if result is valid data or error
@@ -193,5 +190,3 @@ LineGraph.propTypes = {
   areaColor: PropTypes.string,
   titleColor: PropTypes.string,
 };
-
-//TODO: Tooltip pending

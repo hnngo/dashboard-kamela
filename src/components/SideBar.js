@@ -20,6 +20,7 @@ export default class SideBar extends Component {
   }
 
   componentDidUpdate() {
+    // Update the proper height for subside bar
     const $sideBarOffset = document.querySelector('.sidebar-sub-offset');
 
     if ($sideBarOffset) {
@@ -97,7 +98,7 @@ export default class SideBar extends Component {
   }
 
   handleClickDim(e) {
-    const sWidth = window.screen.width;
+    const sWidth = document.body.scrollWidth;
     const eWidth = e.clientX;
 
     // Check dim area depends on screen width
@@ -277,5 +278,3 @@ export default class SideBar extends Component {
     );
   }
 }
-
-//TODO: Small screen overflow when expanding all category

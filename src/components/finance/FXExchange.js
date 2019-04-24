@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import axios from 'axios';
+import PropTypes from 'prop-types';
 import data from '../../data.json';
 import LineExchangeGraph from '../graphs/LineExchangeGraph.js';
 
@@ -612,6 +613,15 @@ export default class FXExchange extends Component {
       );
     }
   }
+}
+
+FXExchange.propTypes = {
+  currencySource: PropTypes.array.isRequired,
+  defaultFromCur: PropTypes.string.isRequired,
+  defaultToCur: PropTypes.string.isRequired,
+  chartKey: PropTypes.string.isRequired,
+  convertTable: PropTypes.bool.isRequired,
+  convertGraph: PropTypes.bool.isRequired,
 }
 
 //TODO: Add animated slide down or up

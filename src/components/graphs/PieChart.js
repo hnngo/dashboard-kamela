@@ -291,7 +291,3 @@ export default class PieChart extends Component {
 PieChart.propTypes = {
   chartName: PropTypes.string.isRequired
 };
-
-//TODO: Find way to show percentage on small screen
-//TODO: Fixing switch button responsive immediately
-//TODO: Use slide detect to render instead of observing width pixel

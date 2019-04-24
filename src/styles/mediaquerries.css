@@ -14,6 +14,10 @@ No media query for `xs` since this is the default in Bootstrap */
     height: 50px;
     margin-left: 0px;
   }
+  
+  .collapse {
+    cursor: pointer;
+  }
 
   .outside-sidebar {
     overflow-x: hidden;

@@ -8,10 +8,6 @@ import TechnicalIndicators from './finance/TechnicalIndicators';
 import FXExchange from './finance/FXExchange';
 import data from '../company_data_500.json';
 import {
-  // DATA_CLOSE,
-  // DATA_HIGH,
-  // DATA_LOW,
-  // DATA_OPEN,
   DATA_VOLUME,
   DOUBLE_HEIGHT,
   SINGLE_HEIGHT,

@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import _ from 'lodash';
 import PieChart from '../graphs/PieChart';
 import SlideChoice from '../SlideChoice';
+import PropTypes from 'prop-types';
 import {
   STOCK_INDUSTRY,
   STOCK_SECTOR,
@@ -252,4 +253,8 @@ export default class FinanceSummary extends Component {
       </div>
     );
   }
+}
+
+FinanceSummary.propTypes = {
+  data: PropTypes.array.isRequired
 }
