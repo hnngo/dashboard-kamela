@@ -59,7 +59,13 @@
 /* ------- OUTSIDE SIDEBAR ------- */
 .outside-sidebar {
   min-height: 100%;
+}
 
+.dashboard-title {
+  padding: 0px 30px;
+  padding-top: 20px;
+  margin: 0;
+  color: white
 }
 
 /* ------- DASH BOARD ------- */
@@ -662,7 +668,7 @@
   top: -5px;
   bottom: -5px;
   left: 50%;
-  width: 320px;
+  width: 300px;
   transform: translateX(-50%);
   background-color: #f5f5f5c2;
 }
@@ -679,25 +685,32 @@
   /* top: -30px; */
 }
 
+.le-chart-container {
+  margin-top: 15px;
+}
+
 .fxe-sb-container {
   position: absolute;
   top: 0px;
-  width: 350px;
+  width: 100%;
   left: 50%;
   transform: translateX(-50%);
   font-size: 40px;
 }
 
-.fxe-sb-container .fa-caret-left,
-.fxe-sb-container .fa-caret-right {
+.fxe-sb-container .fa-caret-left {
   position: absolute;
   top: 90px;
   cursor: pointer;
-  color: #a3a3a3
+  color: #a3a3a3;
+  left: 2px;
 }
 
-.fxe-sb-container .fa-caret-right {
-  right: 0px;
+.fxe-sb-container .fa-caret-right {          position: absolute;
+  top: 90px;  
+  cursor: pointer;
+  color: #a3a3a3;
+  right: 2px;
 }
 
 .fxe-btn-clickable {

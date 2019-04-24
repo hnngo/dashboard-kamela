@@ -10,13 +10,13 @@ export default class LineExchangeGraph extends Component {
       svgInfo: undefined,
       data: this.props.data,
       margin: {
-        top: 55,
+        top: 45,
         bottom: 20,
         left: 60,
         right: 20
       },
       totalWidth: 500,
-      totalHeight: 375,
+      totalHeight: 350,
       number: 90,
       resizeEvent: undefined
     }
@@ -299,7 +299,9 @@ export default class LineExchangeGraph extends Component {
             optionChoice={2}
           />
         </div>
-        <div id={"lineChart" + this.props.chartKey} />
+        <div className="le-chart-container">
+          <div id={"lineChart" + this.props.chartKey} />
+        </div>
       </div>
     );
   }

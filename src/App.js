@@ -10,6 +10,7 @@ class App extends Component {
       <div>
         <SideBar />
         <div className="outside-sidebar pb-5">
+          <h5 className="dashboard-title">Dashboard</h5>
           <div className="dashboard-container">
             <DashBoard />
           </div>
