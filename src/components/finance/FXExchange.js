@@ -214,7 +214,14 @@ export default class FXExchange extends Component {
   }
 
   handleSelectCurrency(curCode) {
+    // Trigger animation effect for refreshing btn
+    let $refreshBtn = document.querySelector("#refreshBtn" + this.props.chartKey);
+    let hoverTrigger = false;
+
+    // Trigger when user select a currency to get data
     if (this.state.showCurrencySelection === "from" && curCode !== this.state.selectFromCurrency) {
+      hoverTrigger = true;
+
       this.setState({
         showCurrencySelection: false,
         selectFromCurrency: curCode,
@@ -223,6 +230,8 @@ export default class FXExchange extends Component {
         lateExchangeRate: 0
       });
     } else if (this.state.showCurrencySelection === "to" && curCode !== this.state.selectToCurrency) {
+      hoverTrigger = true;
+
       this.setState({
         showCurrencySelection: false,
         selectToCurrency: curCode,
@@ -235,6 +244,10 @@ export default class FXExchange extends Component {
         showCurrencySelection: false
       });
     }
+
+    if ($refreshBtn && hoverTrigger) {
+      $refreshBtn.classList.add("fxe-cs-btn-hover");
+    }
   }
 
   handleInputSearchCurrency(e) {
@@ -246,8 +259,18 @@ export default class FXExchange extends Component {
   }
 
   handleClickGetLatestData() {
+    // In case user multi-press refresh btn
     clearInterval(this.state.cooldownInterval);
-    this.setState({ loaded: false }, () => this.getData());
+
+    // Turn off the animation effect of btn
+    let $refreshBtn = document.querySelector("#refreshBtn" + this.props.chartKey);
+
+    if ($refreshBtn) {
+      $refreshBtn.classList.remove("fxe-cs-btn-hover");
+
+      // Get the latest data
+      this.setState({ loaded: false }, () => this.getData());
+    }
   }
 
   handleClickSlide(dir) {
@@ -328,6 +351,7 @@ export default class FXExchange extends Component {
           </div>
         </div>
         <div
+          id={"refreshBtn" + this.props.chartKey}
           className="fxe-cs-btn"
           onClick={() => this.handleClickGetLatestData()}
         />
@@ -565,12 +589,14 @@ export default class FXExchange extends Component {
             this.state.slideDir === "right" ? (
               <div
                 id={"fxe-slide-table" + this.props.chartKey}
+                className="animated slideInLeft"
               >
                 {this.renderConvertTable()}
               </div>
             ) : (
                 <div
                   id={"fxe-slide-graph" + this.props.chartKey}
+                  className="animated slideInRight"
                 >
                   {this.renderConvertGraph()}
                 </div>
@@ -625,6 +651,3 @@ FXExchange.propTypes = {
   convertTable: PropTypes.bool.isRequired,
   convertGraph: PropTypes.bool.isRequired,
 }
-
-//TODO: Add animated slide down or up
-//TODO: Adding button refresh change color when need refreshing

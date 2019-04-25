@@ -186,9 +186,8 @@ No media query for `xs` since this is the default in Bootstrap */
   }
 
   .sidebar-sub-mainnav {
-    border-left: 1px solid rgba(172, 165, 165, 0.719);
-    /* background-color: white; */
-    background-image: -webkit-gradient(linear, left top, right top, from(rgb(255, 255, 255)),  color-stop(rgba(255, 255, 255, 0.87)),  to(rgba(0, 0, 0, 0.411)));
+    border-left: 1px solid rgba(172, 165, 165, 0.719);   
+    background-image: -webkit-gradient(linear, left top, right top, from(rgb(255, 255, 255)),  color-stop(rgba(255, 255, 255, 0.87)),  to(rgba(0, 0, 0, 0.411)));   
     background-image: linear-gradient(to right, rgb(255, 255, 255),  rgba(255, 255, 255, 0.87),  rgba(0, 0, 0, 0.411));
     position: relative;
     width: 100%;
@@ -200,7 +199,7 @@ No media query for `xs` since this is the default in Bootstrap */
     padding-left: 25px;
     padding-top: 40px;
     font-size: 25px;
-    color: rgb(106, 167, 106);
+    color: rgb(88, 168, 88);
   }
 
   .sidebar-sub-listItems p {
@@ -293,7 +292,8 @@ No media query for `xs` since this is the default in Bootstrap */
     background-image: -webkit-gradient(linear, left top, right top, from(#134e5e), to(#71b280));
     background-image: linear-gradient(to right, #134e5e, #71b280);
     color: white;
-    box-shadow: 0px 0px 5px 0px rgb(158, 157, 157);
+    -webkit-box-shadow: 0px 0px 5px 0px rgb(158, 157, 157);
+            box-shadow: 0px 0px 5px 0px rgb(158, 157, 157);
   }
   
   .se-row .se-res:hover p.se-symbol {
@@ -317,6 +317,7 @@ No media query for `xs` since this is the default in Bootstrap */
   }
 
   .ti-sr-dataRow:hover {
+    background-image: -webkit-gradient(linear, left top, right top, from(#1D976C), to(#93F9B9));
     background-image: linear-gradient(to right, #1D976C, #93F9B9);
   }
 
