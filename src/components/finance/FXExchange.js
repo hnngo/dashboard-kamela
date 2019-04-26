@@ -589,14 +589,14 @@ export default class FXExchange extends Component {
             this.state.slideDir === "right" ? (
               <div
                 id={"fxe-slide-table" + this.props.chartKey}
-                className="animated slideInLeft"
+                className="animated fadeInLeft"
               >
                 {this.renderConvertTable()}
               </div>
             ) : (
                 <div
                   id={"fxe-slide-graph" + this.props.chartKey}
-                  className="animated slideInRight"
+                  className="animated fadeInRight"
                 >
                   {this.renderConvertGraph()}
                 </div>

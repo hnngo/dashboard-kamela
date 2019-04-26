@@ -751,3 +751,30 @@
 .fxe-btn-clickable {
   color: #065828 !important;
 }
+
+/* ----- FOOTER ----- */
+.footer {
+  margin-left: 10px;
+  margin-top: 10px;
+  color: white;
+}
+
+.footer h6 {
+  font-size: 14px;
+}
+
+.footer i {
+  margin-right: 5px;
+  font-size: 16px;
+}
+
+.footer a {
+  text-decoration: none;
+}
+
+.footer a:visited,
+.footer a:link,
+.footer a:active {
+  color: rgb(156, 228, 171);
+  font-weight: bold;
+}

@@ -185,6 +185,10 @@ export default class DashBoard extends Component {
             <Board height={SINGLE_HEIGHT} />
           </div>
         </div> */}
+        <div className="footer">
+          <h6>*Due to using free API of <a href="https://www.alphavantage.co" target="_blank" rel="noopener noreferrer">Alpha Vantage</a>, website may or may not have a small latency in loading the latest data. Thanks for your patience!</h6>
+          <h6><i className="fab fa-github"/>Github link <a href="https://github.com/hnngo/dashboard-kamela" target="_blank" rel="noopener noreferrer">here</a></h6>
+        </div>
       </div>
     );
   }

@@ -9,7 +9,7 @@ class App extends Component {
     return (
       <div>
         <SideBar />
-        <div className="outside-sidebar pb-5">
+        <div className="outside-sidebar pb-3">
           <h5 className="dashboard-title">Dashboard</h5>
           <div className="dashboard-container">
             <DashBoard />
