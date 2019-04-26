@@ -36,7 +36,7 @@ export default class LineExchangeGraph extends Component {
         const currentWidth = $fxeGraph.clientWidth;
 
         if (this.state.totalWidth !== currentWidth) {
-          this.setState({ 
+          this.setState({
             totalWidth: $fxeGraph.clientWidth
           }, () => this.drawChart());
         }
@@ -158,15 +158,16 @@ export default class LineExchangeGraph extends Component {
     const xAxis = d3.axisBottom(xScale)
                     .tickValues(xAxisVal)
                     .tickFormat((d) => d.toDateString().slice(4, 10))
-                    
+
 
     svg.append("g")
-      .call(xAxis)
-      .attr("transform", `translate(0, ${hSvg})`)
-      .style("stroke-width", 0.2);
+       .attr("class", "xAxis" + this.props.chartKey)
+       .call(xAxis)
+       .attr("transform", `translate(0, ${hSvg})`)
+       .style("stroke-width", 0.2);
 
     // Y Axis
-    const yAxis = d3.axisLeft(yScale)       
+    const yAxis = d3.axisLeft(yScale)
                     .tickFormat((d, i) => {
                         // Format the right value
                         if (d > 10000000) {
@@ -204,6 +205,14 @@ export default class LineExchangeGraph extends Component {
 
   drawData() {
     const { svg, yScale, xScale, xData, yData, timeParse, hSvg, line, area } = this.state.svgInfo;
+    
+    // Tooltip
+    d3.select("div#LETooltip" + this.props.chartKey).remove();
+    const tip = d3.select('body')
+                  .append('div')
+                  .attr("id", "LETooltip" + this.props.chartKey)
+                  .attr('class', 'LETooltip')
+                  .style('opacity', 0);
 
     // Init path
     svg.append("path")
@@ -212,10 +221,10 @@ export default class LineExchangeGraph extends Component {
        .attr("stroke", "#333")
        .attr("stroke-width", "2px")
        .attr("d", line(yData))
-       
+
     svg.append("path")
        .attr("class", "lineChart")
-       .attr("fill", "#a3a3a3")
+       .attr("fill",  "#71b280")
        .attr("opacity", 0.5)
        .attr("d", area(yData));
 
@@ -252,13 +261,58 @@ export default class LineExchangeGraph extends Component {
 
          // Show circles
          d3.select(".circle" + this.props.chartKey + i).attr("opacity", 1);
-       })
+
+         // Tip showing
+         tip.transition().duration(50).style("opacity", 1);
+
+         let xAxis = document.querySelector(".xAxis" + this.props.chartKey).getBoundingClientRect();
+         let bodyRect = document.body.getBoundingClientRect();
+
+         // Tips content
+         tip.html(() => {
+           // Modify the value
+           let value = d > 1000 ? d.toFixed(2) : d;
+
+           // Prepare html
+           let res = "";
+           res += `<p>${value} <span>${timeParse(xData[i]).toDateString()}</span></p>`;
+
+           return res;
+         }).style("left", () => {
+            let minLeft = xAxis.left - bodyRect.left;
+            let maxRight = minLeft + xAxis.width;
+
+            // Get the right offset left
+            let offsetLeft = d3.event.pageX - 100;
+            if (offsetLeft < minLeft + 15) {
+              offsetLeft = minLeft + 15;
+            } else if (offsetLeft + 200 > maxRight - 15) {
+              offsetLeft = maxRight - 215;
+            }
+
+            return offsetLeft + "px";
+           })
+           .style("top", () => {
+             // Get the average threshold value
+             let aveVal = (d3.max(yData) + d3.min(yData)) / 2;
+             
+             // Get proper value for top
+             if (d >= aveVal) {
+               return (xAxis.top - bodyRect.top - 30)  + "px"
+             } else {
+               return (xAxis.top - bodyRect.top - hSvg + this.state.margin.top + 30)  + "px"
+             }
+            });
+        })
        .on("mouseleave", (d, i) => {
          // Hide lines
          d3.select(".rectLine" + this.props.chartKey + i).attr("opacity", 0);
 
          // Hide circles
          d3.select(".circle" + this.props.chartKey + i).attr("opacity", 0);
+
+         // Tips dimming
+         tip.transition().duration(100).style("opacity", 0);
        })
 
     svg.selectAll(`rect[class^="rectLine${this.props.chartKey}"]`)
@@ -296,7 +350,7 @@ export default class LineExchangeGraph extends Component {
             onSelect={(item) => this.handleSelectSector(item)}
             smallSlide={false}
             selections={["1W", "3M", "1Y", "Max"]}
-            optionChoice={0}
+            optionChoice={1}
           />
         </div>
         <div className="le-chart-container">
@@ -306,5 +360,3 @@ export default class LineExchangeGraph extends Component {
     );
   }
 }
-
-//TODO: Show tooltip info

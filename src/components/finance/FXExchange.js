@@ -46,7 +46,7 @@ export default class FXExchange extends Component {
       lateExchangeRate: "Loading...",
       indexExchangeRate: 6,
       inputExchangeAmount: 1,
-      widthThreshold: 750,
+      widthThreshold: 825,
       resizeEvent: undefined,
       slideShow: undefined,
       slideDir: "right",
